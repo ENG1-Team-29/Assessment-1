@@ -5,7 +5,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 
 public class PirateGame extends ApplicationAdapter {
 
@@ -18,7 +20,12 @@ public class PirateGame extends ApplicationAdapter {
 	public void create() {
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera(cameraSize, cameraSize);
-		world = new WorldMap(1, 100, 100);
+		Texture deepWaterTexture = new Texture("noisy-waterdeep.png");
+		Texture shallowWaterTexture = new Texture("noisy-watershallow.png");
+		Texture sandTexture = new Texture("noisy-sand.png");
+		Texture[] worldTextures = {deepWaterTexture, shallowWaterTexture, sandTexture};
+
+		world = new WorldMap(1, 100, 100, worldTextures);
 		world.buildWorld();
 	}
 

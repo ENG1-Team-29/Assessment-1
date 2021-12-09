@@ -10,16 +10,15 @@ public class WorldMap {
 	Texture deepWaterTexture;
 	Texture shallowWaterTexture;
 	Texture sandTexture;
+	Texture[] textures;
 	int tile_size; // squared
 	int width; // in terms of number of tiles. In terms of pixels is tile_width
 				// * tile_size.
 	int height; // ditto
-	HashMap<String, Texture> tileMap = new HashMap<String, Texture>();
+	HashMap<String, Integer> tileMap = new HashMap<String, Integer>();
 
-	public WorldMap(int world_tile_size, int world_width, int world_height) {
-		this.deepWaterTexture = new Texture("noisy-waterdeep.png");
-		this.shallowWaterTexture = new Texture("noisy-watershallow.png");
-		this.sandTexture = new Texture("noisy-sand.png");
+	public WorldMap(int world_tile_size, int world_width, int world_height, Texture[] world_textures) {
+		this.textures = world_textures;
 		this.tile_size = world_tile_size;
 		this.width = world_width;
 		this.height = world_height;
@@ -28,11 +27,11 @@ public class WorldMap {
 	public void buildWorld() {
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				String key = Integer.toString(i) + " " + Integer.toString(j);
+				String key = i + " " + j;
 				if (i % 3 == 0) {
-					this.tileMap.put(key, this.deepWaterTexture);
+					this.tileMap.put(key, 0); //deep water
 				} else {
-					this.tileMap.put(key, this.sandTexture);
+					this.tileMap.put(key, 2); //sand
 				}
 
 			}
@@ -66,7 +65,8 @@ public class WorldMap {
 	}
 
 	public Texture getTile(int x, int y) {
-		String key = Integer.toString(x) + " " + Integer.toString(y);
-		return this.tileMap.get(key);
+		String key = x + " " + y;
+		Integer textureNum = tileMap.get(key);
+		return this.textures[textureNum];
 	}
 }
