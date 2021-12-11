@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+/**
+ * @author Hector Woods
+ */
 public class WorldMap {
 	Texture deepWaterTexture;
 	Texture shallowWaterTexture;
@@ -17,7 +20,8 @@ public class WorldMap {
 	int height; // ditto
 	HashMap<String, Integer> tileMap = new HashMap<String, Integer>();
 
-	public WorldMap(int world_tile_size, int world_width, int world_height, Texture[] world_textures) {
+	public WorldMap(int world_tile_size, int world_width, int world_height,
+			Texture[] world_textures) {
 		this.textures = world_textures;
 		this.tile_size = world_tile_size;
 		this.width = world_width;
@@ -29,9 +33,9 @@ public class WorldMap {
 			for (int j = 0; j < height; j++) {
 				String key = i + " " + j;
 				if (i % 3 == 0) {
-					this.tileMap.put(key, 0); //deep water
+					this.tileMap.put(key, 0); // deep water
 				} else {
-					this.tileMap.put(key, 2); //sand
+					this.tileMap.put(key, 2); // sand
 				}
 
 			}
