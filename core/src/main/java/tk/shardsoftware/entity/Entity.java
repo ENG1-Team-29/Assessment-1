@@ -3,12 +3,14 @@ package tk.shardsoftware.entity;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+import tk.shardsoftware.World;
+
 /**
  * To be used for any object in the world that moves
  * 
  * @author James Burnell
  */
-public class Entity {
+public abstract class Entity {
 
 	/**
 	 * The direction the entity is facing in degrees. Note that this can be
@@ -22,18 +24,21 @@ public class Entity {
 	/** The hitbox of the entity. Note that this does not rotate. */
 	protected Rectangle hitbox = new Rectangle();
 
-	// /** The World object the entity belongs to */
-	// private World worldObj;
+	/** The World object the entity belongs to */
+	protected World worldObj;
+	/** Tells the World object if the entity should be deleted */
+	public boolean remove = false;
 
-	protected Entity(/* World worldObj, */ float x, float y, float w, float h) {
-		this(/* worldObj */);
+	protected Entity(World worldObj, float x, float y, float w, float h) {
 		setPosition(x, y);
 		hitbox.setWidth(w);
 		hitbox.setHeight(h);
+		this.worldObj = worldObj;
 	}
 
-	public Entity(/* World worldObj */) {
-		// this.worldObj = worldObj;
+	/** Entity constructor to be used only for test purposes */
+	protected Entity() {
+		this(null, 0, 0, 50, 50);
 	}
 
 	/**
@@ -96,10 +101,26 @@ public class Entity {
 		return hitbox;
 	}
 
+	/**
+	 * Set the current position of the Entity
+	 * 
+	 * @param pos
+	 *            the new position
+	 * 
+	 * @see #setPosition(float, float)
+	 */
 	public void setPosition(Vector2 pos) {
 		setPosition(pos.x, pos.y);
 	}
 
+	/**
+	 * Set the current position of the Entity to (x, y)
+	 * 
+	 * @param x
+	 *            the new x position
+	 * @param y
+	 *            the new y position
+	 */
 	public void setPosition(float x, float y) {
 		this.positionVec.set(x, y);
 		hitbox.setPosition(positionVec);

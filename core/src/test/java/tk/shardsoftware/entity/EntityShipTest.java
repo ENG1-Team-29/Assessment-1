@@ -10,7 +10,7 @@ public class EntityShipTest {
 	/** A ship's direction is based on the direction it is traveling */
 	@Test
 	public void testSetDirectionDoesNothing() {
-		EntityShip e = new EntityShip();
+		EntityShip e = new EntityShip(null);
 		assertEquals(0, e.direction);
 		e.setDirection(180);
 		assertEquals(0, e.direction);
@@ -18,7 +18,7 @@ public class EntityShipTest {
 
 	@Test
 	public void testSetVelocity() {
-		EntityShip e = new EntityShip();
+		EntityShip e = new EntityShip(null);
 		e.setVelocity(1, 1);
 		assertEquals(45, e.direction);
 		e.setVelocity(-1, 0);

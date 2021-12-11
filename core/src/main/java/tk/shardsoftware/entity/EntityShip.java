@@ -1,12 +1,14 @@
 package tk.shardsoftware.entity;
 
+import tk.shardsoftware.World;
+
 /**
  * @author James Burnell
  */
 public class EntityShip extends Entity {
 
-	public EntityShip() {
-		super(0, 0, 50, 50);
+	public EntityShip(World worldObj) {
+		super(worldObj, 0, 0, 50, 50);
 	}
 
 	public void update(float delta) {
