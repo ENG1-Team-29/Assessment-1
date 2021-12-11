@@ -1,12 +1,17 @@
 package tk.shardsoftware;
 
+import static tk.shardsoftware.util.ResourceUtil.getTexture;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import tk.shardsoftware.util.ResourceUtil;
 
 public class PirateGame extends ApplicationAdapter {
 
@@ -15,14 +20,19 @@ public class PirateGame extends ApplicationAdapter {
 	int cameraSize = 100; // width and length of the camera's viewport.
 	WorldMap world;
 
+	public AssetManager assets;
+
 	@Override
 	public void create() {
+		assets = new AssetManager();
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera(cameraSize, cameraSize);
-		Texture deepWaterTexture = new Texture("noisy-waterdeep.png");
-		Texture shallowWaterTexture = new Texture("noisy-watershallow.png");
-		Texture sandTexture = new Texture("noisy-sand.png");
-		Texture[] worldTextures = {deepWaterTexture, shallowWaterTexture, sandTexture};
+		ResourceUtil.init(assets);
+		Texture deepWaterTexture = getTexture("noisy-waterdeep");
+		Texture shallowWaterTexture = getTexture("noisy-watershallow");
+		Texture sandTexture = getTexture("noisy-sand");
+		Texture[] worldTextures = {deepWaterTexture, shallowWaterTexture,
+				sandTexture};
 
 		world = new WorldMap(1, 100, 100, worldTextures);
 		world.buildWorld();
