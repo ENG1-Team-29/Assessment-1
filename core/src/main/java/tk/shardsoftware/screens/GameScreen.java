@@ -1,6 +1,6 @@
 package tk.shardsoftware.screens;
 
-import static tk.shardsoftware.util.ResourceUtil.getTexture;
+import static tk.shardsoftware.util.ResourceUtil.getTileTexture;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -25,9 +25,9 @@ public class GameScreen implements Screen {
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera(cameraSize, cameraSize);
 
-		Texture deepWaterTexture = getTexture("noisy-waterdeep.png");
-		Texture shallowWaterTexture = getTexture("noisy-watershallow.png");
-		Texture sandTexture = getTexture("noisy-sand.png");
+		Texture deepWaterTexture = getTileTexture("noisy-waterdeep.png");
+		Texture shallowWaterTexture = getTileTexture("noisy-watershallow.png");
+		Texture sandTexture = getTileTexture("noisy-sand.png");
 		Texture[] worldTextures = {deepWaterTexture, shallowWaterTexture,
 				sandTexture};
 

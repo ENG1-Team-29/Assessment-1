@@ -32,10 +32,9 @@ public class ResourceUtil {
 	public static void init(AssetManager assets) {
 		assetManager = assets;
 		nullTexture = generateNullTexture();
-		// textureCache.put("null", nullTexture);
-		addTexture("noisy-waterdeep.png");
-		addTexture("noisy-watershallow.png");
-		addTexture("noisy-sand.png");
+		addTexture("textures/tiles/noisy-waterdeep.png");
+		addTexture("textures/tiles/noisy-watershallow.png");
+		addTexture("textures/tiles/noisy-sand.png");
 	}
 
 	/**
@@ -79,6 +78,18 @@ public class ResourceUtil {
 		return assetManager.contains(texName)
 				? assetManager.get(texName)
 				: nullTexture;
+	}
+
+	/**
+	 * Get a tile texture according to its filename. Points to the
+	 * {@code textures/tiles/} folder.
+	 * 
+	 * @param tileName
+	 *            The filename of the tile texture
+	 * @return The pre-cached Texture object
+	 */
+	public static Texture getTileTexture(String tileName) {
+		return getTexture("textures/tiles/" + tileName);
 	}
 
 }
