@@ -9,8 +9,8 @@ import tk.shardsoftware.util.ResourceUtil;
 
 public class PirateGame extends Game {
 
-	private LoadScreen loadScreen;
-	private GameScreen gameScreen;
+	// private LoadScreen loadScreen;
+	// private GameScreen gameScreen;
 
 	public AssetManager assets;
 
@@ -18,10 +18,13 @@ public class PirateGame extends Game {
 	public void create() {
 		assets = new AssetManager();
 		ResourceUtil.init(assets);
-		assets.finishLoading(); // TODO: Move asset loading to loading screen
 		// loadScreen = new LoadScreen(assets);
-		gameScreen = new GameScreen(assets);
-		this.setScreen(gameScreen);
+		// gameScreen = new GameScreen(assets);
+		this.setScreen(new LoadScreen(assets, this));
+	}
+
+	public void openNewGameScreen() {
+		this.setScreen(new GameScreen(assets));
 	}
 
 	@Override
