@@ -36,7 +36,10 @@ public abstract class Entity {
 		this.worldObj = worldObj;
 	}
 
-	/** Entity constructor to be used only for test purposes */
+	/**
+	 * Entity constructor to be used only for test purposes where the worldObj
+	 * is not required
+	 */
 	protected Entity() {
 		this(null, 0, 0, 50, 50);
 	}
@@ -59,13 +62,20 @@ public abstract class Entity {
 	 *            the time between the previous update and this one
 	 */
 	protected void stepPosition(float delta) {
-		// Requires a list of other entities in order
-		// to check collisions (from worldObj)
+		// Calculate the hitbox after next step
+		Rectangle nextHitbox = new Rectangle(hitbox).setPosition(
+				positionVec.x + velocityVec.x, positionVec.y + velocityVec.y);
 
-		// update the position of the entity
-		positionVec.mulAdd(velocityVec, delta);
-		// sync hitbox with entity position
-		hitbox.setPosition(positionVec);
+		// TODO: Change to bounding-box hierarchy if performance is too low
+		// TODO: Add collision direction detection
+		boolean collided = worldObj.getEntities().stream()
+				.anyMatch(e -> e.hitbox.overlaps(nextHitbox));
+		if (!collided) {
+			// update the position of the entity
+			positionVec.mulAdd(velocityVec, delta);
+			// sync hitbox with entity position
+			hitbox.setPosition(positionVec);
+		}
 	}
 
 	public float getDirection() {

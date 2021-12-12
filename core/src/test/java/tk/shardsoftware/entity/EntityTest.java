@@ -1,10 +1,14 @@
 package tk.shardsoftware.entity;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
 import com.badlogic.gdx.math.Rectangle;
+
+import tk.shardsoftware.World;
 
 /** @author James Burnell */
 public class EntityTest {
@@ -26,9 +30,9 @@ public class EntityTest {
 	@Test
 	public void testHitboxUpdate() {
 		Entity e = new Entity() {};
-		assertEquals(new Rectangle(), e.hitbox);
+		assertEquals(new Rectangle(0, 0, 50, 50), e.hitbox);
 		e.setPosition(5, 7);
-		assertEquals(new Rectangle(5, 7, 0, 0), e.hitbox);
+		assertEquals(new Rectangle(5, 7, 50, 50), e.hitbox);
 	}
 
 	/** Test that the position and hitbox stay synchronized */
@@ -40,7 +44,7 @@ public class EntityTest {
 				e.setPosition(x, y);
 				assertEquals(x, e.positionVec.x);
 				assertEquals(y, e.positionVec.y);
-				assertEquals(new Rectangle(x, y, 0, 0), e.hitbox);
+				assertEquals(new Rectangle(x, y, 50, 50), e.hitbox);
 			}
 		}
 	}
@@ -64,7 +68,8 @@ public class EntityTest {
 	/** Test the {@link Entity#update(float)} method */
 	@Test
 	public void testLogicStep() {
-		Entity e = new Entity(null, 5, 5, 10, 10) {};
+		World worldObj = new World();
+		Entity e = new Entity(worldObj, 5, 5, 10, 10) {};
 		e.setVelocity(1, 1);
 		assertEquals(5, e.positionVec.x);
 		assertEquals(5, e.positionVec.y);
@@ -81,14 +86,34 @@ public class EntityTest {
 	 */
 	@Test
 	public void testCollision() {
-		Entity e1 = new Entity(null, 5, 5, 10, 10) {};
-		Entity e2 = new Entity(null, 20, 5, 10, 10) {};
+		World worldObj = new World();
+		Entity e1 = new Entity(worldObj, 5, 5, 10, 10) {};
+		Entity e2 = new Entity(worldObj, 20, 5, 10, 10) {};
 		assertFalse(e1.hitbox.overlaps(e2.hitbox));
 		e1.setVelocity(3, 3);
 		e1.update(1);
 		assertFalse(e1.hitbox.overlaps(e2.hitbox));
 		e1.update(1);
 		assertTrue(e1.hitbox.overlaps(e2.hitbox));
+	}
+
+	/**
+	 * Test that entities stay where they are if they will collide
+	 */
+	@Test
+	public void testPositionStepWithCollisionInWorld() {
+		World worldObj = new World();
+		worldObj.getEntities().add(new Entity(worldObj, 20, 5, 10, 10) {});
+		Entity e = new Entity(worldObj, 5, 5, 10, 10) {};
+		e.setVelocity(3, 3);
+		e.update(1);
+		assertEquals(8, e.positionVec.x);
+		assertEquals(8, e.positionVec.y);
+		// update will cause
+		e.update(1);
+		assertEquals(8, e.positionVec.x);
+		assertEquals(8, e.positionVec.y);
+		// assertTrue(e.hitbox.overlaps(e2.hitbox));
 	}
 
 }
