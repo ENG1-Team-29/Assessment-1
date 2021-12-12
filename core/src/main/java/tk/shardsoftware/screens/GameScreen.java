@@ -11,19 +11,27 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import tk.shardsoftware.World;
 import tk.shardsoftware.WorldMap;
 
+/** Handles game controls, rendering, and logic */
 public class GameScreen implements Screen {
 
 	private SpriteBatch batch;
 	private OrthographicCamera camera;
-	private WorldMap world;
+	private WorldMap worldMap; // TODO: Integrate WorldMap into World
+
+	private World worldObj;
 
 	private int cameraSize = 100; // width and length of the camera's viewport.
 
+	// /** The ship object that the player will control*/
+	// private EntityShip player;
+
 	public GameScreen(AssetManager assets) {
 		batch = new SpriteBatch();
-		camera = new OrthographicCamera(cameraSize, cameraSize);
+		camera = new OrthographicCamera(cameraSize * 16f / 9f, cameraSize);
+		worldObj = new World();
 
 		Texture deepWaterTexture = getTileTexture("noisy-waterdeep.png");
 		Texture shallowWaterTexture = getTileTexture("noisy-watershallow.png");
@@ -31,8 +39,12 @@ public class GameScreen implements Screen {
 		Texture[] worldTextures = {deepWaterTexture, shallowWaterTexture,
 				sandTexture};
 
-		world = new WorldMap(1, 100, 100, worldTextures);
-		world.buildWorld();
+		worldMap = new WorldMap(1, 100, 100, worldTextures);
+		worldMap.buildWorld();
+
+		// player = new EntityShip(worldObj);
+
+		// worldObj.getEntities().add(player);
 	}
 
 	@Override
@@ -58,13 +70,32 @@ public class GameScreen implements Screen {
 	@Override
 	public void render(float delta) {
 		// Set ProjectionMatrix of SpriteBatch (2)
+		logic();
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // clears the buffer
 		batch.setProjectionMatrix(camera.combined);
 		exampleCamera();
 		camera.update();
 		batch.begin();
-		world.drawTilesInRange(camera, cameraSize, batch);
+		worldMap.drawTilesInRange(camera, cameraSize, batch);
+		renderEntities();
 		batch.end();
+	}
+
+	private void logic() {
+		worldObj.update(Gdx.graphics.getDeltaTime());
+	}
+
+	public void renderEntities() {
+		worldObj.getEntities().forEach(e -> {
+			// batch.draw(e.getTexture(), e.getPosition().x, e.getPosition().y,
+			// e.getHitbox().width, e.getHitbox().height);
+
+			// Draw each entity with its own texture and apply rotation
+			batch.draw(e.getTexture(), e.getPosition().x, e.getPosition().y,
+					e.getHitbox().width / 2, e.getHitbox().height / 2,
+					e.getHitbox().width, e.getHitbox().height, 1, 1,
+					e.getDirection() - 90, false);
+		});
 	}
 
 	@Override

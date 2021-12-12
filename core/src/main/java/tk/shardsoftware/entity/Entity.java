@@ -1,9 +1,11 @@
 package tk.shardsoftware.entity;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import tk.shardsoftware.World;
+import tk.shardsoftware.util.ResourceUtil;
 
 /**
  * To be used for any object in the world that moves
@@ -23,11 +25,12 @@ public abstract class Entity {
 	protected Vector2 positionVec = new Vector2(0, 0);
 	/** The hitbox of the entity. Note that this does not rotate. */
 	protected Rectangle hitbox = new Rectangle();
-
 	/** The World object the entity belongs to */
 	protected World worldObj;
 	/** Tells the World object if the entity should be deleted */
 	public boolean remove = false;
+	/** The texture used to depict the entity */
+	protected TextureRegion texture;
 
 	protected Entity(World worldObj, float x, float y, float w, float h) {
 		setPosition(x, y);
@@ -42,6 +45,22 @@ public abstract class Entity {
 	 */
 	protected Entity() {
 		this(null, 0, 0, 50, 50);
+	}
+
+	/**
+	 * Set the texture of the entity
+	 * 
+	 * @param textureName
+	 *            the path/name of the texture file
+	 * @return This entity object for easy building
+	 */
+	public Entity setTexture(String textureName) {
+		texture = new TextureRegion(ResourceUtil.getTexture(textureName));
+		return this;
+	}
+
+	public TextureRegion getTexture() {
+		return texture;
 	}
 
 	/**
@@ -69,6 +88,7 @@ public abstract class Entity {
 		// TODO: Change to bounding-box hierarchy if performance is too low
 		// TODO: Add collision direction detection
 		boolean collided = worldObj.getEntities().stream()
+				.filter(e -> !e.equals(this))
 				.anyMatch(e -> e.hitbox.overlaps(nextHitbox));
 		if (!collided) {
 			// update the position of the entity
@@ -99,8 +119,16 @@ public abstract class Entity {
 		setVelocity(vel.x, vel.y);
 	}
 
+	public void addVelocity(Vector2 vel) {
+		addVelocity(vel.x, vel.y);
+	}
+
 	public void setVelocity(float x, float y) {
 		this.velocityVec.set(x, y);
+	}
+
+	public void addVelocity(float x, float y) {
+		this.velocityVec.add(x, y);
 	}
 
 	public Vector2 getPosition() {

@@ -43,6 +43,10 @@ public class ResourceUtil {
 	 */
 	private static boolean addTexture(String img) {
 		if (assetManager.contains(img)) return false;
+		if (!Gdx.files.internal(img).exists()) {
+			Gdx.app.error("error", "Could not locate texture file: " + img);
+			return false;
+		}
 		assetManager.load(img, Texture.class);
 		return true;
 	}
@@ -75,8 +79,7 @@ public class ResourceUtil {
 					.format("texture %s is not loaded, using null", texName));
 			return nullTexture;
 		}
-		return assetManager.contains(texName)
-				? assetManager.get(texName)
+		return assetManager.contains(texName) ? assetManager.get(texName)
 				: nullTexture;
 	}
 
@@ -90,6 +93,18 @@ public class ResourceUtil {
 	 */
 	public static Texture getTileTexture(String tileName) {
 		return getTexture("textures/tiles/" + tileName);
+	}
+
+	/**
+	 * Get an entity texture according to its filename. Points to the
+	 * {@code textures/entity/} folder.
+	 * 
+	 * @param tileName
+	 *            The filename of the entity texture
+	 * @return The pre-cached Texture object
+	 */
+	public static Texture getEntityTexture(String entityName) {
+		return getTexture("textures/entity/" + entityName);
 	}
 
 }
