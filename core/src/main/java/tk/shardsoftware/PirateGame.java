@@ -4,7 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 
 import tk.shardsoftware.screens.GameScreen;
-import tk.shardsoftware.screens.LoadScreen;
 import tk.shardsoftware.util.ResourceUtil;
 
 public class PirateGame extends Game {
@@ -20,7 +19,11 @@ public class PirateGame extends Game {
 		ResourceUtil.init(assets);
 		// loadScreen = new LoadScreen(assets);
 		// gameScreen = new GameScreen(assets);
-		this.setScreen(new LoadScreen(assets, this));
+		// this.setScreen(new LoadScreen(assets, this));
+
+		// -=TESTING ONLY=- Assets should be loaded within the loading screen
+		assets.finishLoading(); // XXX: Remove before exporting
+		openNewGameScreen();
 	}
 
 	public void openNewGameScreen() {
