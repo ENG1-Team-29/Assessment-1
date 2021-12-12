@@ -28,6 +28,7 @@ allprojects {
         gdxControllersVersion = '2.1.0'
         junitJupiterVersion = '5.8.2'
         junitPlatformVersion = '1.8.2'
+        gdxVidVersion = '1.3.2-SNAPSHOT'
     }
 
     repositories {
@@ -50,6 +51,7 @@ project(":desktop") {
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         //api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+        api "com.badlogicgames.gdx-video:gdx-video-lwjgl3:$gdxVidVersion"
         
     }
 }
@@ -63,6 +65,7 @@ project(":core") {
         //api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
         api "com.badlogicgames.ashley:ashley:$ashleyVersion"
+        api "com.badlogicgames.gdx-video:gdx-video:$gdxVidVersion"
         
         testImplementation("org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}")
 		testRuntime("org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}")
