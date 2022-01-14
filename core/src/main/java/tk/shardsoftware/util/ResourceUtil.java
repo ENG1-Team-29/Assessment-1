@@ -37,7 +37,7 @@ public class ResourceUtil {
 		font = new BitmapFont(Gdx.files.internal("font/jagged-font.fnt"),
 				false);
 		font.setColor(Color.WHITE);
-		font.getData().setScale(0.15f);
+		font.getData().setScale(0.2f);
 		nullTexture = generateNullTexture();
 		addTexture("textures/tiles/noisy-waterdeep.png");
 		addTexture("textures/tiles/noisy-watershallow.png");
