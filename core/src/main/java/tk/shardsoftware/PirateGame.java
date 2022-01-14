@@ -11,6 +11,9 @@ public class PirateGame extends Game {
 	// private LoadScreen loadScreen;
 	// private GameScreen gameScreen;
 
+	/** Controls additional logging and on-screen data */
+	public static final boolean DEBUG_MODE = true;
+
 	public AssetManager assets;
 
 	@Override
