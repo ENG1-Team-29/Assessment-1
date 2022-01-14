@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 /**
  * Handles texture access
@@ -23,6 +24,8 @@ public class ResourceUtil {
 	/** The game's asset manager */
 	private static AssetManager assetManager;
 
+	public static BitmapFont font;
+
 	/**
 	 * Load any required textures into memory
 	 * 
@@ -31,10 +34,15 @@ public class ResourceUtil {
 	 */
 	public static void init(AssetManager assets) {
 		assetManager = assets;
+		font = new BitmapFont(Gdx.files.internal("font/jagged-font.fnt"),
+				false);
+		font.setColor(Color.WHITE);
+		font.getData().setScale(0.15f);
 		nullTexture = generateNullTexture();
 		addTexture("textures/tiles/noisy-waterdeep.png");
 		addTexture("textures/tiles/noisy-watershallow.png");
 		addTexture("textures/tiles/noisy-sand.png");
+		addTexture("textures/entity/playership.png");
 	}
 
 	/**
