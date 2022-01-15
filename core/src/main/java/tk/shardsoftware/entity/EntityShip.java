@@ -21,23 +21,6 @@ public class EntityShip extends Entity {
 		velocityVec.setAngleDeg(direction);
 	}
 
-	@Override
-	public void setVelocity(float x, float y) {
-		super.setVelocity(x, y);
-	}
-
-	@Override
-	public void addVelocity(float x, float y) {
-		super.addVelocity(x, y);
-	}
-
-	/**
-	 * Adds a value to the direction
-	 */
-	public void rotate(float angle) {
-		this.setDirection(direction + angle);
-	}
-
 	/**
 	 * Set the texture of the entity
 	 * 

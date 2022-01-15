@@ -111,6 +111,13 @@ public abstract class Entity {
 		this.direction = temp < 0 ? temp + 360 : temp;
 	}
 
+	/**
+	 * Adds a value to the direction
+	 */
+	public void rotate(float angle) {
+		this.setDirection(direction + angle);
+	}
+
 	public Vector2 getVelocity() {
 		return velocityVec;
 	}
