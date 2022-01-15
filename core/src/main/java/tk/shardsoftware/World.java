@@ -6,14 +6,22 @@ import java.util.List;
 
 import tk.shardsoftware.entity.Entity;
 
+/** @author James Burnell */
 public class World {
 
+	/** The collection of entities that are in the world */
 	private List<Entity> entities;
+
+	/** The map of the world */
+	public WorldMap worldMap;
 
 	private long gameTicks = 0;
 
 	public World() {
 		entities = new ArrayList<Entity>();
+		
+		worldMap = new WorldMap(1, 100, 100);
+		worldMap.buildWorld();
 	}
 
 	/**

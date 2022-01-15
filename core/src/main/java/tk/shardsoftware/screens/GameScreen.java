@@ -2,7 +2,6 @@ package tk.shardsoftware.screens;
 
 import static tk.shardsoftware.PirateGame.DEBUG_MODE;
 import static tk.shardsoftware.util.ResourceUtil.font;
-import static tk.shardsoftware.util.ResourceUtil.getTileTexture;
 
 import java.util.List;
 
@@ -11,12 +10,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import tk.shardsoftware.World;
-import tk.shardsoftware.WorldMap;
 import tk.shardsoftware.entity.EntityShip;
 
 /** Handles game controls, rendering, and logic */
@@ -24,12 +21,10 @@ public class GameScreen implements Screen {
 
 	private SpriteBatch batch, hudBatch;
 	private OrthographicCamera camera;
-	private WorldMap worldMap; // TODO: Integrate WorldMap into World
-
-	private World worldObj;
-
 	// width and length of the camera's viewport.
 	private int cameraSize = (int) (720 / 2);
+
+	private World worldObj;
 
 	// /** The ship object that the player will control*/
 	private EntityShip player;
@@ -39,15 +34,6 @@ public class GameScreen implements Screen {
 		hudBatch = new SpriteBatch();
 		camera = new OrthographicCamera(cameraSize * 16f / 9f, cameraSize);
 		worldObj = new World();
-
-		Texture deepWaterTexture = getTileTexture("noisy-waterdeep.png");
-		Texture shallowWaterTexture = getTileTexture("noisy-watershallow.png");
-		Texture sandTexture = getTileTexture("noisy-sand.png");
-		Texture[] worldTextures = {deepWaterTexture, shallowWaterTexture,
-				sandTexture};
-
-		worldMap = new WorldMap(1, 100, 100, worldTextures);
-		worldMap.buildWorld();
 
 		player = new EntityShip(worldObj);
 
@@ -114,7 +100,7 @@ public class GameScreen implements Screen {
 		batch.setProjectionMatrix(camera.combined);
 		camera.update();
 		batch.begin();
-		worldMap.drawTilesInRange(camera, cameraSize, batch);
+		worldObj.worldMap.drawTilesInRange(camera, cameraSize, batch);
 		renderEntities();
 		batch.end();
 
@@ -128,7 +114,8 @@ public class GameScreen implements Screen {
 
 	private List<String> generateDebugStrings() {
 		return List.of("Current angle: " + player.getDirection(),
-				"Goal angle: " + goalAngle);
+				"Goal angle: " + goalAngle,
+				"FPS: " + Gdx.graphics.getFramesPerSecond());
 	}
 
 	public void renderDebug(List<String> debugList) {

@@ -1,5 +1,7 @@
 package tk.shardsoftware;
 
+import static tk.shardsoftware.util.ResourceUtil.getTileTexture;
+
 import java.util.HashMap;
 
 import com.badlogic.gdx.graphics.Camera;
@@ -10,22 +12,23 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * @author Hector Woods
  */
 public class WorldMap {
-	Texture deepWaterTexture;
-	Texture shallowWaterTexture;
-	Texture sandTexture;
+
 	Texture[] textures;
 	int tile_size; // squared
 	int width; // in terms of number of tiles. In terms of pixels is tile_width
 				// * tile_size.
 	int height; // ditto
+	// TODO: Change to 2D array for better performance/space?
 	HashMap<String, Integer> tileMap = new HashMap<String, Integer>();
 
-	public WorldMap(int world_tile_size, int world_width, int world_height,
-			Texture[] world_textures) {
-		this.textures = world_textures;
+	public WorldMap(int world_tile_size, int world_width, int world_height) {
 		this.tile_size = world_tile_size;
 		this.width = world_width;
 		this.height = world_height;
+
+		textures = new Texture[]{getTileTexture("noisy-waterdeep.png"),
+				getTileTexture("noisy-watershallow.png"),
+				getTileTexture("noisy-sand.png")};
 	}
 
 	public void buildWorld() {
@@ -51,6 +54,7 @@ public class WorldMap {
 		}
 	}
 
+	// TODO: Render once to off-screen buffer then render buffer to screen
 	public void drawTilesInRange(Camera cam, int cameraSize,
 			SpriteBatch batch) {
 		int numberOfTiles = cameraSize / this.tile_size;
