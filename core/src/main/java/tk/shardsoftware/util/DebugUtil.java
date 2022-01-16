@@ -9,11 +9,16 @@ public class DebugUtil {
 	/** Controls additional logging and on-screen data */
 	public static final boolean DEBUG_MODE = true;
 
+	/** Stores times of how long it took to process code snippets */
 	public static HashMap<String, Long> processingTimes = new HashMap<String, Long>();
 
 	private static long displayTime;
 	private static List<String> cachedResult;
 
+	/**
+	 * Calculate the percentage time for each entry in {@link #processingTimes}
+	 * and return each in a separate string, all contained in a list.
+	 */
 	public static List<String> processingTimePercentages() {
 		if (System.currentTimeMillis() - displayTime < 1000) {
 			return cachedResult;
@@ -34,6 +39,34 @@ public class DebugUtil {
 		cachedResult = result;
 
 		return result;
+	}
+
+	/**
+	 * Measure how long a code section takes to process.
+	 * 
+	 * @param r
+	 *            the code to run and measure
+	 * @return The time taken to execute the code in nanoseconds
+	 */
+	public static long measureProcessTime(Runnable r) {
+		long t1 = System.nanoTime();
+		r.run();
+		return System.nanoTime() - t1;
+	}
+
+	/**
+	 * Measures how long it takes to run the code then saves it to the cache for
+	 * comparison & display.
+	 * 
+	 * @param name
+	 *            the displayed name of the code being measured
+	 * @param r
+	 *            the code to run and measure
+	 * @see #measureProcessTime(Runnable)
+	 */
+	public static void saveProcessTime(String name, Runnable r) {
+		long time = measureProcessTime(r);
+		processingTimes.put(name, time);
 	}
 
 }

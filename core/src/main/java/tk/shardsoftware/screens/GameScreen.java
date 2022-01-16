@@ -30,7 +30,7 @@ public class GameScreen implements Screen {
 
 	private World worldObj;
 
-	// /** The ship object that the player will control*/
+	/** The ship object that the player will control */
 	private EntityShip player;
 
 	public GameScreen(AssetManager assets) {
@@ -98,32 +98,30 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		long t1 = System.nanoTime();
-		controls();
-		logic();
-		processingTimes.put("Logic Time", System.nanoTime() - t1);
+		DebugUtil.saveProcessTime("Logic Time", () -> {
+			controls();
+			logic();
+		});
 
 		ScreenUtils.clear(0, 0, 0, 1); // clears the buffer
 		batch.setProjectionMatrix(camera.combined);
 		camera.update();
 		batch.begin();
 
-		t1 = System.nanoTime();
-		worldObj.worldMap.drawTilesInRange(camera, cameraSize, batch);
-		processingTimes.put("Map Draw Time", System.nanoTime() - t1);
+		DebugUtil.saveProcessTime("Map Draw Time", () -> {
+			worldObj.worldMap.drawTilesInRange(camera, cameraSize, batch);
+		});
+		DebugUtil.saveProcessTime("Entity Draw Time", () -> renderEntities());
 
-		t1 = System.nanoTime();
-		renderEntities();
-		processingTimes.put("Entity Draw Time", System.nanoTime() - t1);
 		batch.end();
 
-		t1 = System.nanoTime();
-		if (DEBUG_MODE) {
-			hudBatch.begin();
-			renderDebug(generateDebugStrings());
-			hudBatch.end();
-		}
-		processingTimes.put("Debug Draw Time", System.nanoTime() - t1);
+		DebugUtil.saveProcessTime("Debug Draw Time", () -> {
+			if (DEBUG_MODE) {
+				hudBatch.begin();
+				renderDebug(generateDebugStrings());
+				hudBatch.end();
+			}
+		});
 
 	}
 
