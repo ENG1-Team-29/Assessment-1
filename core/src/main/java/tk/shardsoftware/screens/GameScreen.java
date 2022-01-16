@@ -1,8 +1,11 @@
 package tk.shardsoftware.screens;
 
-import static tk.shardsoftware.PirateGame.DEBUG_MODE;
+import static tk.shardsoftware.util.DebugUtil.DEBUG_MODE;
+import static tk.shardsoftware.util.DebugUtil.processingTimes;
+import static tk.shardsoftware.util.ResourceUtil.debugFont;
 import static tk.shardsoftware.util.ResourceUtil.font;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
@@ -15,6 +18,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 import tk.shardsoftware.World;
 import tk.shardsoftware.entity.EntityShip;
+import tk.shardsoftware.util.DebugUtil;
 
 /** Handles game controls, rendering, and logic */
 public class GameScreen implements Screen {
@@ -94,33 +98,49 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
+		long t1 = System.nanoTime();
 		controls();
 		logic();
+		processingTimes.put("Logic Time", System.nanoTime() - t1);
+
 		ScreenUtils.clear(0, 0, 0, 1); // clears the buffer
 		batch.setProjectionMatrix(camera.combined);
 		camera.update();
 		batch.begin();
+
+		t1 = System.nanoTime();
 		worldObj.worldMap.drawTilesInRange(camera, cameraSize, batch);
+		processingTimes.put("Map Draw Time", System.nanoTime() - t1);
+
+		t1 = System.nanoTime();
 		renderEntities();
+		processingTimes.put("Entity Draw Time", System.nanoTime() - t1);
 		batch.end();
 
+		t1 = System.nanoTime();
 		if (DEBUG_MODE) {
 			hudBatch.begin();
 			renderDebug(generateDebugStrings());
 			hudBatch.end();
 		}
+		processingTimes.put("Debug Draw Time", System.nanoTime() - t1);
 
 	}
 
 	private List<String> generateDebugStrings() {
-		return List.of("Current angle: " + player.getDirection(),
-				"Goal angle: " + goalAngle,
-				"FPS: " + Gdx.graphics.getFramesPerSecond());
+		ArrayList<String> lines = new ArrayList<String>();
+		lines.add("Current angle: " + player.getDirection());
+		lines.add("Goal angle: " + goalAngle);
+		lines.add("FPS: " + Gdx.graphics.getFramesPerSecond());
+		lines.add("");// blank line
+		lines.addAll(DebugUtil.processingTimePercentages());
+
+		return lines;
 	}
 
 	public void renderDebug(List<String> debugList) {
 		for (int i = 0; i < debugList.size(); i++) {
-			font.draw(hudBatch, debugList.get(i), 0,
+			debugFont.draw(hudBatch, debugList.get(i), 0,
 					Gdx.graphics.getHeight() - (font.getLineHeight()) * i);
 		}
 	}
