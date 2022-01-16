@@ -33,4 +33,22 @@ public class EntityShip extends Entity {
 		return this;
 	}
 
+	public void rotateTowardsGoal(float goalAngle) {
+		float angle = getDirection();
+		// float speed = getVelocity().len();
+
+		double rads = Math.toRadians(angle);
+		addVelocity((float) Math.cos(rads), (float) Math.sin(rads));
+
+		if (angle <= 90 && goalAngle >= 270) goalAngle -= 360;
+		if (angle >= 270 && goalAngle <= 90) goalAngle += 360;
+		if (angle > 180 && goalAngle < 90) goalAngle += 360;
+
+		if (angle > goalAngle) {
+			rotate(-2);
+		} else if (angle < goalAngle) {
+			rotate(2);
+		}
+	}
+
 }
