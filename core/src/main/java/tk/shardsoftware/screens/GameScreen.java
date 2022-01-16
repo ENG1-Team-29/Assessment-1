@@ -49,8 +49,6 @@ public class GameScreen implements Screen {
 
 	}
 
-	private int goalAngle;
-
 	/**
 	 * Calculates the goal angle of the player ship based on user input. If no
 	 * input is provided, the angle will be {@code -999} to easily detect when
@@ -72,6 +70,8 @@ public class GameScreen implements Screen {
 		boolean turnFlag = (verticalFlag && !vertCancel)
 				|| (horizontalFlag && !horizCancel);
 
+		boolean accelWithoutTurn = (vertCancel || horizCancel) && !turnFlag;
+
 		if (turnFlag) {
 			if ((vertCancel || !verticalFlag) && !horizCancel) {
 				goalAngle = left ? 180 : 0;
@@ -88,13 +88,18 @@ public class GameScreen implements Screen {
 			// ensure goal is >0
 			goalAngle = goalAngle < 0 ? goalAngle + 360 : goalAngle;
 		}
-		return goalAngle;
+		return accelWithoutTurn ? -333 : goalAngle;
 	}
+
+	private float goalAngle;
 
 	public void controls() {
 		goalAngle = calcGoalAngle();
 
-		if (goalAngle != -999) player.rotateTowardsGoal(goalAngle);
+		if (goalAngle != -999) {
+			goalAngle = (goalAngle == -333) ? player.getDirection() : goalAngle;
+			player.rotateTowardsGoal(goalAngle);
+		}
 
 		if (DEBUG_MODE && Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
 			player.getVelocity().setZero();

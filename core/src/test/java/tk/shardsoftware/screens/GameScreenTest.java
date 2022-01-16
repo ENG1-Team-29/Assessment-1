@@ -85,14 +85,14 @@ public class GameScreenTest {
 	public void testRotHorzCancel() {
 		rpi.keyPress(A);
 		rpi.keyPress(D);
-		assertEquals(-999, GameScreen.calcGoalAngle());
+		assertEquals(-333, GameScreen.calcGoalAngle());
 	}
 
 	@Test
 	public void testRotVertCancel() {
 		rpi.keyPress(W);
 		rpi.keyPress(S);
-		assertEquals(-999, GameScreen.calcGoalAngle());
+		assertEquals(-333, GameScreen.calcGoalAngle());
 	}
 
 	@Test
