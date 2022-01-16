@@ -75,10 +75,8 @@ public class GameScreen implements Screen {
 		if (turnFlag) {
 			if ((vertCancel || !verticalFlag) && !horizCancel) {
 				goalAngle = left ? 180 : 0;
-				System.out.println(1);
 			} else if ((horizCancel || !horizontalFlag) && !vertCancel) {
 				goalAngle = (up ? 90 : 0) + (down ? 270 : 0);
-				System.out.println(2);
 			} else if (horizontalFlag && verticalFlag) {
 				if (down && right) {
 					goalAngle = 315;
@@ -86,7 +84,6 @@ public class GameScreen implements Screen {
 					goalAngle = ((up ? 90 : 0) + (down ? 270 : 0)
 							+ (left ? 180 : 0)) / 2;
 				}
-				System.out.println(3);
 			}
 			// ensure goal is >0
 			goalAngle = goalAngle < 0 ? goalAngle + 360 : goalAngle;
@@ -170,7 +167,7 @@ public class GameScreen implements Screen {
 	private void logic() {
 		worldObj.update(Gdx.graphics.getDeltaTime());
 		player.getVelocity().scl(0.99f); // TODO: Improve water drag
-		player.setPosition(Vector2.Zero); // good for debugging
+		// player.setPosition(Vector2.Zero); // good for debugging
 	}
 
 	@Override
