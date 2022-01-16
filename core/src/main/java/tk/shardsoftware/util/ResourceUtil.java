@@ -24,7 +24,7 @@ public class ResourceUtil {
 	/** The game's asset manager */
 	private static AssetManager assetManager;
 
-	public static BitmapFont font;
+	public static BitmapFont font, debugFont;
 
 	/**
 	 * Load any required textures into memory
@@ -34,15 +34,24 @@ public class ResourceUtil {
 	 */
 	public static void init(AssetManager assets) {
 		assetManager = assets;
-		font = new BitmapFont(Gdx.files.internal("font/jagged-font.fnt"),
-				false);
-		font.setColor(Color.WHITE);
-		font.getData().setScale(0.2f);
-		nullTexture = generateNullTexture();
+		loadFonts();
 		addTexture("textures/tiles/noisy-waterdeep.png");
 		addTexture("textures/tiles/noisy-watershallow.png");
 		addTexture("textures/tiles/noisy-sand.png");
 		addTexture("textures/entity/playership.png");
+	}
+
+	/** Load the fonts to be used within the game */
+	private static void loadFonts() {
+		debugFont = new BitmapFont(Gdx.files.internal("font/cozette.fnt"),
+				false);
+		debugFont.setColor(Color.WHITE);
+		debugFont.getData().setScale(0.6f);
+		font = new BitmapFont(Gdx.files.internal("font/jagged-font.fnt"), // jagged-font
+				false);
+		font.setColor(Color.WHITE);
+		font.getData().setScale(0.2f);
+		nullTexture = generateNullTexture();
 	}
 
 	/**
