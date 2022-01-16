@@ -1,44 +1,59 @@
 package tk.shardsoftware;
 
-import static tk.shardsoftware.util.ResourceUtil.getTileTexture;
+import tk.shardsoftware.util.ResourceUtil;
 
 import java.util.HashMap;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * @author Hector Woods
+ * @author James Burnell
  */
 public class WorldMap {
 
-	Texture[] textures;
-	int tile_size; // squared
-	int width; // in terms of number of tiles. In terms of pixels is tile_width
-				// * tile_size.
-	int height; // ditto
-	// TODO: Change to 2D array for better performance/space?
-	HashMap<String, Integer> tileMap = new HashMap<String, Integer>();
+	/** The different tiles that can be in the world */
+	public enum TileType {
+		WATER_DEEP("noisy-waterdeep.png"), WATER_SHALLOW(
+				"noisy-watershallow.png"), SAND("noisy-sand.png");
+
+		private Texture tex;
+
+		private TileType(String texStr) {
+			this.tex = ResourceUtil.getTileTexture(texStr);
+		}
+
+		public Texture getTex() {
+			return tex;
+		}
+	}
+
+	/** The width and height of each tile */
+	int tile_size;
+	/** The width of the map in tiles */
+	int width;
+	/** The height of the map in tiles */
+	int height;
+	/** The placement of each tile within the world */
+	HashMap<Vector2, TileType> tileMap = new HashMap<Vector2, TileType>();
 
 	public WorldMap(int world_tile_size, int world_width, int world_height) {
 		this.tile_size = world_tile_size;
 		this.width = world_width;
 		this.height = world_height;
-
-		textures = new Texture[]{getTileTexture("noisy-waterdeep.png"),
-				getTileTexture("noisy-watershallow.png"),
-				getTileTexture("noisy-sand.png")};
 	}
 
 	public void buildWorld() {
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				String key = i + " " + j;
+				Vector2 key = new Vector2(i, j);
 				if (i % 3 == 0) {
-					this.tileMap.put(key, 0); // deep water
+					this.tileMap.put(key, TileType.WATER_DEEP); // deep water
 				} else {
-					this.tileMap.put(key, 2); // sand
+					this.tileMap.put(key, TileType.SAND); // sand
 				}
 
 			}
@@ -47,11 +62,8 @@ public class WorldMap {
 
 	public void drawTile(int x, int y, SpriteBatch batch) {
 		Texture texture = this.getTile(x, y);
-		if (texture != null) { // will be null if trying to draw a tile out of
-								// bounds
-			batch.draw(texture, x * this.tile_size, y * this.tile_size,
-					(float) this.tile_size, (float) this.tile_size);
-		}
+		batch.draw(texture, x * this.tile_size, y * this.tile_size,
+				this.tile_size, this.tile_size);
 	}
 
 	// TODO: Render once to off-screen buffer then render buffer to screen
@@ -72,9 +84,13 @@ public class WorldMap {
 		}
 	}
 
+	/**
+	 * Get the texture of the tile positioned at (x,y). If there is no tile
+	 * defined at this point, it will return {@link TileType#WATER_DEEP}.
+	 */
 	public Texture getTile(int x, int y) {
-		String key = x + " " + y;
-		Integer textureNum = tileMap.get(key);
-		return this.textures[textureNum];
+		TileType tile = tileMap.getOrDefault(new Vector2(x, y),
+				TileType.WATER_DEEP);
+		return tile.getTex();
 	}
 }
