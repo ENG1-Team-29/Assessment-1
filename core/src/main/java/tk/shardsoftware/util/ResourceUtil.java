@@ -39,19 +39,27 @@ public class ResourceUtil {
 		addTexture("textures/tiles/noisy-watershallow.png");
 		addTexture("textures/tiles/noisy-sand.png");
 		addTexture("textures/entity/playership.png");
+		nullTexture = generateNullTexture();
 	}
 
 	/** Load the fonts to be used within the game */
 	private static void loadFonts() {
-		debugFont = new BitmapFont(Gdx.files.internal("font/cozette.fnt"),
-				false);
-		debugFont.setColor(Color.WHITE);
-		debugFont.getData().setScale(0.6f);
-		font = new BitmapFont(Gdx.files.internal("font/jagged-font.fnt"), // jagged-font
-				false);
-		font.setColor(Color.WHITE);
-		font.getData().setScale(0.2f);
-		nullTexture = generateNullTexture();
+		if (Gdx.files.internal("font/cozette.fnt").exists()) {
+			debugFont = new BitmapFont(Gdx.files.internal("font/cozette.fnt"),
+					false);
+			debugFont.setColor(Color.WHITE);
+			debugFont.getData().setScale(0.5f);
+		} else {
+			Gdx.app.error("error", "Could not locate cozette font file");
+		}
+		if (Gdx.files.internal("font/jagged-font.fnt").exists()) {
+			font = new BitmapFont(Gdx.files.internal("font/jagged-font.fnt"), // jagged-font
+					false);
+			font.setColor(Color.WHITE);
+			font.getData().setScale(0.2f);
+		} else {
+			Gdx.app.error("error", "Could not locate jagged font file");
+		}
 	}
 
 	/**
@@ -72,7 +80,7 @@ public class ResourceUtil {
 	 * Generates the null texture which will be used if a texture cannot be
 	 * found
 	 */
-	private static Texture generateNullTexture() {
+	public static Texture generateNullTexture() {
 		Pixmap p = new Pixmap(2, 2, Pixmap.Format.RGB888);
 		p.setColor(Color.PURPLE);
 		p.drawPixel(0, 0);
