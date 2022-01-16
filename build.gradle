@@ -71,6 +71,10 @@ project(":core") {
 		testRuntime("org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}")
 		testRuntime("org.junit.platform:junit-platform-runner:${junitPlatformVersion}")
 		testRuntime("org.junit.platform:junit-platform-launcher:${junitPlatformVersion}")
+		
+		testRuntime("com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion")
+		testRuntime("com.badlogicgames.gdx:gdx:$gdxVersion")
+		testRuntime("com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop")
         
     }
 }
