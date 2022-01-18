@@ -55,6 +55,10 @@ public class GameScreen implements Screen {
 	 * the ship should not rotate. <br>
 	 * Calculates NESW directions, their diagonals, and any cancelled directions
 	 * due to contradictory inputs.
+	 * 
+	 * @return -999 if there is no input,<br>
+	 *         -333 if the input cancels out,<br>
+	 *         the angle the player should rotate towards otherwise.
 	 */
 	public static int calcGoalAngle() {
 		int goalAngle = -999;
@@ -93,14 +97,18 @@ public class GameScreen implements Screen {
 
 	private float goalAngle;
 
+	/** Handles user input */
 	public void controls() {
 		goalAngle = calcGoalAngle();
 
+		// goalAngle = -999 : No user input
+		// goalAngle = -333 : Player should not turn, but should accelerate
 		if (goalAngle != -999) {
 			goalAngle = (goalAngle == -333) ? player.getDirection() : goalAngle;
 			player.rotateTowardsGoal(goalAngle);
 		}
 
+		// Instantly halt the player movement
 		if (DEBUG_MODE && Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
 			player.getVelocity().setZero();
 		}
@@ -138,14 +146,16 @@ public class GameScreen implements Screen {
 
 	}
 
-	public void renderDebug(List<String> debugList) {
+	/** Renders the debug HUD */
+	private void renderDebug(List<String> debugList) {
 		for (int i = 0; i < debugList.size(); i++) {
 			debugFont.draw(hudBatch, debugList.get(i), 0,
 					Gdx.graphics.getHeight() - (font.getLineHeight()) * i);
 		}
 	}
 
-	public void renderEntities() {
+	/** Renders all visible entities */
+	private void renderEntities() {
 		worldObj.getEntities().forEach(e -> {
 			// batch.draw(e.getTexture(), e.getPosition().x, e.getPosition().y,
 			// e.getHitbox().width, e.getHitbox().height);
@@ -158,6 +168,7 @@ public class GameScreen implements Screen {
 		});
 	}
 
+	/** Generates the debug hud's displayed text */
 	private List<String> generateDebugStrings() {
 		ArrayList<String> lines = new ArrayList<String>();
 		lines.add("Current angle: " + player.getDirection());
@@ -169,10 +180,16 @@ public class GameScreen implements Screen {
 		return lines;
 	}
 
+	/** Any logical processing that needs to occur in the game */
 	private void logic() {
 		worldObj.update(Gdx.graphics.getDeltaTime());
 		player.getVelocity().scl(0.99f); // TODO: Improve water drag
 		// player.setPosition(Vector2.Zero); // good for debugging
+
+		// Center the camera to the player position
+		Vector2 center = player.getCenterPoint();
+		camera.position.x = center.x;
+		camera.position.y = center.y;
 	}
 
 	@Override

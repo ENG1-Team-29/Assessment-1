@@ -98,6 +98,12 @@ public abstract class Entity {
 		}
 	}
 
+	/** Returns the center point of the entity */
+	public Vector2 getCenterPoint() {
+		return new Vector2(positionVec.x + hitbox.width / 2f,
+				positionVec.y + hitbox.height / 2f);
+	}
+
 	public float getDirection() {
 		return direction;
 	}
