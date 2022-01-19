@@ -14,6 +14,8 @@ import tk.shardsoftware.util.ResourceUtil;
  */
 public abstract class Entity {
 
+	/** The maximum speed the entity is allowed to travel at */
+	protected float maximumSpeed = 250f;
 	/**
 	 * The direction the entity is facing in degrees. Note that this can be
 	 * different than the direction it is moving.
@@ -70,6 +72,10 @@ public abstract class Entity {
 	 *            the time between the previous update and this one
 	 */
 	public void update(float delta) {
+		// prevent entity from traveling faster than the maximum speed
+		if (velocityVec.len2() > maximumSpeed * maximumSpeed) {
+			velocityVec.setLength(maximumSpeed);
+		}
 		stepPosition(delta);
 	}
 
@@ -175,6 +181,22 @@ public abstract class Entity {
 	public void setPosition(float x, float y) {
 		this.positionVec.set(x, y);
 		hitbox.setPosition(positionVec);
+	}
+
+	/**
+	 * Set the maximum speed of the entity
+	 * 
+	 * @param speed
+	 *            the maximum speed
+	 * @return This entity object for easy building
+	 */
+	public Entity setMaxSpeed(float speed) {
+		this.maximumSpeed = speed;
+		return this;
+	}
+
+	public float getMaxSpeed() {
+		return maximumSpeed;
 	}
 
 }

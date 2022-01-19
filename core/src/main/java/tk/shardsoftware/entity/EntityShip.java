@@ -14,6 +14,7 @@ public class EntityShip extends Entity {
 	public EntityShip(World worldObj) {
 		super(worldObj, 0, 0, 50, 50);
 		this.setTexture("textures/entity/playership.png");
+		this.setMaxSpeed(100);
 	}
 
 	public void update(float delta) {
