@@ -2,6 +2,7 @@ package tk.shardsoftware.util;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,8 +19,12 @@ public class ResourceUtil {
 	private ResourceUtil() {
 	}
 
-	/** A basic texture to be used when other textures are unavailable */
+	/**
+	 * A basic texture to be used when other textures are unavailable/missing
+	 */
 	public static Texture nullTexture;
+	/** A basic sound to be used when other sounds are unavailable/missing */
+	public static Sound nullSound;
 
 	/** The game's asset manager */
 	private static AssetManager assetManager;
@@ -40,6 +45,11 @@ public class ResourceUtil {
 		addTexture("textures/tiles/noisy-sand.png");
 		addTexture("textures/entity/playership.png");
 		nullTexture = generateNullTexture();
+
+		addSound("audio/entity/boat-water-movement.wav");
+		addSound("audio/ambient/ocean.wav");
+		nullSound = Gdx.audio
+				.newSound(Gdx.files.internal("audio/nullsound.mp3"));
 	}
 
 	/** Load the fonts to be used within the game */
@@ -77,6 +87,20 @@ public class ResourceUtil {
 	}
 
 	/**
+	 * @return {@code true} if added sound, {@code false} if sound was already
+	 *         in cache
+	 */
+	private static boolean addSound(String sound) {
+		if (assetManager.contains(sound)) return false;
+		if (!Gdx.files.internal(sound).exists()) {
+			Gdx.app.error("error", "Could not locate sound file: " + sound);
+			return false;
+		}
+		assetManager.load(sound, Sound.class);
+		return true;
+	}
+
+	/**
 	 * Generates the null texture which will be used if a texture cannot be
 	 * found
 	 */
@@ -106,6 +130,23 @@ public class ResourceUtil {
 		}
 		return assetManager.contains(texName) ? assetManager.get(texName)
 				: nullTexture;
+	}
+
+	/**
+	 * Select a sound according to its filename.
+	 * 
+	 * @param soundName
+	 *            The filename/path of the sound
+	 * @return The pre-cached Sound object
+	 */
+	public static Sound getSound(String soundName) {
+		if (!assetManager.isLoaded(soundName)) {
+			Gdx.app.error("warn", String
+					.format("sound %s is not loaded, using null", soundName));
+			return nullSound;
+		}
+		return assetManager.contains(soundName) ? assetManager.get(soundName)
+				: nullSound;
 	}
 
 	/**
