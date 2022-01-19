@@ -73,9 +73,7 @@ public abstract class Entity {
 	 */
 	public void update(float delta) {
 		// prevent entity from traveling faster than the maximum speed
-		if (velocityVec.len2() > maximumSpeed * maximumSpeed) {
-			velocityVec.setLength(maximumSpeed);
-		}
+		velocityVec.limit(maximumSpeed);
 		stepPosition(delta);
 	}
 
