@@ -14,6 +14,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import tk.shardsoftware.World;
@@ -46,7 +47,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void show() {
-
+		
 	}
 
 	/**
@@ -126,7 +127,6 @@ public class GameScreen implements Screen {
 
 		ScreenUtils.clear(0, 0, 0, 1); // clears the buffer
 		batch.setProjectionMatrix(camera.combined);
-		camera.update();
 		batch.begin();
 
 		DebugUtil.saveProcessTime("Map Draw Time", () -> {
@@ -140,6 +140,7 @@ public class GameScreen implements Screen {
 			if (DEBUG_MODE) {
 				hudBatch.begin();
 				renderDebug(generateDebugStrings());
+				debugFont.draw(hudBatch, "@", 1280 / 2 - 5, 720 / 2 + 5);
 				hudBatch.end();
 			}
 		});
@@ -186,10 +187,25 @@ public class GameScreen implements Screen {
 		player.getVelocity().scl(0.99f); // TODO: Improve water drag
 		// player.setPosition(Vector2.Zero); // good for debugging
 
-		// Center the camera to the player position
-		Vector2 center = player.getCenterPoint();
-		camera.position.x = center.x;
-		camera.position.y = center.y;
+		lerpCamera(player.getCenterPoint(), 0.04f);
+	}
+
+	/**
+	 * Moves the camera smoothly to the target position
+	 * 
+	 * @param target
+	 *            the position the camera should move to
+	 * @param speed
+	 *            the speed ratio the camera moves by.<br>
+	 *            In range [0,1], where 0 is no movement and 1 is instant
+	 *            movement
+	 */
+	private void lerpCamera(Vector2 target, float speed) {
+		Vector3 camPos = camera.position;
+		camPos.x = camera.position.x + (target.x - camera.position.x) * speed;
+		camPos.y = camera.position.y + (target.y - camera.position.y) * speed;
+		camera.position.set(camPos);
+		camera.update();
 	}
 
 	@Override
