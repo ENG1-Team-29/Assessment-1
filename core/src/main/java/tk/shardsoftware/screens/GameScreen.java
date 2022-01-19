@@ -172,8 +172,9 @@ public class GameScreen implements Screen {
 	/** Generates the debug hud's displayed text */
 	private List<String> generateDebugStrings() {
 		ArrayList<String> lines = new ArrayList<String>();
-		lines.add("Current angle: " + player.getDirection());
-		lines.add("Goal angle: " + goalAngle);
+		lines.add(
+				String.format("Current angle: %5.1f", player.getDirection()));
+		lines.add(String.format("Goal angle: %6.1f", goalAngle));
 		lines.add("FPS: " + Gdx.graphics.getFramesPerSecond());
 		lines.add("");// blank line
 		lines.addAll(DebugUtil.processingTimePercentages());
