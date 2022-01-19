@@ -11,18 +11,27 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import tk.shardsoftware.PirateGame;
 import tk.shardsoftware.World;
 import tk.shardsoftware.entity.EntityShip;
 import tk.shardsoftware.util.DebugUtil;
+import tk.shardsoftware.util.ResourceUtil;
 
 /** Handles game controls, rendering, and logic */
 public class GameScreen implements Screen {
+
+	/** The sound played as the boat moves through the water */
+	public Sound boatWaterMovement;
+	/** Ambient ocean sounds */
+	public Sound ambientOcean;
+	private long soundIdBoatMovement;
 
 	private SpriteBatch batch, hudBatch;
 	private OrthographicCamera camera;
@@ -43,11 +52,16 @@ public class GameScreen implements Screen {
 		player = new EntityShip(worldObj);
 
 		worldObj.getEntities().add(player);
+
+		boatWaterMovement = ResourceUtil
+				.getSound("audio/entity/boat-water-movement.wav");
+		ambientOcean = ResourceUtil.getSound("audio/ambient/ocean.wav");
 	}
 
 	@Override
 	public void show() {
-		
+		soundIdBoatMovement = boatWaterMovement.loop(0);
+		ambientOcean.loop(PirateGame.gameVolume);
 	}
 
 	/**
@@ -172,8 +186,7 @@ public class GameScreen implements Screen {
 	/** Generates the debug hud's displayed text */
 	private List<String> generateDebugStrings() {
 		ArrayList<String> lines = new ArrayList<String>();
-		lines.add(
-				String.format("Current angle: %5.1f", player.getDirection()));
+		lines.add(String.format("Current angle: %5.1f", player.getDirection()));
 		lines.add(String.format("Goal angle: %6.1f", goalAngle));
 		lines.add("FPS: " + Gdx.graphics.getFramesPerSecond());
 		lines.add("");// blank line
@@ -186,9 +199,16 @@ public class GameScreen implements Screen {
 	private void logic() {
 		worldObj.update(Gdx.graphics.getDeltaTime());
 		player.getVelocity().scl(0.99f); // TODO: Improve water drag
-		// player.setPosition(Vector2.Zero); // good for debugging
 
 		lerpCamera(player.getCenterPoint(), 0.04f);
+
+		/* Sound Calculations */
+
+		// if the game is muted, skip processing
+		if (PirateGame.gameVolume == 0) return;
+		float vol = (player.getVelocity().len2()
+				/ (player.getMaxSpeed() * player.getMaxSpeed()));
+		boatWaterMovement.setVolume(soundIdBoatMovement, vol);
 	}
 
 	/**
@@ -230,6 +250,9 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 		batch.dispose();
+		hudBatch.dispose();
+		boatWaterMovement.dispose();
+		ambientOcean.dispose();
 	}
 
 }
