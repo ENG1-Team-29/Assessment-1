@@ -55,7 +55,7 @@ public class WorldMap {
 			for (int j = 0; j < height; j++) {
 				Vector2 key = new Vector2(i, j);
 
-				float n = Perlin.Noise(i, j);
+				float n = Perlin.noise(i, j);
 
 				if (n > 0.5) {
 					this.tileMap.put(key, TileType.SAND); // sand
@@ -187,12 +187,12 @@ public class WorldMap {
 		int octaves;
 		Vector2[][] gradients;
 
-		void PopulateGradientMatrix(int size) {
-			/*
-			 * We generate gradients at each point in advance so that we don't
-			 * have to calculate them multiple times. Gradients are random so we
-			 * get a new map every time we load the game!
-			 */
+		/**
+		 * We generate gradients at each point in advance so that we don't have
+		 * to calculate them multiple times. Gradients are random so we get a
+		 * new map every time we load the game!
+		 */
+		void populateGradientMatrix(int size) {
 			for (int i = 0; i < size + 1; i++) {
 				for (int j = 0; j < size + 1; j++) {
 					Vector2 v = new Vector2();
@@ -202,79 +202,88 @@ public class WorldMap {
 			}
 		}
 
-		float Lerp(float x, float y, float i) {
-			return x + i * (y - x);
+		float lerp(float t, float a1, float a2) {
+			return a1 + t * (a2 - a1);
 		}
 
-		float GenerateNoiseValue(float x, float y) {
+		Vector2 getConstantVector(Vector2 v) {
+			if (v.x < 0 && v.y < 0) return new Vector2(-1, -1);
+			if (v.x > 0 && v.y < 0) return new Vector2(1, -1);
+			if (v.x < 0 && v.y > 0) return new Vector2(-1, 1);
+			return new Vector2(1, 1);
+		}
+
+		float generateNoiseValue(float x, float y) {
 			// Point (x,y)
 			Vector2 p = new Vector2(x, y);
 
 			// Gradient Vector points
-			int x0 = (int) x; // round down
-			int y0 = (int) y;
-			int x1 = x0 + 1;
-			int y1 = x0 + 1;
+			int X = (int) Math.floor(x); // round down
+			int Y = (int) Math.floor(y);
+			float yf = x - X;
+			float xf = x - X;
 
 			// Gradient Vectors
-			Vector2 g00 = this.gradients[x0][y0];
-			Vector2 g01 = this.gradients[x0][y1];
-			Vector2 g10 = this.gradients[x1][y0];
-			Vector2 g11 = this.gradients[x1][y1];
+			Vector2 g00 = this.gradients[X + 1][Y + 1];
+			Vector2 g01 = this.gradients[X][Y + 1];
+			Vector2 g10 = this.gradients[X + 1][Y];
+			Vector2 g11 = this.gradients[X][Y];
 
 			// Distance Vectors
-			Vector2 d00 = new Vector2(x - x0, y - y0);
-			Vector2 d01 = new Vector2(x - x0, y - y1);
-			Vector2 d10 = new Vector2(x - x1, y - y0);
-			Vector2 d11 = new Vector2(x - x1, y - y1);
+			Vector2 d00 = new Vector2(xf - 1, yf - 1);
+			Vector2 d01 = new Vector2(xf, yf - 1);
+			Vector2 d10 = new Vector2(xf - 1, yf);
+			Vector2 d11 = new Vector2(xf, yf);
 
 			// Dot products
-			float dP00 = d00.dot(g00);
-			float dP01 = d01.dot(g01);
-			float dP10 = d10.dot(g10);
-			float dP11 = d11.dot(g11);
+			float dP00 = d00.dot(getConstantVector(g00));
+			float dP01 = d01.dot(getConstantVector(g01));
+			float dP10 = d10.dot(getConstantVector(g10));
+			float dP11 = d11.dot(getConstantVector(g11));
 
 			// Linearly-Interpolate between our dot products and (x,y) relative
 			// to d00 to get a weighted average
-			float dX = x - (float) x0; // This vector represents how where (x,y)
-										// is relative to the other points. (or
-										// (x,y) relative to d00)
-			float dY = y - (float) y0; // This is what we will interpolate by.
+			float u = x - X; // This vector represents how where (x,y)
+								// is relative to the other points. (or
+								// (x,y) relative to d00)
+			float v = y - Y; // This is what we will interpolate by.
 
 			// dX = (6 * (float)Math.pow(dX,5)) - (15*(float)Math.pow(dX,4) +
 			// (10*(float)Math.pow(dX,3)));
 			// dY = (6 * (float)Math.pow(dY,5)) - (15*(float)Math.pow(dY,4) +
 			// (10*(float)Math.pow(dY,3)));
 
-			float l1 = Lerp(dP00, dP01, dX);
-			float l2 = Lerp(dP10, dP11, dX);
-			float n = Lerp(l1, l2, dY);// final weighted average of (x,y)
+			float l1 = lerp(u, dP00, dP01);
+			float l2 = lerp(u, dP10, dP11);
+			float n = lerp(v, l1, l2);// final weighted average of (x,y)
 										// relative to d00 and all dot products
 
 			return n;
 		}
-		public float Noise(float x, float y) {
-			/**
-			 * This function implements the concept of multi-layered noise. The
-			 * function 'layers' multiple noise functions on top of each other
-			 * to allow for small changes. This is the main function to call
-			 * with the PerlinNoise class
-			 */
+
+		/**
+		 * This function implements the concept of multi-layered noise. The
+		 * function 'layers' multiple noise functions on top of each other to
+		 * allow for small changes. This is the main function to call with the
+		 * PerlinNoise class
+		 */
+		public float noise(float x, float y) {
 			float n = 0;
 			float amp = this.amplitude;
 			float freq = this.frequency;
 
 			for (int i = 0; i < this.octaves; i++) {
-				float nV = GenerateNoiseValue(x / this.scale * frequency,
-						y / this.scale * frequency);
+				float nV = generateNoiseValue(x / this.scale * freq,
+						y / this.scale * freq);
 				n = n + (nV * amp);
 				amp = amp * this.persistence;
 				freq = freq * this.lacunarity;
 			}
-
-			System.out.println(n);
+			// n = (n + 1) / 2f;
+			// System.out.println(n);
 			return n;
 		}
+
 		public PerlinNoise(float amplitude, float scale, int octaves,
 				float frequency, float lacunarity, float persistence,
 				int size) {
@@ -285,7 +294,7 @@ public class WorldMap {
 			this.persistence = persistence;
 			this.scale = scale;
 			this.gradients = new Vector2[size + 1][size + 1];
-			PopulateGradientMatrix(size);
+			populateGradientMatrix(size);
 		}
 	}
 }
