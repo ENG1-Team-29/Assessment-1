@@ -12,8 +12,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -34,6 +37,7 @@ public class GameScreen implements Screen {
 	private long soundIdBoatMovement;
 
 	private SpriteBatch batch, hudBatch;
+	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera camera;
 	// width and length of the camera's viewport.
 	private int cameraSize = (int) (720 / 2);
@@ -46,6 +50,7 @@ public class GameScreen implements Screen {
 	public GameScreen(AssetManager assets) {
 		batch = new SpriteBatch();
 		hudBatch = new SpriteBatch();
+		shapeRenderer = new ShapeRenderer();
 		camera = new OrthographicCamera(cameraSize * 16f / 9f, cameraSize);
 		worldObj = new World();
 
@@ -110,22 +115,37 @@ public class GameScreen implements Screen {
 		return accelWithoutTurn ? -333 : goalAngle;
 	}
 
+	/** Used to display the goal angle in the debug screen */
 	private float goalAngle;
+	/**
+	 * Used to modify the max FPS during gameplay. Useful for debugging delta
+	 * issues.
+	 */
+	private int targetFPS = 60;
 
 	/** Handles user input */
-	public void controls() {
+	public void controls(float delta) {
 		goalAngle = calcGoalAngle();
 
 		// goalAngle = -999 : No user input
 		// goalAngle = -333 : Player should not turn, but should accelerate
 		if (goalAngle != -999) {
 			goalAngle = (goalAngle == -333) ? player.getDirection() : goalAngle;
-			player.rotateTowardsGoal(goalAngle);
+			player.rotateTowardsGoal(goalAngle, delta);
 		}
 
 		// Instantly halt the player movement
 		if (DEBUG_MODE && Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
 			player.getVelocity().setZero();
+		}
+
+		if (DebugUtil.DEBUG_MODE) {
+			if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_ADD)) {
+				Gdx.graphics.setForegroundFPS(targetFPS *= 2);
+			}
+			if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_SUBTRACT)) {
+				Gdx.graphics.setForegroundFPS(targetFPS /= 2);
+			}
 		}
 		// player.setPosition(0, 0);
 		// System.out.println(player.getVelocity());
@@ -135,12 +155,13 @@ public class GameScreen implements Screen {
 	@Override
 	public void render(float delta) {
 		DebugUtil.saveProcessTime("Logic Time", () -> {
-			controls();
-			logic();
+			controls(delta);
+			logic(delta);
 		});
 
 		ScreenUtils.clear(0, 0, 0, 1); // clears the buffer
 		batch.setProjectionMatrix(camera.combined);
+		shapeRenderer.setProjectionMatrix(camera.combined);
 		batch.begin();
 
 		DebugUtil.saveProcessTime("Map Draw Time", () -> {
@@ -150,15 +171,29 @@ public class GameScreen implements Screen {
 
 		batch.end();
 
-		DebugUtil.saveProcessTime("Debug Draw Time", () -> {
-			if (DEBUG_MODE) {
+		if (DEBUG_MODE) {
+			DebugUtil.saveProcessTime("Hitbox Render", () -> renderHitboxes());
+
+			DebugUtil.saveProcessTime("Debug Draw Time", () -> {
 				hudBatch.begin();
 				renderDebug(generateDebugStrings());
 				debugFont.draw(hudBatch, "@", 1280 / 2 - 5, 720 / 2 + 5);
 				hudBatch.end();
-			}
-		});
+			});
+		}
+	}
 
+	/** Renders the hitbox outline for all entities */
+	private void renderHitboxes() {
+		batch.begin();
+		shapeRenderer.begin(ShapeType.Line);
+		worldObj.getEntities().forEach(e -> {
+			shapeRenderer.setColor(Color.WHITE);
+			shapeRenderer.rect(e.getPosition().x, e.getPosition().y,
+					e.getHitbox().width, e.getHitbox().height);
+		});
+		shapeRenderer.end();
+		batch.end();
 	}
 
 	/** Renders the debug HUD */
@@ -188,6 +223,7 @@ public class GameScreen implements Screen {
 		ArrayList<String> lines = new ArrayList<String>();
 		lines.add(String.format("Current angle: %5.1f", player.getDirection()));
 		lines.add(String.format("Goal angle: %6.1f", goalAngle));
+		lines.add(String.format("Speed %4.1fp/s", player.getVelocity().len()));
 		lines.add("FPS: " + Gdx.graphics.getFramesPerSecond());
 		lines.add("");// blank line
 		lines.addAll(DebugUtil.processingTimePercentages());
@@ -196,11 +232,10 @@ public class GameScreen implements Screen {
 	}
 
 	/** Any logical processing that needs to occur in the game */
-	private void logic() {
-		worldObj.update(Gdx.graphics.getDeltaTime());
-		player.getVelocity().scl(0.99f); // TODO: Improve water drag
+	private void logic(float delta) {
+		worldObj.update(delta);
 
-		lerpCamera(player.getCenterPoint(), 0.04f);
+		lerpCamera(player.getCenterPoint(), 0.04f, delta);
 
 		/* Sound Calculations */
 
@@ -221,10 +256,13 @@ public class GameScreen implements Screen {
 	 *            In range [0,1], where 0 is no movement and 1 is instant
 	 *            movement
 	 */
-	private void lerpCamera(Vector2 target, float speed) {
+	private void lerpCamera(Vector2 target, float speed, float delta) {
+		delta *= 60; // standardize for 60fps
 		Vector3 camPos = camera.position;
-		camPos.x = camera.position.x + (target.x - camera.position.x) * speed;
-		camPos.y = camera.position.y + (target.y - camera.position.y) * speed;
+		camPos.x = camera.position.x
+				+ (target.x - camera.position.x) * speed * delta;
+		camPos.y = camera.position.y
+				+ (target.y - camera.position.y) * speed * delta;
 		camera.position.set(camPos);
 		camera.update();
 	}
