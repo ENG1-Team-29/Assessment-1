@@ -6,8 +6,6 @@ import static tk.shardsoftware.util.ResourceUtil.font;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -16,12 +14,15 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 import tk.shardsoftware.PirateGame;
 import tk.shardsoftware.World;
@@ -41,26 +42,28 @@ public class GameScreen implements Screen {
 	private SpriteBatch batch, hudBatch;
 	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera camera;
-	// width and length of the camera's viewport.
-	private int cameraSize = (int) (720 / 2);
 	private int DEFAULT_CAMERA_ZOOM = 1;
 
 	private World worldObj;
 
 	/** The ship object that the player will control */
 	private EntityShip player;
+
+	/** The number of points the player has scored */
 	public int points = 0;
+	/** The text to be display the points */
+	public GlyphLayout pointTxtLayout;
 
 	public GameScreen(AssetManager assets) {
 		batch = new SpriteBatch();
 		hudBatch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
-		camera = new OrthographicCamera(cameraSize * 16f / 9f, cameraSize);
+		camera = new OrthographicCamera(360 * 16f / 9f, 360);
 		camera.zoom = DEFAULT_CAMERA_ZOOM;
+		pointTxtLayout = new GlyphLayout();
+
 		worldObj = new World();
-
 		player = new EntityShip(worldObj);
-
 		worldObj.getEntities().add(player);
 
 		boatWaterMovement = ResourceUtil
@@ -72,6 +75,13 @@ public class GameScreen implements Screen {
 	public void show() {
 		soundIdBoatMovement = boatWaterMovement.loop(0);
 		ambientOcean.loop(PirateGame.gameVolume);
+
+		// Increase the points by 1 every second
+		Timer.schedule(new Task() {
+			public void run() {
+				pointTxtLayout.setText(font, "Points: " + (++points));
+			}
+		}, 1, 1);
 	}
 
 	/**
@@ -157,8 +167,6 @@ public class GameScreen implements Screen {
 		// System.out.println(player.getDirection());
 	}
 
-	float oneSecondTimer = 0; // Timer for incrementing points (1 per second)
-
 	@Override
 	public void render(float delta) {
 		DebugUtil.saveProcessTime("Logic Time", () -> {
@@ -166,38 +174,38 @@ public class GameScreen implements Screen {
 			logic(delta);
 		});
 
-		oneSecondTimer = oneSecondTimer + delta;
-		if (oneSecondTimer > 1) {
-			points = points + 1; // Increment points
-			oneSecondTimer = 0;
-		}
-
 		ScreenUtils.clear(0, 0, 0, 1); // clears the buffer
 		batch.setProjectionMatrix(camera.combined);
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		batch.begin();
 
 		DebugUtil.saveProcessTime("Map Draw Time", () -> {
-			worldObj.worldMap.drawTilesInRange(camera, cameraSize, batch);
+			worldObj.worldMap.drawTilesInRange(camera, batch);
 		});
 		DebugUtil.saveProcessTime("Entity Draw Time", () -> renderEntities());
 
 		batch.end();
 
-		if (DEBUG_MODE) {
+		if (DEBUG_MODE)
 			DebugUtil.saveProcessTime("Hitbox Render", () -> renderHitboxes());
 
-			DebugUtil.saveProcessTime("Debug Draw Time", () -> {
-				hudBatch.begin();
-				renderDebug(generateDebugStrings());
-				debugFont.draw(hudBatch, "Points: " + Integer.toString(points),
-						1280 - 100, 700); // This should probably use relative
-											// co-ordinates to account for
-											// different screen sizes
-				debugFont.draw(hudBatch, "@", 1280 / 2 - 5, 720 / 2 + 5);
-				hudBatch.end();
-			});
-		}
+		hudBatch.begin();
+
+		if (DEBUG_MODE) DebugUtil.saveProcessTime("Debug HUD Draw Time", () -> {
+
+			renderDebug(generateDebugStrings());
+			debugFont.draw(hudBatch, "@", 1280 / 2 - 5, 720 / 2 + 5);
+
+		});
+		DebugUtil.saveProcessTime("HUD Draw Time", () -> {
+			// TODO: Change to allow for different screen sizes
+			font.draw(hudBatch, pointTxtLayout,
+					Gdx.graphics.getWidth() - pointTxtLayout.width - 20,
+					Gdx.graphics.getHeight() - 20);
+		});
+
+		hudBatch.end();
+
 	}
 
 	/** Renders the hitbox outline for all entities */
@@ -282,19 +290,20 @@ public class GameScreen implements Screen {
 		camPos.y = camera.position.y
 				+ (target.y - camera.position.y) * speed * delta;
 
-		/** Confine the camera to the bounds of the map **/
-		if (camPos.x < cameraSize - 30) {
-			camPos.x = cameraSize - 30;
-		}
-		if (camPos.x > worldObj.world_width * worldObj.world_tile_size - 320) {
-			camPos.x = worldObj.world_width * worldObj.world_tile_size - 320;
-		}
-		if (camPos.y < cameraSize - 170) {
-			camPos.y = cameraSize - 170;
-		}
-		if (camPos.y > worldObj.world_height * worldObj.world_tile_size - 180) {
-			camPos.y = worldObj.world_height * worldObj.world_tile_size - 180;
-		}
+		/* Confine the camera to the bounds of the map */
+
+		float widthMaxLimit = World.WORLD_WIDTH * World.WORLD_TILE_SIZE
+				- camera.viewportWidth / 2;
+		float heightMaxLimit = World.WORLD_HEIGHT * World.WORLD_TILE_SIZE
+				- camera.viewportHeight / 2;
+		float widthMinLimit = camera.viewportWidth / 2 + World.WORLD_TILE_SIZE;
+		float heightMinLimit = camera.viewportHeight / 2
+				+ World.WORLD_TILE_SIZE;
+
+		if (camPos.x < widthMinLimit) camPos.x = widthMinLimit;
+		if (camPos.x > widthMaxLimit) camPos.x = widthMaxLimit;
+		if (camPos.y < heightMinLimit) camPos.y = heightMinLimit;
+		if (camPos.y > heightMaxLimit) camPos.y = heightMaxLimit;
 
 		camera.position.set(camPos);
 		camera.update();
@@ -302,6 +311,12 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
+		camera.setToOrtho(false, width * 4, height * 4);
+		camera.update();
+		batch.setProjectionMatrix(camera.combined);
+		// TODO: Add hud scaling
+		// hudBatch.setProjectionMatrix();
+		shapeRenderer.setProjectionMatrix(camera.combined);
 	}
 
 	@Override
@@ -322,8 +337,7 @@ public class GameScreen implements Screen {
 	public void dispose() {
 		batch.dispose();
 		hudBatch.dispose();
-		boatWaterMovement.dispose();
-		ambientOcean.dispose();
+		shapeRenderer.dispose();
 	}
 
 }

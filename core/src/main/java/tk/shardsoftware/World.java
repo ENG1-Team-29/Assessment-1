@@ -9,26 +9,27 @@ import tk.shardsoftware.entity.Entity;
 /** @author James Burnell */
 public class World {
 
+	// Set this to false for faster debugging
+	public static final boolean BUILD_MAP = true;
+
+	public static final int WORLD_WIDTH = 500;
+	public static final int WORLD_HEIGHT = 300;
+	public static final int WORLD_TILE_SIZE = 10;
+
 	/** The collection of entities that are in the world */
 	private List<Entity> entities;
 
 	/** The map of the world */
 	public WorldMap worldMap;
-	public boolean BUILD_MAP = true; //Set this to false for faster debugging
-	private long gameTicks = 0;
-	public int world_width = 1000;
-	public int world_height = 1000;
-	public int world_tile_size = 1;
-
 
 	public World() {
 		entities = new ArrayList<Entity>();
-		
-		worldMap = new WorldMap(world_tile_size, world_width, world_height);
+
+		worldMap = new WorldMap(WORLD_TILE_SIZE, WORLD_WIDTH, WORLD_HEIGHT);
 		if (BUILD_MAP) {
 			System.out.println("Building World");
 			worldMap.buildWorld();
-		}else{
+		} else {
 
 		}
 	}
@@ -40,7 +41,6 @@ public class World {
 	 *            the time between the previous update and this one
 	 */
 	public void update(float delta) {
-		gameTicks++;
 		updateEntities(delta);
 	}
 
@@ -55,13 +55,6 @@ public class World {
 			e.update(delta);
 			if (e.remove) iter.remove();
 		}
-	}
-
-	/**
-	 * The number of logical updates there have been since the start of the game
-	 */
-	public long getGameTicks() {
-		return gameTicks;
 	}
 
 	/** The list of entities contained within the world */
