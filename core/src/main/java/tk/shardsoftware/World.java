@@ -16,9 +16,9 @@ public class World {
 	public WorldMap worldMap;
 	public boolean BUILD_MAP = true; //Set this to false for faster debugging
 	private long gameTicks = 0;
-	public int world_width = 100;
-	public int world_height = 100;
-	public int world_tile_size = 10;
+	public static final int world_width = 200;
+	public static final int world_height = 200;
+	public static final int world_tile_size = 10;
 
 
 	public World() {
