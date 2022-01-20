@@ -49,7 +49,7 @@ public class WorldMap {
 
 	public void buildWorld() {
 		// choosing these values is more of an art than a science
-		PerlinNoise Perlin = new PerlinNoise(1, 50, 1, 1, 1, 0.3f, width, height);
+		PerlinNoise Perlin = new PerlinNoise(1, 50, 8, 1, 1, 0.3f, width, height);
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				Vector2 key = new Vector2(i, j);
@@ -227,7 +227,6 @@ public class WorldMap {
 			float xf = x - X;
 			float yf = y - Y;
 
-			System.out.println(X + " | " + Y);
 
 			// Gradient Vectors
 			Vector2 topRightGrad = this.gradients[X + 1][Y + 1];
@@ -235,12 +234,6 @@ public class WorldMap {
 			Vector2 btmRightGrad = this.gradients[X + 1][Y];
 			Vector2 btmLeftGrad = this.gradients[X][Y];
 
-			// if (X == 0)
-			// System.out.println(
-			// gradients[X + 1][Y] + " | " + gradients[X + 1][Y + 1]);
-			// if (X == 1)
-			// System.out
-			// .println(gradients[X][Y] + " # " + gradients[X][Y + 1]);
 
 			// Distance Vectors
 			Vector2 topRightDist = new Vector2(1 - xf, 1 - yf);
@@ -260,10 +253,6 @@ public class WorldMap {
 									// (x,y) relative to d00)
 			float v = ease(y - Y); // This is what we will interpolate by.
 
-			// dX = (6 * (float)Math.pow(dX,5)) - (15*(float)Math.pow(dX,4) +
-			// (10*(float)Math.pow(dX,3)));
-			// dY = (6 * (float)Math.pow(dY,5)) - (15*(float)Math.pow(dY,4) +
-			// (10*(float)Math.pow(dY,3)));
 
 			float l1 = lerp(u, dPtopLeft, dPtopRight);
 			float l2 = lerp(u, dPbtmLeft, dPbtmRight);
@@ -289,8 +278,6 @@ public class WorldMap {
 				amp = amp * this.persistence;
 				freq = freq * this.lacunarity;
 			}
-			// n = (n + 1) / 2f;
-			// System.out.println(n);
 			return n;
 		}
 
