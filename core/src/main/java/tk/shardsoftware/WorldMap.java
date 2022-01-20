@@ -5,12 +5,14 @@ import tk.shardsoftware.util.ResourceUtil;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.LinkedList;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ParticleControllerInfluencer;
 import com.badlogic.gdx.math.Vector2;
+
 
 /**
  * @author Hector Woods
@@ -50,19 +52,20 @@ public class WorldMap {
 	}
 
 	public void buildWorld() {
-		PerlinNoise Perlin = new PerlinNoise(1,60,8,1,1,0.3f,1000); //choosing these values is more of an art than a science
+		PerlinNoise Perlin = new PerlinNoise(1,1000,1,1,1,0.3f,1000); //choosing these values is more of an art than a science
+		//VoronoiNoise Voronoi = new VoronoiNoise(1000,this.width, this.height, 100);
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				Vector2 key = new Vector2(i, j);
 
-				float n = Perlin.Noise(i,j);
+				double n = Perlin.Noise(i,j);
 
-				if(n > 0.5){
-					this.tileMap.put(key, TileType.SAND); // sand
-				}else if (n > 0.3){
-					this.tileMap.put(key, TileType.WATER_SHALLOW);
-				}
 
+					if(n > 0.2){
+						this.tileMap.put(key, TileType.SAND); // sand
+					}else if (n > 0.3){
+						this.tileMap.put(key, TileType.SAND);
+					}
 			}
 		}
 	}
@@ -106,59 +109,82 @@ public class WorldMap {
 
 
 	public static class VoronoiNoise{
-		int numPoints;
+		int numIslands;
 		int width;
 		int height;
 
-		double maxStart = 1;
+		double maxStart = 1.5;
 		double minStart = 0.95;
 
-		double minStep = -0.05;
-		double maxStep = -0.1;
+		double minStep = -0.01;
+		double maxStep = -0.5;
 
 		Random r;
-		double[][] map = new double[width][height];
+		HashMap<Vector2, Double> map = new HashMap<Vector2, Double>();;
+		LinkedList<Vector2> fringe = new LinkedList<Vector2>(); //FIFO Queue
+		HashMap<Vector2, Integer> occupantMap = new HashMap<Vector2, Integer>(); //Records which 'island' a point belongs to, so that we do not consider it more than once in the same island
 
-		private int RandomRange(int min,int max){
+
+		private int RandomRange(int min,int max){ //int
 			return r.nextInt(max-min) + min;
+		}
+		private double RandomRange(double min, double max){ //double
+			return min + (max - min) * r.nextDouble();
 		}
 
 		public Vector2[] ChoosePoints(){
-			Vector2[] points = new Vector2[numPoints];
-			for(int i = 0; i < numPoints; i++){
+			Vector2[] points = new Vector2[numIslands];
+			for(int i = 0; i < numIslands; i++){
 				Vector2 v = new Vector2(RandomRange(0,width),RandomRange(0,height));
 				points[i] = v;
 			}
 			return points;
 		}
 
-		public void InitiliaseMap(){
-			for(double[] row : map){
-				Arrays.fill(row,0);
+		public void GenerateNeighbours(Vector2 point){
+			int pointIsland = occupantMap.get(point);
+			if(!map.containsKey(point)){ //This is a start point
+				map.put(point, RandomRange(minStart, maxStart));
 			}
+			for(float i = point.x-1; i <= point.x+1; i++){
+				for(float j = point.y-1; j <= point.y+1; j++){
+					if(!(point.x == i && point.y == j)){
+						Vector2 newPoint = new Vector2(i,j);
+						int existingParent = occupantMap.getOrDefault(newPoint,-1);
+						if (existingParent == -1){ //if the point has already been considered by this island we don't need to add to the height.
+							occupantMap.put(newPoint, pointIsland);
+							double parentStep = map.get(point);
+							double step = parentStep + RandomRange(minStep,maxStep);
+							if(step > 0){
+								map.put(newPoint,step);
+								fringe.add(newPoint);
+							}
+						}
+					}
+				}
+			}
+
+
 		}
 
 		public void Generate(Vector2[] points){
-			double[][] occupantMap = new double[width][height];
-			for(int i = 0; i < numPoints; i++){
+			for(int i = 0; i < numIslands; i++){
 				Vector2 point = points[i];
-
-
-
+				occupantMap.put(point, i);
+				fringe.add(point);
 			}
-
+			while(!fringe.isEmpty()){ //FIFO queue
+				GenerateNeighbours(fringe.poll()); //fringe.poll() returns the head of the queue and removes it.
+			}
 		}
-		public VoronoiNoise(long seed, int width, int height){
+		public VoronoiNoise(long seed, int width, int height, int numIslands){
 			this.r = new Random(seed);
 			this.width = width;
 			this.height = height;
-			InitiliaseMap();
+			this.numIslands = numIslands;
 			Vector2[] points = ChoosePoints();
 			Generate(points);
 		}
-
-
-
 	}
 
 
@@ -176,7 +202,16 @@ public class WorldMap {
 		float persistence; //amplitude is adjusted by this value for each octave, i.e the higher persistence is the more effect each nth octave has
 		float scale; //How 'zoomed-in' our noise is. The higher the value, the more zoomed in we are.
 		int octaves; //number of 'layers' per sample.
+		Random r;
 		Vector2[][] gradients;
+
+
+
+		Vector2 RandomVector(){
+			float x = r.nextFloat();
+			float y = r.nextFloat();
+			return new Vector2(x,y);
+		}
 
 
 		void PopulateGradientMatrix(int size){
@@ -186,8 +221,11 @@ public class WorldMap {
 			 */
 			for(int i = 0; i < size+1; i++){
 				for(int j=0; j < size+1; j++){
+					//TODO: Change this to your own random variable
+					//Vector2 v = RandomVector();
 					Vector2 v = new Vector2();
 					v.setToRandomDirection();
+					//System.out.println(v);
 					gradients[i][j] = v;
 				}
 			}
@@ -197,6 +235,12 @@ public class WorldMap {
 			return x + i * (y-x);
 		}
 
+		float smoothstep(float a0, float a1,  float w){ //CHANGE THIS
+			float v = w*w*w*(w*(w*6 - 15) + 10);
+			return a0 + v*(a1 - a0);
+		}
+
+
 		float GenerateNoiseValue(float x, float y){
 			//Point (x,y)
 			Vector2 p = new Vector2(x,y);
@@ -204,14 +248,11 @@ public class WorldMap {
 
 
 
-
 			//Gradient Vector points
-			int x0 = (int)x; //round down
-			int y0 = (int)y;
+			int x0 = (int)Math.floor(x); //round down
+			int y0 = (int)Math.floor(y);
 			int x1 = x0 + 1;
-			int y1 = x0 + 1;
-
-
+			int y1 = y0 + 1;
 
 
 			//Gradient Vectors
@@ -227,6 +268,9 @@ public class WorldMap {
 			Vector2 d11 = new Vector2(x-x1, y-y1);
 
 
+			float dX = x - x0; //This vector represents how where (x,y) is relative to the other points. (or (x,y) relative to d00)
+			float dY = y - y0; 		//This is what we will interpolate by.
+
 			//Dot products
 			float dP00 = d00.dot(g00);
 			float dP01 = d01.dot(g01);
@@ -235,15 +279,12 @@ public class WorldMap {
 
 
 			//Linearly-Interpolate between our dot products and (x,y) relative to d00 to get a weighted average
-			float dX = x - (float)x0; //This vector represents how where (x,y) is relative to the other points. (or (x,y) relative to d00)
-			float dY = y - (float)y0; 		//This is what we will interpolate by.
-
 			//dX = (6 * (float)Math.pow(dX,5)) - (15*(float)Math.pow(dX,4) + (10*(float)Math.pow(dX,3)));
 			//dY = (6 * (float)Math.pow(dY,5)) - (15*(float)Math.pow(dY,4) + (10*(float)Math.pow(dY,3)));
 
-			float l1 = Lerp(dP00,dP01,dX);
-			float l2 = Lerp(dP10,dP11,dX);
-			float n = Lerp(l1,l2,dY);//final weighted average of (x,y) relative to d00 and all dot products
+			float l1 = smoothstep(dP00,dP01,dX);
+			float l2 = smoothstep(dP10,dP11,dX);
+			float n = smoothstep(l1,l2,dY);//final weighted average of (x,y) relative to d00 and all dot products
 
 			return n;
 		}
@@ -259,13 +300,12 @@ public class WorldMap {
 
 
 			for(int i=0; i < this.octaves; i++){
-				float nV = GenerateNoiseValue(x/this.scale*frequency,y/this.scale*frequency);
+				float nV = GenerateNoiseValue(x/this.scale*freq,y/this.scale*freq);
 				n = n + (nV * amp);
 				amp = amp * this.persistence;
 				freq = freq * this.lacunarity;
 			}
 
-			System.out.println(n);
 			return n;
 		}
 		public PerlinNoise(float amplitude, float scale, int octaves, float frequency, float lacunarity, float persistence, int size){
@@ -276,6 +316,7 @@ public class WorldMap {
 			this.persistence = persistence;
 			this.scale = scale;
 			this.gradients = new Vector2[size+1][size+1];
+			this.r = new Random();
 			PopulateGradientMatrix(size);
 		}
 	}
