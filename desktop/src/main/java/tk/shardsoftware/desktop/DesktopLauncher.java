@@ -10,6 +10,8 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setWindowedMode(1280, 720);
 		config.setResizable(false);
+		config.setForegroundFPS(60);
+		config.useVsync(false);
 		new Lwjgl3Application(new PirateGame(), config);
 	}
 }
