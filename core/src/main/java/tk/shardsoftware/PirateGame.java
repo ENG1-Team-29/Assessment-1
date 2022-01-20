@@ -17,7 +17,7 @@ public class PirateGame extends Game {
 	public void create() {
 		assets = new AssetManager();
 		ResourceUtil.init(assets);
-		// this.setScreen(new LoadScreen(assets, this));
+		//this.setScreen(new LoadScreen(assets, this));
 
 		/* -=TESTING ONLY=- Assets should be loaded within the loading screen */
 		assets.finishLoading(); // XXX: Remove before exporting

@@ -14,14 +14,23 @@ public class World {
 
 	/** The map of the world */
 	public WorldMap worldMap;
-
+	public boolean BUILD_MAP = true; //Set this to false for faster debugging
 	private long gameTicks = 0;
+	public int world_width = 100;
+	public int world_height = 100;
+	public int world_tile_size = 10;
+
 
 	public World() {
 		entities = new ArrayList<Entity>();
 		
-		worldMap = new WorldMap(1, 100, 100);
-		worldMap.buildWorld();
+		worldMap = new WorldMap(world_tile_size, world_width, world_height);
+		if (BUILD_MAP) {
+			System.out.println("Building World");
+			worldMap.buildWorld();
+		}else{
+
+		}
 	}
 
 	/**

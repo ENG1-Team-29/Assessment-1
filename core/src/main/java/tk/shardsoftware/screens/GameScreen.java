@@ -6,6 +6,8 @@ import static tk.shardsoftware.util.ResourceUtil.font;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -28,16 +30,20 @@ public class GameScreen implements Screen {
 	private OrthographicCamera camera;
 	// width and length of the camera's viewport.
 	private int cameraSize = (int) (720 / 2);
+	private int DEFAULT_CAMERA_ZOOM = 1;
 
 	private World worldObj;
 
 	/** The ship object that the player will control */
 	private EntityShip player;
+	public int points = 0;
+
 
 	public GameScreen(AssetManager assets) {
 		batch = new SpriteBatch();
 		hudBatch = new SpriteBatch();
 		camera = new OrthographicCamera(cameraSize * 16f / 9f, cameraSize);
+		camera.zoom = DEFAULT_CAMERA_ZOOM;
 		worldObj = new World();
 
 		player = new EntityShip(worldObj);
@@ -118,12 +124,21 @@ public class GameScreen implements Screen {
 		// System.out.println(player.getDirection());
 	}
 
+
+	float oneSecondTimer = 0; //Timer for incrementing points (1 per second)
+
 	@Override
 	public void render(float delta) {
 		DebugUtil.saveProcessTime("Logic Time", () -> {
 			controls();
 			logic();
 		});
+
+		oneSecondTimer = oneSecondTimer + delta;
+		if (oneSecondTimer > 1){
+			points = points + 1; //Increment points
+			oneSecondTimer = 0;
+		}
 
 		ScreenUtils.clear(0, 0, 0, 1); // clears the buffer
 		batch.setProjectionMatrix(camera.combined);
@@ -140,6 +155,7 @@ public class GameScreen implements Screen {
 			if (DEBUG_MODE) {
 				hudBatch.begin();
 				renderDebug(generateDebugStrings());
+				debugFont.draw(hudBatch, "Points: " + Integer.toString(points), 1280 -100, 700); //This should probably use relative co-ordinates to account for different screen sizes
 				debugFont.draw(hudBatch, "@", 1280 / 2 - 5, 720 / 2 + 5);
 				hudBatch.end();
 			}
@@ -154,6 +170,8 @@ public class GameScreen implements Screen {
 					Gdx.graphics.getHeight() - (font.getLineHeight()) * i);
 		}
 	}
+
+
 
 	/** Renders all visible entities */
 	private void renderEntities() {
@@ -204,6 +222,23 @@ public class GameScreen implements Screen {
 		Vector3 camPos = camera.position;
 		camPos.x = camera.position.x + (target.x - camera.position.x) * speed;
 		camPos.y = camera.position.y + (target.y - camera.position.y) * speed;
+
+
+		/**Confine the camera to the bounds of the map**/
+		if (camPos.x < cameraSize-30){
+			camPos.x = cameraSize-30;
+		}
+		if (camPos.x > worldObj.world_width * worldObj.world_tile_size - 320){
+			camPos.x = worldObj.world_width * worldObj.world_tile_size - 320;
+		}
+		if (camPos.y < cameraSize-170){
+			camPos.y = cameraSize-170;
+		}
+		if (camPos.y > worldObj.world_height * worldObj.world_tile_size-180){
+			camPos.y = worldObj.world_height * worldObj.world_tile_size-180;
+		}
+
+
 		camera.position.set(camPos);
 		camera.update();
 	}

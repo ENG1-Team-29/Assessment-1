@@ -85,6 +85,8 @@ public abstract class Entity {
 		Rectangle nextHitbox = new Rectangle(hitbox).setPosition(
 				positionVec.x + velocityVec.x, positionVec.y + velocityVec.y);
 
+		//TODO: Stop ships from leaving the boundaries of the map
+
 		// TODO: Change to bounding-box hierarchy if performance is too low
 		// TODO: Add collision direction detection
 		boolean collided = worldObj.getEntities().stream()
