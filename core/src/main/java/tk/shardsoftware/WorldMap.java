@@ -19,8 +19,7 @@ public class WorldMap {
 
 	/** The different tiles that can be in the world */
 	public enum TileType {
-		WATER_DEEP("noisy-waterdeep.png"), WATER_SHALLOW(
-				"noisy-watershallow.png"), SAND("noisy-sand.png");
+		WATER_DEEP("noisy-waterdeep.png"), WATER_SHALLOW("noisy-watershallow.png"), SAND("noisy-sand.png");
 
 		private Texture tex;
 
@@ -50,7 +49,7 @@ public class WorldMap {
 
 	public void buildWorld() {
 		// choosing these values is more of an art than a science
-		PerlinNoise Perlin = new PerlinNoise(1, 60, 8, 1, 1, 0.3f, 1000);
+		PerlinNoise Perlin = new PerlinNoise(1, 50, 1, 1, 1, 0.3f, width, height);
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				Vector2 key = new Vector2(i, j);
@@ -59,7 +58,7 @@ public class WorldMap {
 
 				if (n > 0.5) {
 					this.tileMap.put(key, TileType.SAND); // sand
-				} else if (n > 0.3) {
+				} else if (n > 0.4) {
 					this.tileMap.put(key, TileType.WATER_SHALLOW);
 				}
 
@@ -69,8 +68,7 @@ public class WorldMap {
 
 	public void drawTile(int x, int y, SpriteBatch batch) {
 		Texture texture = this.getTile(x, y);
-		batch.draw(texture, x * this.tile_size, y * this.tile_size,
-				this.tile_size, this.tile_size);
+		batch.draw(texture, x * this.tile_size, y * this.tile_size, this.tile_size, this.tile_size);
 	}
 
 	// TODO: Render once to off-screen buffer then render buffer to screen
@@ -82,7 +80,7 @@ public class WorldMap {
 		int minX = Math.max(1, cameraTilePosX - (numberOfTilesX));
 		int minY = Math.max(1, cameraTilePosY - (numberOfTilesY));
 		int maxX = Math.min(width, cameraTilePosX + (numberOfTilesX));
-		int maxY = Math.min(width, cameraTilePosY + (numberOfTilesY));
+		int maxY = Math.min(height, cameraTilePosY + (numberOfTilesY));
 
 		for (int i = minX; i < maxX; i++) {
 			for (int j = minY; j < maxY; j++) {
@@ -92,12 +90,11 @@ public class WorldMap {
 	}
 
 	/**
-	 * Get the texture of the tile positioned at (x,y). If there is no tile
-	 * defined at this point, it will return {@link TileType#WATER_DEEP}.
+	 * Get the texture of the tile positioned at (x,y). If there is no tile defined
+	 * at this point, it will return {@link TileType#WATER_DEEP}.
 	 */
 	public Texture getTile(int x, int y) {
-		TileType tile = tileMap.getOrDefault(new Vector2(x, y),
-				TileType.WATER_DEEP);
+		TileType tile = tileMap.getOrDefault(new Vector2(x, y), TileType.WATER_DEEP);
 		return tile.getTex();
 	}
 
@@ -115,27 +112,26 @@ public class WorldMap {
 		Random r;
 		double[][] map = new double[width][height];
 
-		private int RandomRange(int min, int max) {
+		private int randomRange(int min, int max) {
 			return r.nextInt(max - min) + min;
 		}
 
-		public Vector2[] ChoosePoints() {
+		public Vector2[] choosePoints() {
 			Vector2[] points = new Vector2[numPoints];
 			for (int i = 0; i < numPoints; i++) {
-				Vector2 v = new Vector2(RandomRange(0, width),
-						RandomRange(0, height));
+				Vector2 v = new Vector2(randomRange(0, width), randomRange(0, height));
 				points[i] = v;
 			}
 			return points;
 		}
 
-		public void InitiliaseMap() {
+		public void initiliaseMap() {
 			for (double[] row : map) {
 				Arrays.fill(row, 0);
 			}
 		}
 
-		public void Generate(Vector2[] points) {
+		public void generate(Vector2[] points) {
 			double[][] occupantMap = new double[width][height];
 			for (int i = 0; i < numPoints; i++) {
 				Vector2 point = points[i];
@@ -143,20 +139,21 @@ public class WorldMap {
 			}
 
 		}
+
 		public VoronoiNoise(long seed, int width, int height) {
 			this.r = new Random(seed);
 			this.width = width;
 			this.height = height;
-			InitiliaseMap();
-			Vector2[] points = ChoosePoints();
-			Generate(points);
+			initiliaseMap();
+			Vector2[] points = choosePoints();
+			generate(points);
 		}
 
 	}
 
 	/**
-	 * Based on the Perlin Noise algorithm by Ken Perlin, specifically the
-	 * method described here (though with pseudo-random gradients): <a href=
+	 * Based on the Perlin Noise algorithm by Ken Perlin, specifically the method
+	 * described here (though with pseudo-random gradients): <a href=
 	 * "https://adrianb.io/2014/08/09/perlinnoise.html">https://adrianb.io/2014/08/09/perlinnoise.html</a>
 	 * <br>
 	 * You can view the original algorithm as described by Perlin here: <a href=
@@ -179,8 +176,8 @@ public class WorldMap {
 		 */
 		float persistence;
 		/**
-		 * How 'zoomed-in' our noise is. The higher the value, the more zoomed
-		 * in we are.
+		 * How 'zoomed-in' our noise is. The higher the value, the more zoomed in we
+		 * are.
 		 */
 		float scale;
 		/** number of 'layers' per sample. */
@@ -188,13 +185,13 @@ public class WorldMap {
 		Vector2[][] gradients;
 
 		/**
-		 * We generate gradients at each point in advance so that we don't have
-		 * to calculate them multiple times. Gradients are random so we get a
-		 * new map every time we load the game!
+		 * We generate gradients at each point in advance so that we don't have to
+		 * calculate them multiple times. Gradients are random so we get a new map every
+		 * time we load the game!
 		 */
-		void populateGradientMatrix(int size) {
-			for (int i = 0; i < size + 1; i++) {
-				for (int j = 0; j < size + 1; j++) {
+		void populateGradientMatrix(int width, int height) {
+			for (int i = 0; i < width + 1; i++) {
+				for (int j = 0; j < height + 1; j++) {
 					Vector2 v = new Vector2();
 					v.setToRandomDirection();
 					gradients[i][j] = v;
@@ -206,10 +203,17 @@ public class WorldMap {
 			return a1 + t * (a2 - a1);
 		}
 
+		float ease(float t) {
+			return ((6 * t - 15) * t + 10) * t * t * t;
+		}
+
 		Vector2 getConstantVector(Vector2 v) {
-			if (v.x < 0 && v.y < 0) return new Vector2(-1, -1);
-			if (v.x > 0 && v.y < 0) return new Vector2(1, -1);
-			if (v.x < 0 && v.y > 0) return new Vector2(-1, 1);
+			if (v.x < 0 && v.y < 0)
+				return new Vector2(-1, -1);
+			if (v.x > 0 && v.y < 0)
+				return new Vector2(1, -1);
+			if (v.x < 0 && v.y > 0)
+				return new Vector2(-1, 1);
 			return new Vector2(1, 1);
 		}
 
@@ -220,52 +224,59 @@ public class WorldMap {
 			// Gradient Vector points
 			int X = (int) Math.floor(x); // round down
 			int Y = (int) Math.floor(y);
-			float yf = x - X;
 			float xf = x - X;
+			float yf = y - Y;
+
+			System.out.println(X + " | " + Y);
 
 			// Gradient Vectors
-			Vector2 g00 = this.gradients[X + 1][Y + 1];
-			Vector2 g01 = this.gradients[X][Y + 1];
-			Vector2 g10 = this.gradients[X + 1][Y];
-			Vector2 g11 = this.gradients[X][Y];
+			Vector2 topRightGrad = this.gradients[X + 1][Y + 1];
+			Vector2 topLeftGrad = this.gradients[X][Y + 1];
+			Vector2 btmRightGrad = this.gradients[X + 1][Y];
+			Vector2 btmLeftGrad = this.gradients[X][Y];
+
+			// if (X == 0)
+			// System.out.println(
+			// gradients[X + 1][Y] + " | " + gradients[X + 1][Y + 1]);
+			// if (X == 1)
+			// System.out
+			// .println(gradients[X][Y] + " # " + gradients[X][Y + 1]);
 
 			// Distance Vectors
-			Vector2 d00 = new Vector2(xf - 1, yf - 1);
-			Vector2 d01 = new Vector2(xf, yf - 1);
-			Vector2 d10 = new Vector2(xf - 1, yf);
-			Vector2 d11 = new Vector2(xf, yf);
+			Vector2 topRightDist = new Vector2(1 - xf, 1 - yf);
+			Vector2 topLeftDist = new Vector2(xf, 1 - yf);
+			Vector2 btmRightDist = new Vector2(1 - xf, yf);
+			Vector2 btmLeftDist = new Vector2(xf, yf);
 
 			// Dot products
-			float dP00 = d00.dot(getConstantVector(g00));
-			float dP01 = d01.dot(getConstantVector(g01));
-			float dP10 = d10.dot(getConstantVector(g10));
-			float dP11 = d11.dot(getConstantVector(g11));
+			float dPtopRight = topRightDist.dot((topRightGrad));
+			float dPtopLeft = topLeftDist.dot((topLeftGrad));
+			float dPbtmRight = btmRightDist.dot((btmRightGrad));
+			float dPbtmLeft = btmLeftDist.dot((btmLeftGrad));
 
 			// Linearly-Interpolate between our dot products and (x,y) relative
 			// to d00 to get a weighted average
-			float u = x - X; // This vector represents how where (x,y)
-								// is relative to the other points. (or
-								// (x,y) relative to d00)
-			float v = y - Y; // This is what we will interpolate by.
+			float u = ease(x - X); // This vector represents how where (x,y) is relative to the other points. (or
+									// (x,y) relative to d00)
+			float v = ease(y - Y); // This is what we will interpolate by.
 
 			// dX = (6 * (float)Math.pow(dX,5)) - (15*(float)Math.pow(dX,4) +
 			// (10*(float)Math.pow(dX,3)));
 			// dY = (6 * (float)Math.pow(dY,5)) - (15*(float)Math.pow(dY,4) +
 			// (10*(float)Math.pow(dY,3)));
 
-			float l1 = lerp(u, dP00, dP01);
-			float l2 = lerp(u, dP10, dP11);
-			float n = lerp(v, l1, l2);// final weighted average of (x,y)
+			float l1 = lerp(u, dPtopLeft, dPtopRight);
+			float l2 = lerp(u, dPbtmLeft, dPbtmRight);
+			float n = lerp(v, l2, l1);// final weighted average of (x,y)
 										// relative to d00 and all dot products
 
 			return n;
 		}
 
 		/**
-		 * This function implements the concept of multi-layered noise. The
-		 * function 'layers' multiple noise functions on top of each other to
-		 * allow for small changes. This is the main function to call with the
-		 * PerlinNoise class
+		 * This function implements the concept of multi-layered noise. The function
+		 * 'layers' multiple noise functions on top of each other to allow for small
+		 * changes. This is the main function to call with the PerlinNoise class
 		 */
 		public float noise(float x, float y) {
 			float n = 0;
@@ -273,8 +284,7 @@ public class WorldMap {
 			float freq = this.frequency;
 
 			for (int i = 0; i < this.octaves; i++) {
-				float nV = generateNoiseValue(x / this.scale * freq,
-						y / this.scale * freq);
+				float nV = generateNoiseValue(x / this.scale * freq, y / this.scale * freq);
 				n = n + (nV * amp);
 				amp = amp * this.persistence;
 				freq = freq * this.lacunarity;
@@ -284,17 +294,18 @@ public class WorldMap {
 			return n;
 		}
 
-		public PerlinNoise(float amplitude, float scale, int octaves,
-				float frequency, float lacunarity, float persistence,
-				int size) {
+		public PerlinNoise(float amplitude, float scale, int octaves, float frequency, float lacunarity,
+				float persistence, int width, int height) {
 			this.amplitude = amplitude;
 			this.frequency = frequency;
 			this.octaves = octaves;
 			this.lacunarity = lacunarity;
 			this.persistence = persistence;
 			this.scale = scale;
-			this.gradients = new Vector2[size + 1][size + 1];
-			populateGradientMatrix(size);
+			width = (int) (width / scale + 1);
+			height = (int) (height / scale + 1);
+			this.gradients = new Vector2[width + 1][height + 1];
+			populateGradientMatrix(width, height);
 		}
 	}
 }
