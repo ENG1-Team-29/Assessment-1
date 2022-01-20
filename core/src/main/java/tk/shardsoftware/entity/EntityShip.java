@@ -1,6 +1,5 @@
 package tk.shardsoftware.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import tk.shardsoftware.World;
@@ -21,6 +20,9 @@ public class EntityShip extends Entity {
 		super.update(delta);
 		// direction = velocityVec.angleDeg();
 		velocityVec.setAngleDeg(direction);
+
+		// TODO: Write water drag system
+		velocityVec.scl(0.99f);
 	}
 
 	/**
@@ -35,22 +37,29 @@ public class EntityShip extends Entity {
 		return this;
 	}
 
-	public void rotateTowardsGoal(float goalAngle) {
+	public void rotateTowardsGoal(float goalAngle, float delta) {
+		delta *= 60; // normalize to 60fps
 		float angle = getDirection();
 		// float speed = getVelocity().len();
 
 		double rads = Math.toRadians(angle);
-		addVelocity((float) Math.cos(rads), (float) Math.sin(rads));
+		addVelocity((float) Math.cos(rads) * delta,
+				(float) Math.sin(rads) * delta);
 
 		if (angle <= 90 && goalAngle >= 270) goalAngle -= 360;
 		if (angle >= 270 && goalAngle <= 90) goalAngle += 360;
 		if (angle > 180 && goalAngle < 90) goalAngle += 360;
 
+		// System.out.println(Gdx.graphics.getDeltaTime() + " | "
+		// + (1f / Gdx.graphics.getDeltaTime()));
+
 		if (angle != goalAngle) {
-			// delta * 60fps * 2deg/s
-			float turnAmount = Gdx.graphics.getDeltaTime() * 120;
-			// round down to the nearest half degree
-			turnAmount = (float) (Math.floor(turnAmount * 2) / 2f);
+			// delta * 2deg/s
+			float turnAmount = delta * 2;
+
+			float testAngle = Math.abs(angle - goalAngle);
+			turnAmount = turnAmount > testAngle ? testAngle : turnAmount;
+
 			rotate(angle > goalAngle ? -turnAmount : turnAmount);
 		}
 	}
