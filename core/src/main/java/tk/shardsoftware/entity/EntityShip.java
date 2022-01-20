@@ -1,5 +1,6 @@
 package tk.shardsoftware.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import tk.shardsoftware.World;
@@ -13,6 +14,7 @@ public class EntityShip extends Entity {
 	public EntityShip(World worldObj) {
 		super(worldObj, 0, 0, 50, 50);
 		this.setTexture("textures/entity/playership.png");
+		this.setMaxSpeed(100);
 	}
 
 	public void update(float delta) {
@@ -44,10 +46,12 @@ public class EntityShip extends Entity {
 		if (angle >= 270 && goalAngle <= 90) goalAngle += 360;
 		if (angle > 180 && goalAngle < 90) goalAngle += 360;
 
-		if (angle > goalAngle) {
-			rotate(-2);
-		} else if (angle < goalAngle) {
-			rotate(2);
+		if (angle != goalAngle) {
+			// delta * 60fps * 2deg/s
+			float turnAmount = Gdx.graphics.getDeltaTime() * 120;
+			// round down to the nearest half degree
+			turnAmount = (float) (Math.floor(turnAmount * 2) / 2f);
+			rotate(angle > goalAngle ? -turnAmount : turnAmount);
 		}
 	}
 

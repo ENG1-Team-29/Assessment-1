@@ -128,6 +128,8 @@ public class LoadScreen implements Screen {
 	@Override
 	public void dispose() {
 		batch.dispose();
+		vPlayer.dispose();
+		logoSound.dispose();
 	}
 
 }
