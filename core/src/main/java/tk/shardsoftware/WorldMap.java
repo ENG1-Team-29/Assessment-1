@@ -49,7 +49,7 @@ public class WorldMap {
 
 	public void buildWorld() {
 		// choosing these values is more of an art than a science
-		PerlinNoise Perlin = new PerlinNoise(1, 50, 8, 1, 1, 0.3f, width, height);
+		PerlinNoise Perlin = new PerlinNoise(1.1f, 50, 8, 1, 1f, 0.3f, width, height);
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				Vector2 key = new Vector2(i, j);

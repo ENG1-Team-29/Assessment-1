@@ -311,7 +311,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		camera.setToOrtho(false, width * 4, height * 4);
+		camera.setToOrtho(false, width/2, height/2);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		// TODO: Add hud scaling
