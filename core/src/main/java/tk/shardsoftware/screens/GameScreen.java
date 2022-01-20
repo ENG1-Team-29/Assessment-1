@@ -292,13 +292,13 @@ public class GameScreen implements Screen {
 
 		/* Confine the camera to the bounds of the map */
 
-		float widthMaxLimit = World.world_width * World.world_tile_size
+		float widthMaxLimit = World.WORLD_WIDTH * World.WORLD_TILE_SIZE
 				- camera.viewportWidth / 2;
-		float heightMaxLimit = World.world_height * World.world_tile_size
+		float heightMaxLimit = World.WORLD_HEIGHT * World.WORLD_TILE_SIZE
 				- camera.viewportHeight / 2;
-		float widthMinLimit = camera.viewportWidth / 2 + World.world_tile_size;
+		float widthMinLimit = camera.viewportWidth / 2 + World.WORLD_TILE_SIZE;
 		float heightMinLimit = camera.viewportHeight / 2
-				+ World.world_tile_size;
+				+ World.WORLD_TILE_SIZE;
 
 		if (camPos.x < widthMinLimit) camPos.x = widthMinLimit;
 		if (camPos.x > widthMaxLimit) camPos.x = widthMaxLimit;
@@ -311,7 +311,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		camera.setToOrtho(false, width / 2, height / 2);
+		camera.setToOrtho(false, width * 4, height * 4);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		// TODO: Add hud scaling
