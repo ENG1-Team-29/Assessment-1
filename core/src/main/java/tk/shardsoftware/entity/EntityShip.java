@@ -1,6 +1,7 @@
 package tk.shardsoftware.entity;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 
 import tk.shardsoftware.World;
 import tk.shardsoftware.util.ResourceUtil;
@@ -29,8 +30,7 @@ public class EntityShip extends Entity {
 	/**
 	 * Set the texture of the entity
 	 * 
-	 * @param textureName
-	 *            the path/name of the texture file
+	 * @param textureName the path/name of the texture file
 	 * @return This entity object for easy building
 	 */
 	public EntityShip setTexture(String textureName) {
@@ -44,8 +44,7 @@ public class EntityShip extends Entity {
 		// float speed = getVelocity().len();
 
 		double rads = Math.toRadians(angle);
-		addVelocity((float) Math.cos(rads) * delta,
-				(float) Math.sin(rads) * delta);
+		addVelocity((float) Math.cos(rads) * delta, (float) Math.sin(rads) * delta);
 
 		if (angle <= 90 && goalAngle >= 270) goalAngle -= 360;
 		if (angle >= 270 && goalAngle <= 90) goalAngle += 360;
@@ -63,6 +62,25 @@ public class EntityShip extends Entity {
 
 			rotate(angle > goalAngle ? -turnAmount : turnAmount);
 		}
+	}
+
+	public void fireCannons() {
+		fireCannon(true);
+		fireCannon(false);
+	}
+
+	public void fireCannon(boolean rightSide) {
+		Vector2 center = getCenterPoint();
+
+		Vector2 dirVec = new Vector2(1, 1).setAngleDeg(direction + (rightSide ? -90 : 90))
+				.setLength(hitbox.width / 2f);
+
+		float xPos = center.x + dirVec.x;
+		float yPos = center.y + dirVec.y;
+
+		EntityCannonball cb = new EntityCannonball(worldObj, xPos, yPos);
+		cb.setVelocity(dirVec.setLength(cb.maximumSpeed));
+		worldObj.addEntity(cb);
 	}
 
 }
