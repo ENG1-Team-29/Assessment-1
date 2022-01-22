@@ -72,6 +72,9 @@ public abstract class Entity {
 		this.hitboxScale = hbScale;
 		updateHitbox();
 	}
+	public float getHitboxScale(){
+		return this.hitboxScale;
+	}
 
 	/**
 	 * The logical game function called on each game tick

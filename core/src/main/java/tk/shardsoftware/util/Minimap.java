@@ -77,21 +77,6 @@ public class Minimap implements Disposable {
 		int startX = (int) (playerTileX - width / 2 + 1);
 		int startY = (int) (playerTileY - height / 2);
 
-//		// We don't want to draw over the miniMap borders!
-//		int borderSize = 4; 
-//
-//      int miniMapOriginX = x;
-//      int miniMapOriginY = y;
-
-//		for (int i = startX + borderSize; i < startX + width - borderSize; i++) {
-//			for (int j = startY + borderSize; j < startY + height - borderSize; j++) {
-//				TileType tile = world.worldMap.getTile(i, j);
-//
-//				batch.draw(tile.getTex(), miniMapOriginX + i - startX, miniMapOriginY + j - startY,
-//						1, 1);
-//			}
-//		}
-
 		// Draw a portion of the texture
 		batch.draw(wholeMap, x, y, 0, 0, width, height, 1, 1, 0, startX, startY, width, height,
 				false, true);

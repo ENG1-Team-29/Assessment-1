@@ -40,7 +40,7 @@ public class WorldMap {
 		Gdx.app.log("WorldMap", "Seed=" + seed);
 		// clear map to allow for regeneration
 		tileMap.clear();
-		// choosing these values is more of an art than a science
+		// choosing these values is more of an art than a science, see PerlinNoiseGenerator for more info
 		this.perlin = new PerlinNoiseGenerator(2f, 100, 12, 1, 1.3f, 0.66f, width,
 				height, seed);
 		for (int i = 0; i < width; i++) {
@@ -58,6 +58,7 @@ public class WorldMap {
 				} else if (n > 0) {
 					this.tileMap.put(key, TileType.WATER_SHALLOW);
 				}
+				//If none of these are satisfied then when this tile is read the result will be null which is interpreted as TileType.WATER_DEEP. This was done to save memory
 
 			}
 		}
