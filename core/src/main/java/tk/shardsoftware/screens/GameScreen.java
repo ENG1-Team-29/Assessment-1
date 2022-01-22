@@ -151,12 +151,15 @@ public class GameScreen implements Screen {
 			player.rotateTowardsGoal(goalAngle, delta);
 		}
 
-		// Instantly halt the player movement
-		if (DEBUG_MODE && Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-			player.getVelocity().setZero();
+		if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+			player.fireCannons();
 		}
 
-		if (DebugUtil.DEBUG_MODE) {
+		if (DEBUG_MODE) {
+			// Instantly halt the player movement
+			if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+				player.getVelocity().setZero();
+			}
 			if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_ADD)) {
 				Gdx.graphics.setForegroundFPS(targetFPS *= 2);
 			}
@@ -191,7 +194,6 @@ public class GameScreen implements Screen {
 		DebugUtil.saveProcessTime("Entity Draw Time", () -> renderEntities());
 
 		batch.end();
-		
 
 		if (DEBUG_MODE) DebugUtil.saveProcessTime("Hitbox Render", () -> renderHitboxes());
 
