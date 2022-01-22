@@ -77,6 +77,20 @@ public class Minimap implements Disposable {
 		int startX = (int) (playerTileX - width / 2 + 1);
 		int startY = (int) (playerTileY - height / 2);
 
+		if(startX < 0){
+			startX = 0;
+		}
+		if(startY < 0){
+			startY = 0;
+		}
+
+		if(startX > width){
+			startX = width;
+		}
+		if(startY > height){
+			startY = height;
+		}
+
 		// Draw a portion of the texture
 		batch.draw(wholeMap, x, y, 0, 0, width, height, 1, 1, 0, startX, startY, width, height,
 				false, true);
