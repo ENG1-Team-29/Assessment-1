@@ -37,8 +37,13 @@ public abstract class Entity {
 	/** The texture used to depict the entity */
 	protected TextureRegion texture;
 	protected boolean ignoreWorldCollision = false;
+	protected boolean ignoreEntityCollision = false;
+	/** Determines if it prevents other entities from moving if they collide */
+	protected boolean isSolid = true;
 
 	protected Entity(World worldObj, float x, float y, float w, float h) {
+		// If texture is unset, use null
+		texture = new TextureRegion(ResourceUtil.nullTexture);
 		setPosition(x, y);
 		setWidth(w);
 		setHeight(h);
@@ -72,7 +77,8 @@ public abstract class Entity {
 		this.hitboxScale = hbScale;
 		updateHitbox();
 	}
-	public float getHitboxScale(){
+
+	public float getHitboxScale() {
 		return this.hitboxScale;
 	}
 
@@ -102,7 +108,7 @@ public abstract class Entity {
 		if (positionVec.y + height > World.getHeight()) {
 			setPosition(positionVec.x, World.getHeight() - height);
 		}
-		//onTouchingBorder();
+		// onTouchingBorder();
 	}
 
 	/**
@@ -116,13 +122,7 @@ public abstract class Entity {
 		Rectangle nextHitbox = new Rectangle(hitbox).setPosition(hitbox.x + velocityVec.x * delta,
 				hitbox.y + velocityVec.y * delta);
 
-		// TODO: Change to bounding-box hierarchy if performance is too low
-		boolean collidedFlag = worldObj.getEntities().stream().filter(e -> !e.equals(this))
-				.anyMatch(e -> e.hitbox.overlaps(nextHitbox));
-
-		/* Calculate world collisions */
-		if (!ignoreWorldCollision)
-			collidedFlag |= worldObj.worldMap.isSolidTileWithinArea(nextHitbox);
+		boolean collidedFlag = testCollision(nextHitbox);
 
 		if (collidedFlag) {
 			// Has collided so remove velocity (ignoring momentum)
@@ -136,9 +136,38 @@ public abstract class Entity {
 		}
 	}
 
+	public boolean testCollision(Rectangle nextHitbox) {
+		// TODO: Change to bounding-box hierarchy if performance is too low
+		boolean collidedFlag = false;
+
+		if (!ignoreEntityCollision) {
+			collidedFlag |= worldObj.getEntities().stream().filter(e -> !e.equals(this))
+					.anyMatch(e -> e.isSolid && e.hitbox.overlaps(nextHitbox));
+		}
+
+		// Test for world collision
+		if (!ignoreWorldCollision) {
+			collidedFlag |= worldObj.worldMap.isSolidTileWithinArea(nextHitbox);
+		}
+
+		return collidedFlag;
+	}
+
 	/** Returns the center point of the entity */
 	public Vector2 getCenterPoint() {
-		return new Vector2(positionVec.x + hitbox.width / 2f, positionVec.y + hitbox.height / 2f);
+		return new Vector2(positionVec.x + width / 2f, positionVec.y + height / 2f);
+	}
+
+	/** Set the center point of the entity */
+	public void setCenter(float x, float y) {
+		positionVec.x = x - width / 2f;
+		positionVec.y = y - height / 2f;
+	}
+
+	/** Set the center point of the entity */
+	public void setCenter(Vector2 center) {
+		setCenter(center.x, center.y);
+		updateHitbox();
 	}
 
 	public float getDirection() {
@@ -256,6 +285,22 @@ public abstract class Entity {
 
 	public void setIgnoreWorldCollision(boolean ignoreWorldCollision) {
 		this.ignoreWorldCollision = ignoreWorldCollision;
+	}
+
+	public boolean isIgnoreEntityCollision() {
+		return ignoreEntityCollision;
+	}
+
+	public void setIgnoreEntityCollision(boolean ignoreEntityCollision) {
+		this.ignoreEntityCollision = ignoreEntityCollision;
+	}
+
+	public boolean isSolid() {
+		return isSolid;
+	}
+
+	public void setSolid(boolean isSolid) {
+		this.isSolid = isSolid;
 	}
 
 }
