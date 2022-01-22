@@ -43,6 +43,8 @@ public class ResourceUtil {
 		addTexture("textures/tiles/noisy-waterdeep.png");
 		addTexture("textures/tiles/noisy-watershallow.png");
 		addTexture("textures/tiles/noisy-sand.png");
+		addTexture("textures/tiles/noisy-rock.png");
+		addTexture("textures/tiles/noisy-grass.png");
 		addTexture("textures/entity/playership.png");
 		nullTexture = generateNullTexture();
 
