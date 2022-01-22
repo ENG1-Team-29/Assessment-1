@@ -7,7 +7,7 @@ import tk.shardsoftware.util.ResourceUtil;
 /** The different tiles that can be in the world */
 public enum TileType {
 	WATER_DEEP("noisy-waterdeep.png", false), WATER_SHALLOW("noisy-watershallow.png", false),
-	SAND("noisy-sand.png", true), DIRT("noisy-dirt.png", true), GRASS("noise-grass.png", true);
+	SAND("noisy-sand.png", true), DIRT("noisy-rock.png", true), GRASS("noisy-grass.png", true);
 
 	private Texture tex;
 	private boolean solid;
