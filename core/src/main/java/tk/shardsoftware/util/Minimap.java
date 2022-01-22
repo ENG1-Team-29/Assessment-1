@@ -30,6 +30,8 @@ public class Minimap implements Disposable {
 	public int width;
 	public int height;
 
+	public static final int BORDER_WIDTH = 4;
+
 	public Minimap(World world, float x, float y, int width, int height) {
 		this.worldObj = world;
 		miniMapBorder = ResourceUtil.getTexture("textures/tiles/minimap-border.png");
@@ -77,25 +79,26 @@ public class Minimap implements Disposable {
 		int startX = (int) (playerTileX - width / 2 + 1);
 		int startY = (int) (playerTileY - height / 2);
 
-		if(startX < 0){
+		if (startX < 0) {
 			startX = 0;
 		}
-		if(startY < 0){
+		if (startY < 0) {
 			startY = 0;
 		}
 
-		if(startX > width){
+		if (startX > width) {
 			startX = width;
 		}
-		if(startY > height){
+		if (startY > height) {
 			startY = height;
 		}
 
-		// Draw a portion of the texture
-		batch.draw(wholeMap, x, y, 0, 0, width, height, 1, 1, 0, startX, startY, width, height,
-				false, true);
 		// Draw minimap border
 		batch.draw(miniMapBorder, x, y, width, height);
+
+		// Draw a portion of the texture
+		batch.draw(wholeMap, x + BORDER_WIDTH, y + BORDER_WIDTH, 0, 0, width - BORDER_WIDTH * 2,
+				height - BORDER_WIDTH * 2, 1, 1, 0, startX, startY, width, height, false, true);
 
 	}
 
