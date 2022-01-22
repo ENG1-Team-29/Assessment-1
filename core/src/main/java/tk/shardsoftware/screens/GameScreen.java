@@ -64,10 +64,10 @@ public class GameScreen implements Screen {
 
 		worldObj = new World();
 		player = new EntityShip(worldObj);
+		player.setPosition(50, 50);
 		worldObj.getEntities().add(player);
 
-		boatWaterMovement = ResourceUtil
-				.getSound("audio/entity/boat-water-movement.wav");
+		boatWaterMovement = ResourceUtil.getSound("audio/entity/boat-water-movement.wav");
 		ambientOcean = ResourceUtil.getSound("audio/ambient/ocean.wav");
 	}
 
@@ -85,11 +85,11 @@ public class GameScreen implements Screen {
 	}
 
 	/**
-	 * Calculates the goal angle of the player ship based on user input. If no
-	 * input is provided, the angle will be {@code -999} to easily detect when
-	 * the ship should not rotate. <br>
-	 * Calculates NESW directions, their diagonals, and any cancelled directions
-	 * due to contradictory inputs.
+	 * Calculates the goal angle of the player ship based on user input. If no input
+	 * is provided, the angle will be {@code -999} to easily detect when the ship
+	 * should not rotate. <br>
+	 * Calculates NESW directions, their diagonals, and any cancelled directions due
+	 * to contradictory inputs.
 	 * 
 	 * @return -999 if there is no input,<br>
 	 *         -333 if the input cancels out,<br>
@@ -106,8 +106,7 @@ public class GameScreen implements Screen {
 		boolean vertCancel = up && down;
 		boolean horizCancel = left && right;
 		// If a key is pressed, the ship should turn
-		boolean turnFlag = (verticalFlag && !vertCancel)
-				|| (horizontalFlag && !horizCancel);
+		boolean turnFlag = (verticalFlag && !vertCancel) || (horizontalFlag && !horizCancel);
 
 		boolean accelWithoutTurn = (vertCancel || horizCancel) && !turnFlag;
 
@@ -120,8 +119,7 @@ public class GameScreen implements Screen {
 				if (down && right) {
 					goalAngle = 315;
 				} else {
-					goalAngle = ((up ? 90 : 0) + (down ? 270 : 0)
-							+ (left ? 180 : 0)) / 2;
+					goalAngle = ((up ? 90 : 0) + (down ? 270 : 0) + (left ? 180 : 0)) / 2;
 				}
 			}
 			// ensure goal is >0
@@ -161,6 +159,9 @@ public class GameScreen implements Screen {
 			if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_SUBTRACT)) {
 				Gdx.graphics.setForegroundFPS(targetFPS /= 2);
 			}
+			if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+				worldObj.worldMap.buildWorld();
+			}
 		}
 		// player.setPosition(0, 0);
 		// System.out.println(player.getVelocity());
@@ -186,8 +187,7 @@ public class GameScreen implements Screen {
 
 		batch.end();
 
-		if (DEBUG_MODE)
-			DebugUtil.saveProcessTime("Hitbox Render", () -> renderHitboxes());
+		if (DEBUG_MODE) DebugUtil.saveProcessTime("Hitbox Render", () -> renderHitboxes());
 
 		hudBatch.begin();
 
@@ -199,8 +199,7 @@ public class GameScreen implements Screen {
 		});
 		DebugUtil.saveProcessTime("HUD Draw Time", () -> {
 			// TODO: Change to allow for different screen sizes
-			font.draw(hudBatch, pointTxtLayout,
-					Gdx.graphics.getWidth() - pointTxtLayout.width - 20,
+			font.draw(hudBatch, pointTxtLayout, Gdx.graphics.getWidth() - pointTxtLayout.width - 20,
 					Gdx.graphics.getHeight() - 20);
 		});
 
@@ -214,8 +213,8 @@ public class GameScreen implements Screen {
 		shapeRenderer.begin(ShapeType.Line);
 		worldObj.getEntities().forEach(e -> {
 			shapeRenderer.setColor(Color.WHITE);
-			shapeRenderer.rect(e.getPosition().x, e.getPosition().y,
-					e.getHitbox().width, e.getHitbox().height);
+			shapeRenderer.rect(e.getPosition().x, e.getPosition().y, e.getHitbox().width,
+					e.getHitbox().height);
 		});
 		shapeRenderer.end();
 		batch.end();
@@ -237,9 +236,8 @@ public class GameScreen implements Screen {
 
 			// Draw each entity with its own texture and apply rotation
 			batch.draw(e.getTexture(), e.getPosition().x, e.getPosition().y,
-					e.getHitbox().width / 2, e.getHitbox().height / 2,
-					e.getHitbox().width, e.getHitbox().height, 1, 1,
-					e.getDirection(), false);
+					e.getHitbox().width / 2, e.getHitbox().height / 2, e.getHitbox().width,
+					e.getHitbox().height, 1, 1, e.getDirection(), false);
 		});
 	}
 
@@ -266,39 +264,32 @@ public class GameScreen implements Screen {
 
 		// if the game is muted, skip processing
 		if (PirateGame.gameVolume == 0) return;
-		float vol = (player.getVelocity().len2()
-				/ (player.getMaxSpeed() * player.getMaxSpeed()));
+		float vol = (player.getVelocity().len2() / (player.getMaxSpeed() * player.getMaxSpeed()));
 		boatWaterMovement.setVolume(soundIdBoatMovement, vol);
 	}
 
 	/**
 	 * Moves the camera smoothly to the target position
 	 * 
-	 * @param target
-	 *            the position the camera should move to
-	 * @param speed
-	 *            the speed ratio the camera moves by.<br>
-	 *            In range [0,1], where 0 is no movement and 1 is instant
-	 *            movement
+	 * @param target the position the camera should move to
+	 * @param speed  the speed ratio the camera moves by.<br>
+	 *               In range [0,1], where 0 is no movement and 1 is instant
+	 *               movement
 	 */
 	private void lerpCamera(Vector2 target, float speed, float delta) {
 		delta *= 60; // standardize for 60fps
 		Vector3 camPos = camera.position;
 
-		camPos.x = camera.position.x
-				+ (target.x - camera.position.x) * speed * delta;
-		camPos.y = camera.position.y
-				+ (target.y - camera.position.y) * speed * delta;
+		camPos.x = camera.position.x + (target.x - camera.position.x) * speed * delta;
+		camPos.y = camera.position.y + (target.y - camera.position.y) * speed * delta;
 
 		/* Confine the camera to the bounds of the map */
 
-		float widthMaxLimit = World.WORLD_WIDTH * World.WORLD_TILE_SIZE
-				- camera.viewportWidth / 2;
+		float widthMaxLimit = World.WORLD_WIDTH * World.WORLD_TILE_SIZE - camera.viewportWidth / 2;
 		float heightMaxLimit = World.WORLD_HEIGHT * World.WORLD_TILE_SIZE
 				- camera.viewportHeight / 2;
 		float widthMinLimit = camera.viewportWidth / 2 + World.WORLD_TILE_SIZE;
-		float heightMinLimit = camera.viewportHeight / 2
-				+ World.WORLD_TILE_SIZE;
+		float heightMinLimit = camera.viewportHeight / 2 + World.WORLD_TILE_SIZE;
 
 		if (camPos.x < widthMinLimit) camPos.x = widthMinLimit;
 		if (camPos.x > widthMaxLimit) camPos.x = widthMaxLimit;
@@ -311,7 +302,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		camera.setToOrtho(false, width/2, height/2);
+		camera.setToOrtho(false, width / 2, height / 2);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		// TODO: Add hud scaling
