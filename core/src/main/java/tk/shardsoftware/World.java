@@ -37,16 +37,15 @@ public class World {
 	/**
 	 * The logical game function called on each game tick
 	 * 
-	 * @param delta
-	 *            the time between the previous update and this one
+	 * @param delta the time between the previous update and this one
 	 */
 	public void update(float delta) {
 		updateEntities(delta);
 	}
 
 	/**
-	 * Progress the logical step for each entity. Also remove them from the
-	 * world if flag is set
+	 * Progress the logical step for each entity. Also remove them from the world if
+	 * flag is set
 	 */
 	private void updateEntities(float delta) {
 		Iterator<Entity> iter = entities.iterator();
@@ -60,6 +59,14 @@ public class World {
 	/** The list of entities contained within the world */
 	public List<Entity> getEntities() {
 		return entities;
+	}
+
+	public static float getWidth() {
+		return WORLD_TILE_SIZE * WORLD_WIDTH;
+	}
+
+	public static float getHeight() {
+		return WORLD_TILE_SIZE * WORLD_HEIGHT;
 	}
 
 }

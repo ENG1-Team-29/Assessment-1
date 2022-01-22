@@ -94,14 +94,17 @@ public abstract class Entity {
 		Rectangle nextHitbox = new Rectangle(hitbox).setPosition(hitbox.x + velocityVec.x * delta,
 				hitbox.y + velocityVec.y * delta);
 
-		// TODO: Stop entities from leaving the boundaries of the map
-
 		// TODO: Change to bounding-box hierarchy if performance is too low
 		boolean collidedFlag = worldObj.getEntities().stream().filter(e -> !e.equals(this))
 				.anyMatch(e -> e.hitbox.overlaps(nextHitbox));
 
-		// Calculate world collisions
+		/* Calculate world collisions */
 		collidedFlag |= worldObj.worldMap.isSolidTileWithinArea(nextHitbox);
+		// Ensure the entity doesn't leave the world
+		collidedFlag |= nextHitbox.x < 0;
+		collidedFlag |= nextHitbox.x + nextHitbox.width > World.getWidth();
+		collidedFlag |= nextHitbox.y < 0;
+		collidedFlag |= nextHitbox.y + nextHitbox.height > World.getHeight();
 
 		if (collidedFlag) {
 			// Has collided so remove velocity (ignoring momentum)
