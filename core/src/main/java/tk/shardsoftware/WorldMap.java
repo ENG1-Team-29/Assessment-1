@@ -2,6 +2,9 @@ package tk.shardsoftware;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.function.BooleanSupplier;
+import java.util.function.Function;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -68,6 +71,30 @@ public class WorldMap {
 	public void drawTile(int x, int y, SpriteBatch batch) {
 		Texture texture = this.getTile(x, y).getTex();
 		batch.draw(texture, x * tile_size, y * tile_size, tile_size, tile_size);
+	}
+
+
+	/**
+	 * Searches the map based on the result of a function passed as an argument.
+	 * Accepts any Function which accepts a Vector2 as input and returns a boolean.
+	 * See GameScreen.SetPlayerStartPosition() for an example of its use
+	 */
+	public Vector2 SearchMap(Function<Vector2,Boolean> searchCond) {
+		for(int i = 0; i < this.width; i++){
+			for(int j = 0; j < this.height; j++){
+				Boolean satisfiesCond = false;
+				Vector2 v = new Vector2(i,j);
+				try{ //Catch any exceptions in the passed method
+					satisfiesCond = searchCond.apply(v);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				if(satisfiesCond){
+					return v;
+				}
+			}
+		}
+		return null;
 	}
 
 
