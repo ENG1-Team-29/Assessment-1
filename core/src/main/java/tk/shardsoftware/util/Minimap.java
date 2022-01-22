@@ -1,73 +1,108 @@
 package tk.shardsoftware.util;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-
-import java.util.HashMap;
+import com.badlogic.gdx.utils.Disposable;
 
 import tk.shardsoftware.TileType;
 import tk.shardsoftware.World;
-import tk.shardsoftware.WorldMap;
-import tk.shardsoftware.util.ResourceUtil;
 
 /**
- * @author Hector Woods
  * Draws a Minimap to the screen to help the player navigate.
+ * 
+ * @author Hector Woods
+ * @author James Burnell
  */
-public class Minimap {
-    World world;
+public class Minimap implements Disposable {
 
-    Texture miniMapBackground;
-    Texture playerTile;
+	private World worldObj;
+	private Texture miniMapBorder;
+	private Texture wholeMap;
 
-    public Minimap(World world){
-        this.world = world;
-        miniMapBackground = ResourceUtil.getTexture("textures/tiles/minimap_background.png");
-        playerTile = ResourceUtil.getTexture("textures/tiles/player-tile.png");
-    }
+	public float x;
+	public float y;
+	public int width;
+	public int height;
 
-    public void DrawMap(SpriteBatch batch, int width, int height, int x, int y, Vector2 playerPos){
-        batch.draw(miniMapBackground, x, y, width, height);
+	public Minimap(World world, float x, float y, int width, int height) {
+		this.worldObj = world;
+		miniMapBorder = ResourceUtil.getTexture("textures/tiles/minimap-border.png");
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
 
-        HashMap<Vector2, TileType> tileMap = world.worldMap.tileMap;
+		prepareMap();
+	}
 
-        int playerTileX = (int)playerPos.x / world.worldMap.tile_size;
-        int playerTileY = (int)playerPos.y / world.worldMap.tile_size;
+	/** Generate an image of the entire map */
+	public void prepareMap() {
+		Pixmap screen = new Pixmap(World.WORLD_WIDTH, World.WORLD_HEIGHT, Format.RGB888);
 
-        int startX = playerTileX - width/2+1;
-        int startY = playerTileY - height/2;
+		Map<TileType, Integer> colors = getTileColors();
 
-        int borderSize = 4; //We don't want to draw over the miniMap borders!
+		for (int i = 0; i < World.WORLD_WIDTH; i++) {
+			for (int j = 0; j < World.WORLD_HEIGHT; j++) {
+				TileType tile = worldObj.worldMap.getTile(i, j);
+				screen.setColor(colors.get(tile));
+				screen.drawPixel(i, j);
+			}
+		}
+		wholeMap = new Texture(screen);
+		screen.dispose();
+	}
 
-        int miniMapOriginX = x;
-        int miniMapOriginY = y;
+	/** Generate a map of tile types and their corner pixel color */
+	private Map<TileType, Integer> getTileColors() {
+		HashMap<TileType, Integer> result = new HashMap<TileType, Integer>();
+		for (TileType t : TileType.values()) {
+			t.getTex().getTextureData().prepare();
+			result.put(t, t.getTex().getTextureData().consumePixmap().getPixel(0, 0));
+		}
 
-        for(int i = startX+borderSize; i < startX + width-borderSize; i++){
-            for(int j = startY+borderSize; j < startY + height-borderSize; j++){
-                TileType tile = world.worldMap.getTile(i,j);
-                batch.draw(tile.getTex(),miniMapOriginX+i-startX, miniMapOriginY+j-startY,1,1);
-            }
-        }
+		return result;
+	}
 
+	public void drawMap(SpriteBatch batch, Vector2 playerPos) {
 
+		int playerTileX = (int) playerPos.x / worldObj.worldMap.tile_size;
+		int playerTileY = (int) playerPos.y / worldObj.worldMap.tile_size;
 
-        ShapeRenderer shapes = new ShapeRenderer();
+		int startX = (int) (playerTileX - width / 2 + 1);
+		int startY = (int) (playerTileY - height / 2);
 
-        shapes.begin(ShapeRenderer.ShapeType.Line);
-        shapes.setColor(Color.YELLOW);
+//		// We don't want to draw over the miniMap borders!
+//		int borderSize = 4; 
+//
+//      int miniMapOriginX = x;
+//      int miniMapOriginY = y;
 
-        shapes.circle(x+width/2-borderSize/2,y+width/2-borderSize/2, 5);
+//		for (int i = startX + borderSize; i < startX + width - borderSize; i++) {
+//			for (int j = startY + borderSize; j < startY + height - borderSize; j++) {
+//				TileType tile = world.worldMap.getTile(i, j);
+//
+//				batch.draw(tile.getTex(), miniMapOriginX + i - startX, miniMapOriginY + j - startY,
+//						1, 1);
+//			}
+//		}
 
-        shapes.end();
-        //batch.draw(playerTile,x+width/2-borderSize/2,y+width/2-borderSize/2,5,5);
+		// Draw a portion of the texture
+		batch.draw(wholeMap, x, y, 0, 0, width, height, 1, 1, 0, startX, startY, width, height,
+				false, true);
+		// Draw minimap border
+		batch.draw(miniMapBorder, x, y, width, height);
 
-        WorldMap map = this.world.worldMap;
-        PerlinNoiseGenerator generator = map.perlin;
+	}
 
-    }
+	@Override
+	public void dispose() {
+		wholeMap.dispose();
+		miniMapBorder.dispose();
+	}
 }

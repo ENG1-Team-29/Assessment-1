@@ -41,7 +41,7 @@ public class GameScreen implements Screen {
 	public Sound ambientOcean;
 	private long soundIdBoatMovement;
 
-	private SpriteBatch batch, hudBatch, miniMapBatch;
+	private SpriteBatch batch, hudBatch;
 	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera camera;
 	private int DEFAULT_CAMERA_ZOOM = 1;
@@ -60,7 +60,6 @@ public class GameScreen implements Screen {
 	public GameScreen(AssetManager assets) {
 		batch = new SpriteBatch();
 		hudBatch = new SpriteBatch();
-		miniMapBatch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
 		camera = new OrthographicCamera(360 * 16f / 9f, 360);
 		camera.zoom = DEFAULT_CAMERA_ZOOM;
@@ -68,7 +67,7 @@ public class GameScreen implements Screen {
 
 		worldObj = new World();
 		player = new EntityShip(worldObj);
-		miniMap = new Minimap(worldObj);
+		miniMap = new Minimap(worldObj, 25, 25, 150, 150);
 		player.setPosition(50, 50);
 		worldObj.getEntities().add(player);
 
@@ -166,6 +165,7 @@ public class GameScreen implements Screen {
 			}
 			if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
 				worldObj.worldMap.buildWorld(MathUtils.random.nextLong());
+				miniMap.prepareMap();
 			}
 		}
 		// player.setPosition(0, 0);
@@ -191,12 +191,7 @@ public class GameScreen implements Screen {
 		DebugUtil.saveProcessTime("Entity Draw Time", () -> renderEntities());
 
 		batch.end();
-
-		miniMapBatch.begin();
-		DebugUtil.saveProcessTime("Mini-Map Draw Time", () -> {
-			miniMap.DrawMap(miniMapBatch,150,150,25,25, player.getPosition());
-		});
-		miniMapBatch.end();
+		
 
 		if (DEBUG_MODE) DebugUtil.saveProcessTime("Hitbox Render", () -> renderHitboxes());
 
@@ -211,6 +206,9 @@ public class GameScreen implements Screen {
 			// TODO: Change to allow for different screen sizes
 			font.draw(hudBatch, pointTxtLayout, Gdx.graphics.getWidth() - pointTxtLayout.width - 20,
 					Gdx.graphics.getHeight() - 20);
+		});
+		DebugUtil.saveProcessTime("Mini-Map Draw Time", () -> {
+			miniMap.drawMap(hudBatch, player.getPosition());
 		});
 
 		hudBatch.end();
@@ -338,6 +336,7 @@ public class GameScreen implements Screen {
 		batch.dispose();
 		hudBatch.dispose();
 		shapeRenderer.dispose();
+		miniMap.dispose();
 	}
 
 }
