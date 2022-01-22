@@ -86,11 +86,11 @@ public class Minimap implements Disposable {
 			startY = 0;
 		}
 
-		if (startX > width) {
-			startX = width;
+		if (startX > wholeMap.getWidth() - width) {
+			startX = wholeMap.getWidth() - width;
 		}
-		if (startY > height) {
-			startY = height;
+		if (startY > wholeMap.getHeight() - height) {
+			startY = wholeMap.getHeight() - height;
 		}
 
 		// Draw minimap border
