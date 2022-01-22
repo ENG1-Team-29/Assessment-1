@@ -4,7 +4,6 @@ import static tk.shardsoftware.util.DebugUtil.DEBUG_MODE;
 import static tk.shardsoftware.util.ResourceUtil.debugFont;
 import static tk.shardsoftware.util.ResourceUtil.font;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -34,7 +33,6 @@ import tk.shardsoftware.entity.EntityShip;
 import tk.shardsoftware.util.DebugUtil;
 import tk.shardsoftware.util.Minimap;
 import tk.shardsoftware.util.ResourceUtil;
-import java.util.function.Function;
 
 /** Handles game controls, rendering, and logic */
 public class GameScreen implements Screen {
@@ -61,23 +59,26 @@ public class GameScreen implements Screen {
 	/** The text to be display the points */
 	public GlyphLayout pointTxtLayout;
 
-	public void SetPlayerStartPosition(EntityShip player){
-		Function<Vector2,Boolean> startPositionConditions = new Function<Vector2, Boolean>() {
-			@Override
-			public Boolean apply(Vector2 vector2) {
-				for(int i = (int)vector2.x-20; i < vector2.x+20; i++){
-					for(int j =(int)vector2.y-20; j < vector2.y+20; j++){
-						if(i<0 || i > worldObj.worldMap.width || j<0 || j > worldObj.worldMap.height){
-							return false;
-						}
-						TileType tile = worldObj.worldMap.tileMap.getOrDefault(new Vector2(i,j), TileType.WATER_DEEP);
-						if(tile != TileType.WATER_DEEP && tile != TileType.WATER_SHALLOW){
-							return false;
-						}
+	/**
+	 * Search the world map for a region that contains only water to spawn the
+	 * player in. Once this has been found, it will set the player position to this
+	 * location.
+	 */
+	public void setPlayerStartPosition(EntityShip player) {
+		Function<Vector2, Boolean> startPositionConditions = vector2 -> {
+			for (int i = (int) vector2.x - 20; i < vector2.x + 20; i++) {
+				for (int j = (int) vector2.y - 20; j < vector2.y + 20; j++) {
+					if (i < 0 || i > worldObj.worldMap.width || j < 0
+							|| j > worldObj.worldMap.height) {
+						return false;
+					}
+					TileType tile = worldObj.worldMap.getTile(i, j);
+					if (tile != TileType.WATER_DEEP && tile != TileType.WATER_SHALLOW) {
+						return false;
 					}
 				}
-				return true;
 			}
+			return true;
 		};
 		Vector2 startPos = worldObj.worldMap.SearchMap(startPositionConditions);
 		startPos.x = startPos.x * worldObj.worldMap.tile_size;
@@ -85,7 +86,6 @@ public class GameScreen implements Screen {
 		System.out.println("Start Position: " + startPos);
 		player.setPosition(startPos);
 	}
-
 
 	public GameScreen(AssetManager assets) {
 		batch = new SpriteBatch();
@@ -97,8 +97,8 @@ public class GameScreen implements Screen {
 
 		worldObj = new World();
 		player = new EntityShip(worldObj);
-		miniMap = new Minimap(worldObj, 25, 25, 150, 150);
-		SetPlayerStartPosition(player);
+		miniMap = new Minimap(worldObj, 25, Gdx.graphics.getHeight() - 150 - 25, 150, 150);
+		setPlayerStartPosition(player);
 		worldObj.getEntities().add(player);
 
 		boatWaterMovement = ResourceUtil.getSound("audio/entity/boat-water-movement.wav");
@@ -199,7 +199,7 @@ public class GameScreen implements Screen {
 			if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
 				worldObj.worldMap.buildWorld(MathUtils.random.nextLong());
 				miniMap.prepareMap();
-				SetPlayerStartPosition(player);
+				setPlayerStartPosition(player);
 			}
 		}
 		// player.setPosition(0, 0);
@@ -229,6 +229,7 @@ public class GameScreen implements Screen {
 		if (DEBUG_MODE) DebugUtil.saveProcessTime("Hitbox Render", () -> renderHitboxes());
 
 		hudBatch.begin();
+		miniMap.drawMap(hudBatch, player.getPosition()); // <1% draw time, no point measuring
 		if (DEBUG_MODE) DebugUtil.saveProcessTime("Debug HUD Draw Time", () -> {
 
 			renderDebug(generateDebugStrings());
@@ -239,9 +240,6 @@ public class GameScreen implements Screen {
 			// TODO: Change to allow for different screen sizes
 			font.draw(hudBatch, pointTxtLayout, Gdx.graphics.getWidth() - pointTxtLayout.width - 20,
 					Gdx.graphics.getHeight() - 20);
-		});
-		DebugUtil.saveProcessTime("Mini-Map Draw Time", () -> {
-			miniMap.drawMap(hudBatch, player.getPosition());
 		});
 
 		hudBatch.end();
