@@ -36,6 +36,7 @@ public abstract class Entity {
 	public boolean remove = false;
 	/** The texture used to depict the entity */
 	protected TextureRegion texture;
+	protected boolean ignoreWorldCollision = false;
 
 	protected Entity(World worldObj, float x, float y, float w, float h) {
 		setPosition(x, y);
@@ -84,6 +85,24 @@ public abstract class Entity {
 		// prevent entity from traveling faster than the maximum speed
 		velocityVec.limit(maximumSpeed);
 		stepPosition(delta);
+		keepWithinWorldBounds();
+	}
+
+	/** Ensure the entity doesn't leave the world */
+	private void keepWithinWorldBounds() {
+		if (positionVec.x < 0) {
+			setPosition(0, positionVec.y);
+		}
+		if (positionVec.x + width > World.getWidth()) {
+			setPosition(World.getWidth() - width, positionVec.y);
+		}
+		if (positionVec.y < 0) {
+			setPosition(positionVec.x, 0);
+		}
+		if (positionVec.y + height > World.getHeight()) {
+			setPosition(positionVec.x, World.getHeight() - height);
+		}
+		//onTouchingBorder();
 	}
 
 	/**
@@ -102,12 +121,8 @@ public abstract class Entity {
 				.anyMatch(e -> e.hitbox.overlaps(nextHitbox));
 
 		/* Calculate world collisions */
-		collidedFlag |= worldObj.worldMap.isSolidTileWithinArea(nextHitbox);
-		// Ensure the entity doesn't leave the world
-		collidedFlag |= nextHitbox.x < 0;
-		collidedFlag |= nextHitbox.x + nextHitbox.width > World.getWidth();
-		collidedFlag |= nextHitbox.y < 0;
-		collidedFlag |= nextHitbox.y + nextHitbox.height > World.getHeight();
+		if (!ignoreWorldCollision)
+			collidedFlag |= worldObj.worldMap.isSolidTileWithinArea(nextHitbox);
 
 		if (collidedFlag) {
 			// Has collided so remove velocity (ignoring momentum)
@@ -233,6 +248,14 @@ public abstract class Entity {
 	public void setHeight(float height) {
 		this.height = height;
 		updateHitbox();
+	}
+
+	public boolean isIgnoreWorldCollision() {
+		return ignoreWorldCollision;
+	}
+
+	public void setIgnoreWorldCollision(boolean ignoreWorldCollision) {
+		this.ignoreWorldCollision = ignoreWorldCollision;
 	}
 
 }
