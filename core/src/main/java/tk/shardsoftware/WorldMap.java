@@ -46,10 +46,14 @@ public class WorldMap {
 				Vector2 key = new Vector2(i, j);
 
 				float n = perlin.noise(i, j);
-
-				if (n > 0.5) {
+				
+				if (n > 0.95) {
+					this.tileMap.put(key, TileType.GRASS);
+				} else if (n > 0.9) {
+					this.tileMap.put(key, TileType.DIRT);
+				} else if (n > 0.5) {
 					this.tileMap.put(key, TileType.SAND); // sand
-				} else if (n > 0.4) {
+				} else if (n > 0) {
 					this.tileMap.put(key, TileType.WATER_SHALLOW);
 				}
 
