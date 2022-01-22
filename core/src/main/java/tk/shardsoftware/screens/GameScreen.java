@@ -4,8 +4,10 @@ import static tk.shardsoftware.util.DebugUtil.DEBUG_MODE;
 import static tk.shardsoftware.util.ResourceUtil.debugFont;
 import static tk.shardsoftware.util.ResourceUtil.font;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -26,11 +28,13 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
 import tk.shardsoftware.PirateGame;
+import tk.shardsoftware.TileType;
 import tk.shardsoftware.World;
 import tk.shardsoftware.entity.EntityShip;
 import tk.shardsoftware.util.DebugUtil;
 import tk.shardsoftware.util.Minimap;
 import tk.shardsoftware.util.ResourceUtil;
+import java.util.function.Function;
 
 /** Handles game controls, rendering, and logic */
 public class GameScreen implements Screen {
@@ -57,6 +61,32 @@ public class GameScreen implements Screen {
 	/** The text to be display the points */
 	public GlyphLayout pointTxtLayout;
 
+	public void SetPlayerStartPosition(EntityShip player){
+		Function<Vector2,Boolean> startPositionConditions = new Function<Vector2, Boolean>() {
+			@Override
+			public Boolean apply(Vector2 vector2) {
+				for(int i = (int)vector2.x-20; i < vector2.x+20; i++){
+					for(int j =(int)vector2.y-20; j < vector2.y+20; j++){
+						if(i<0 || i > worldObj.worldMap.width || j<0 || j > worldObj.worldMap.height){
+							return false;
+						}
+						TileType tile = worldObj.worldMap.tileMap.getOrDefault(new Vector2(i,j), TileType.WATER_DEEP);
+						if(tile != TileType.WATER_DEEP && tile != TileType.WATER_SHALLOW){
+							return false;
+						}
+					}
+				}
+				return true;
+			}
+		};
+		Vector2 startPos = worldObj.worldMap.SearchMap(startPositionConditions);
+		startPos.x = startPos.x * worldObj.worldMap.tile_size;
+		startPos.y = startPos.y * worldObj.worldMap.tile_size;
+		System.out.println("Start Position: " + startPos);
+		player.setPosition(startPos);
+	}
+
+
 	public GameScreen(AssetManager assets) {
 		batch = new SpriteBatch();
 		hudBatch = new SpriteBatch();
@@ -68,7 +98,7 @@ public class GameScreen implements Screen {
 		worldObj = new World();
 		player = new EntityShip(worldObj);
 		miniMap = new Minimap(worldObj, 25, 25, 150, 150);
-		player.setPosition(50, 50);
+		SetPlayerStartPosition(player);
 		worldObj.getEntities().add(player);
 
 		boatWaterMovement = ResourceUtil.getSound("audio/entity/boat-water-movement.wav");
@@ -169,6 +199,7 @@ public class GameScreen implements Screen {
 			if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
 				worldObj.worldMap.buildWorld(MathUtils.random.nextLong());
 				miniMap.prepareMap();
+				SetPlayerStartPosition(player);
 			}
 		}
 		// player.setPosition(0, 0);
