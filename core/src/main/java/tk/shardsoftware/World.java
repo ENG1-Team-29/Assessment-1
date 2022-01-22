@@ -63,6 +63,10 @@ public class World {
 		return entities;
 	}
 
+	public void addEntity(Entity e) {
+		entities.add(e);
+	}
+
 	public static float getWidth() {
 		return WORLD_TILE_SIZE * WORLD_WIDTH;
 	}
