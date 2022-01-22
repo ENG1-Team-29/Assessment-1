@@ -20,13 +20,15 @@ import tk.shardsoftware.util.PerlinNoiseGenerator;
 public class WorldMap {
 
 	/** The width and height of each tile */
-	int tile_size;
+	public int tile_size;
 	/** The width of the map in tiles */
-	int width;
+	public int width;
 	/** The height of the map in tiles */
-	int height;
+	public int height;
 	/** The placement of each tile within the world */
-	HashMap<Vector2, TileType> tileMap = new HashMap<Vector2, TileType>();
+	public HashMap<Vector2, TileType> tileMap = new HashMap<Vector2, TileType>();
+
+	public PerlinNoiseGenerator perlin;
 
 	public WorldMap(int world_tile_size, int world_width, int world_height) {
 		this.tile_size = world_tile_size;
@@ -39,7 +41,7 @@ public class WorldMap {
 		// clear map to allow for regeneration
 		tileMap.clear();
 		// choosing these values is more of an art than a science
-		PerlinNoiseGenerator perlin = new PerlinNoiseGenerator(2f, 100, 12, 1, 1.3f, 0.66f, width,
+		this.perlin = new PerlinNoiseGenerator(2f, 100, 12, 1, 1.3f, 0.66f, width,
 				height, seed);
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
@@ -66,6 +68,8 @@ public class WorldMap {
 		Texture texture = this.getTile(x, y).getTex();
 		batch.draw(texture, x * tile_size, y * tile_size, tile_size, tile_size);
 	}
+
+
 
 	// TODO: Render once to off-screen buffer then render buffer to screen
 	public void drawTilesInRange(Camera cam, SpriteBatch batch) {

@@ -29,6 +29,7 @@ import tk.shardsoftware.PirateGame;
 import tk.shardsoftware.World;
 import tk.shardsoftware.entity.EntityShip;
 import tk.shardsoftware.util.DebugUtil;
+import tk.shardsoftware.util.Minimap;
 import tk.shardsoftware.util.ResourceUtil;
 
 /** Handles game controls, rendering, and logic */
@@ -40,12 +41,13 @@ public class GameScreen implements Screen {
 	public Sound ambientOcean;
 	private long soundIdBoatMovement;
 
-	private SpriteBatch batch, hudBatch;
+	private SpriteBatch batch, hudBatch, miniMapBatch;
 	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera camera;
 	private int DEFAULT_CAMERA_ZOOM = 1;
 
 	private World worldObj;
+	private Minimap miniMap;
 
 	/** The ship object that the player will control */
 	private EntityShip player;
@@ -58,6 +60,7 @@ public class GameScreen implements Screen {
 	public GameScreen(AssetManager assets) {
 		batch = new SpriteBatch();
 		hudBatch = new SpriteBatch();
+		miniMapBatch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
 		camera = new OrthographicCamera(360 * 16f / 9f, 360);
 		camera.zoom = DEFAULT_CAMERA_ZOOM;
@@ -65,6 +68,7 @@ public class GameScreen implements Screen {
 
 		worldObj = new World();
 		player = new EntityShip(worldObj);
+		miniMap = new Minimap(worldObj);
 		player.setPosition(50, 50);
 		worldObj.getEntities().add(player);
 
@@ -188,10 +192,15 @@ public class GameScreen implements Screen {
 
 		batch.end();
 
+		miniMapBatch.begin();
+		DebugUtil.saveProcessTime("Mini-Map Draw Time", () -> {
+			miniMap.DrawMap(miniMapBatch,150,150,25,25, player.getPosition());
+		});
+		miniMapBatch.end();
+
 		if (DEBUG_MODE) DebugUtil.saveProcessTime("Hitbox Render", () -> renderHitboxes());
 
 		hudBatch.begin();
-
 		if (DEBUG_MODE) DebugUtil.saveProcessTime("Debug HUD Draw Time", () -> {
 
 			renderDebug(generateDebugStrings());

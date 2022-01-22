@@ -27,7 +27,7 @@ public class World {
 	public World() {
 		entities = new ArrayList<Entity>();
 
-		worldMap = new WorldMap(WORLD_TILE_SIZE, WORLD_WIDTH, WORLD_HEIGHT);
+		this.worldMap = new WorldMap(WORLD_TILE_SIZE, WORLD_WIDTH, WORLD_HEIGHT);
 		if (BUILD_MAP) {
 			System.out.println("Building World");
 			worldMap.buildWorld(MathUtils.random.nextLong());

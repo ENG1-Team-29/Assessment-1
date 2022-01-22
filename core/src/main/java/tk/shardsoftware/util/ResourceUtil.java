@@ -46,6 +46,8 @@ public class ResourceUtil {
 		addTexture("textures/tiles/noisy-rock.png");
 		addTexture("textures/tiles/noisy-grass.png");
 		addTexture("textures/entity/playership.png");
+		addTexture("textures/tiles/minimap_background.png");
+		addTexture("textures/tiles/player-tile.png");
 		nullTexture = generateNullTexture();
 
 		addSound("audio/entity/boat-water-movement.wav");
