@@ -58,7 +58,7 @@ public class WorldMap {
 
 				if (n > 0.5) {
 					this.tileMap.put(key, TileType.SAND); // sand
-				} else if (n > 0.4) {
+				} else if (n > 0.45) {
 					this.tileMap.put(key, TileType.WATER_SHALLOW);
 				}
 
@@ -164,7 +164,7 @@ public class WorldMap {
 	 */
 	public static class PerlinNoise {
 
-		/** our noise function, i.e how "tall" it is */
+		/** amplitude of our noise function, i.e how "tall" it is */
 		float amplitude;
 		/** frequency of our noise function, i.e how often we reach a peak */
 		float frequency;
@@ -263,7 +263,7 @@ public class WorldMap {
 		}
 
 		/**
-		 * This function implements the concept of multi-layered noise. The function
+		 * This function implements the concept of multi-layered noise (or forward-brownian motion). The function
 		 * 'layers' multiple noise functions on top of each other to allow for small
 		 * changes. This is the main function to call with the PerlinNoise class
 		 */
