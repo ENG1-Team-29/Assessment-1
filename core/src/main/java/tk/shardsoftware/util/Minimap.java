@@ -39,7 +39,7 @@ public class Minimap {
         int playerTileX = (int)playerPos.x / world.worldMap.tile_size;
         int playerTileY = (int)playerPos.y / world.worldMap.tile_size;
 
-        int startX = playerTileX - width/2+1;
+        int startX = playerTileX - width/2;
         int startY = playerTileY - height/2;
 
         int borderSize = 4; //We don't want to draw over the miniMap borders!

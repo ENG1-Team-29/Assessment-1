@@ -5,6 +5,7 @@ import static tk.shardsoftware.util.ResourceUtil.debugFont;
 import static tk.shardsoftware.util.ResourceUtil.font;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
@@ -26,6 +27,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
 import tk.shardsoftware.PirateGame;
+import tk.shardsoftware.TileType;
 import tk.shardsoftware.World;
 import tk.shardsoftware.entity.EntityShip;
 import tk.shardsoftware.util.DebugUtil;
@@ -56,6 +58,24 @@ public class GameScreen implements Screen {
 	public int points = 0;
 	/** The text to be display the points */
 	public GlyphLayout pointTxtLayout;
+
+	/**
+	 *Makes Sure that the player starts in a valid start point, i.e they don't spawn in the ground.
+	 *
+	 */
+	private void SetStartPoint(EntityShip player){
+		HashMap<Vector2, TileType> tileMap = worldObj.worldMap.tileMap;
+		int startX = worldObj.worldMap.width/2;
+		int startY = worldObj.worldMap.height/2;
+
+		int hitBoxSize = (int)player.getHitboxScale();
+
+		boolean validPositionFound = false;
+		while(!validPositionFound){
+
+		}
+	}
+
 
 	public GameScreen(AssetManager assets) {
 		batch = new SpriteBatch();
@@ -197,6 +217,7 @@ public class GameScreen implements Screen {
 			miniMap.DrawMap(miniMapBatch,150,150,25,25, player.getPosition());
 		});
 		miniMapBatch.end();
+
 
 		if (DEBUG_MODE) DebugUtil.saveProcessTime("Hitbox Render", () -> renderHitboxes());
 
