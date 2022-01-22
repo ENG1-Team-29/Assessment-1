@@ -25,8 +25,11 @@ public abstract class Entity {
 	protected Vector2 velocityVec = new Vector2(0, 0);
 	/** The entity's current position in the world */
 	protected Vector2 positionVec = new Vector2(0, 0);
+	protected float width, height;
 	/** The hitbox of the entity. Note that this does not rotate. */
 	protected Rectangle hitbox = new Rectangle();
+	/** How large the hitbox is in comparison to the entity */
+	protected float hitboxScale = 1f;
 	/** The World object the entity belongs to */
 	protected World worldObj;
 	/** Tells the World object if the entity should be deleted */
@@ -36,8 +39,8 @@ public abstract class Entity {
 
 	protected Entity(World worldObj, float x, float y, float w, float h) {
 		setPosition(x, y);
-		hitbox.setWidth(w);
-		hitbox.setHeight(h);
+		setWidth(w);
+		setHeight(h);
 		this.worldObj = worldObj;
 	}
 
@@ -64,6 +67,11 @@ public abstract class Entity {
 		return texture;
 	}
 
+	public void setHitboxScale(float hbScale) {
+		this.hitboxScale = hbScale;
+		updateHitbox();
+	}
+
 	/**
 	 * The logical game function called on each game tick
 	 * 
@@ -83,8 +91,8 @@ public abstract class Entity {
 	 */
 	protected void stepPosition(float delta) {
 		// Calculate the hitbox after next step
-		Rectangle nextHitbox = new Rectangle(hitbox).setPosition(
-				positionVec.x + velocityVec.x * delta, positionVec.y + velocityVec.y * delta);
+		Rectangle nextHitbox = new Rectangle(hitbox).setPosition(hitbox.x + velocityVec.x * delta,
+				hitbox.y + velocityVec.y * delta);
 
 		// TODO: Stop entities from leaving the boundaries of the map
 
@@ -103,7 +111,7 @@ public abstract class Entity {
 			// update the position of the entity
 			positionVec.mulAdd(velocityVec, delta);
 			// sync hitbox with entity position
-			hitbox.setPosition(positionVec);
+			updateHitbox();
 		}
 	}
 
@@ -159,6 +167,13 @@ public abstract class Entity {
 		return hitbox;
 	}
 
+	public void updateHitbox() {
+		hitbox.setWidth(width * hitboxScale);
+		hitbox.setHeight(height * hitboxScale);
+		hitbox.setX(positionVec.x + (width - hitbox.width) / 2f);
+		hitbox.setY(positionVec.y + (height - hitbox.height) / 2f);
+	}
+
 	/**
 	 * Set the current position of the Entity
 	 * 
@@ -178,7 +193,7 @@ public abstract class Entity {
 	 */
 	public void setPosition(float x, float y) {
 		this.positionVec.set(x, y);
-		hitbox.setPosition(positionVec);
+		updateHitbox();
 	}
 
 	/**
@@ -194,6 +209,24 @@ public abstract class Entity {
 
 	public float getMaxSpeed() {
 		return maximumSpeed;
+	}
+
+	public float getWidth() {
+		return width;
+	}
+
+	public void setWidth(float width) {
+		this.width = width;
+		updateHitbox();
+	}
+
+	public float getHeight() {
+		return height;
+	}
+
+	public void setHeight(float height) {
+		this.height = height;
+		updateHitbox();
 	}
 
 }

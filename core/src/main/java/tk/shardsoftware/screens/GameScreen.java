@@ -213,7 +213,7 @@ public class GameScreen implements Screen {
 		shapeRenderer.begin(ShapeType.Line);
 		worldObj.getEntities().forEach(e -> {
 			shapeRenderer.setColor(Color.WHITE);
-			shapeRenderer.rect(e.getPosition().x, e.getPosition().y, e.getHitbox().width,
+			shapeRenderer.rect(e.getHitbox().x, e.getHitbox().y, e.getHitbox().width,
 					e.getHitbox().height);
 		});
 		shapeRenderer.end();
@@ -235,9 +235,8 @@ public class GameScreen implements Screen {
 			// e.getHitbox().width, e.getHitbox().height);
 
 			// Draw each entity with its own texture and apply rotation
-			batch.draw(e.getTexture(), e.getPosition().x, e.getPosition().y,
-					e.getHitbox().width / 2, e.getHitbox().height / 2, e.getHitbox().width,
-					e.getHitbox().height, 1, 1, e.getDirection(), false);
+			batch.draw(e.getTexture(), e.getPosition().x, e.getPosition().y, e.getWidth() / 2,
+					e.getHeight() / 2, e.getWidth(), e.getHeight(), 1, 1, e.getDirection(), false);
 		});
 	}
 
