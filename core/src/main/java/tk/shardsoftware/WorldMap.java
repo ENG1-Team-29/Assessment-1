@@ -2,8 +2,8 @@ package tk.shardsoftware;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -57,21 +57,18 @@ public class WorldMap {
 		this.height = world_height;
 	}
 
-	public void buildWorld() {
-		//Choose random seed
-		Random r = new Random();
-		long seed = r.nextLong();
-
+	public void buildWorld(long seed) {
+		Gdx.app.log("WorldMap", "Seed=" + seed);
 		// clear map to allow for regeneration
 		tileMap.clear();
 		// choosing these values is more of an art than a science
-		PerlinNoiseGenerator Perlin = new PerlinNoiseGenerator(2f, 100, 12, 1, 1.3f, 0.66f, width,
+		PerlinNoiseGenerator perlin = new PerlinNoiseGenerator(2f, 100, 12, 1, 1.3f, 0.66f, width,
 				height, seed);
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				Vector2 key = new Vector2(i, j);
 
-				float n = Perlin.noise(i, j);
+				float n = perlin.noise(i, j);
 
 				if (n > 0.5) {
 					this.tileMap.put(key, TileType.SAND); // sand

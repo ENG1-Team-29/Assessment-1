@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.badlogic.gdx.math.MathUtils;
+
 import tk.shardsoftware.entity.Entity;
 
 /** @author James Burnell */
@@ -28,7 +30,7 @@ public class World {
 		worldMap = new WorldMap(WORLD_TILE_SIZE, WORLD_WIDTH, WORLD_HEIGHT);
 		if (BUILD_MAP) {
 			System.out.println("Building World");
-			worldMap.buildWorld();
+			worldMap.buildWorld(MathUtils.random.nextLong());
 		} else {
 
 		}
