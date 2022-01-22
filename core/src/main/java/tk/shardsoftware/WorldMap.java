@@ -1,14 +1,16 @@
 package tk.shardsoftware;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Random;
+import java.util.Map;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+import tk.shardsoftware.util.PerlinNoiseGenerator;
 import tk.shardsoftware.util.ResourceUtil;
 
 /**
@@ -19,16 +21,23 @@ public class WorldMap {
 
 	/** The different tiles that can be in the world */
 	public enum TileType {
-		WATER_DEEP("noisy-waterdeep.png"), WATER_SHALLOW("noisy-watershallow.png"), SAND("noisy-sand.png");
+		WATER_DEEP("noisy-waterdeep.png", false), WATER_SHALLOW("noisy-watershallow.png", false),
+		SAND("noisy-sand.png", true), DIRT("noisy-dirt.png", true), GRASS("noise-grass.png", true);
 
 		private Texture tex;
+		private boolean solid;
 
-		private TileType(String texStr) {
+		private TileType(String texStr, boolean solid) {
 			this.tex = ResourceUtil.getTileTexture(texStr);
+			this.solid = solid;
 		}
 
 		public Texture getTex() {
 			return tex;
+		}
+
+		public boolean isSolid() {
+			return solid;
 		}
 	}
 
@@ -48,8 +57,11 @@ public class WorldMap {
 	}
 
 	public void buildWorld() {
+		// clear map to allow for regeneration
+		tileMap.clear();
 		// choosing these values is more of an art than a science
-		PerlinNoise Perlin = new PerlinNoise(1.1f, 50, 8, 1, 1f, 0.3f, width, height);
+		PerlinNoiseGenerator Perlin = new PerlinNoiseGenerator(1.1f, 50, 8, 1, 1f, 0.3f, width,
+				height);
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				Vector2 key = new Vector2(i, j);
@@ -58,25 +70,26 @@ public class WorldMap {
 
 				if (n > 0.5) {
 					this.tileMap.put(key, TileType.SAND); // sand
-				} else if (n > 0.45) {
+				} else if (n > 0.4) {
 					this.tileMap.put(key, TileType.WATER_SHALLOW);
 				}
 
 			}
 		}
+
 	}
 
 	public void drawTile(int x, int y, SpriteBatch batch) {
-		Texture texture = this.getTile(x, y);
-		batch.draw(texture, x * this.tile_size, y * this.tile_size, this.tile_size, this.tile_size);
+		Texture texture = this.getTile(x, y).getTex();
+		batch.draw(texture, x * tile_size, y * tile_size, tile_size, tile_size);
 	}
 
 	// TODO: Render once to off-screen buffer then render buffer to screen
 	public void drawTilesInRange(Camera cam, SpriteBatch batch) {
-		int numberOfTilesX = (int) (cam.viewportWidth / this.tile_size);
-		int numberOfTilesY = (int) (cam.viewportHeight / this.tile_size);
-		int cameraTilePosX = (int) (cam.position.x / this.tile_size);
-		int cameraTilePosY = (int) (cam.position.y / this.tile_size);
+		int numberOfTilesX = (int) (cam.viewportWidth / tile_size);
+		int numberOfTilesY = (int) (cam.viewportHeight / tile_size);
+		int cameraTilePosX = (int) (cam.position.x / tile_size);
+		int cameraTilePosY = (int) (cam.position.y / tile_size);
 		int minX = Math.max(1, cameraTilePosX - (numberOfTilesX));
 		int minY = Math.max(1, cameraTilePosY - (numberOfTilesY));
 		int maxX = Math.min(width, cameraTilePosX + (numberOfTilesX));
@@ -90,209 +103,90 @@ public class WorldMap {
 	}
 
 	/**
-	 * Get the texture of the tile positioned at (x,y). If there is no tile defined
-	 * at this point, it will return {@link TileType#WATER_DEEP}.
+	 * Get the tile type of the tile positioned at (x,y). If there is no tile
+	 * defined at this point, it will return {@link TileType#WATER_DEEP}.
 	 */
-	public Texture getTile(int x, int y) {
-		TileType tile = tileMap.getOrDefault(new Vector2(x, y), TileType.WATER_DEEP);
-		return tile.getTex();
-	}
-
-	public static class VoronoiNoise {
-		int numPoints;
-		int width;
-		int height;
-
-		double maxStart = 1;
-		double minStart = 0.95;
-
-		double minStep = -0.05;
-		double maxStep = -0.1;
-
-		Random r;
-		double[][] map = new double[width][height];
-
-		private int randomRange(int min, int max) {
-			return r.nextInt(max - min) + min;
-		}
-
-		public Vector2[] choosePoints() {
-			Vector2[] points = new Vector2[numPoints];
-			for (int i = 0; i < numPoints; i++) {
-				Vector2 v = new Vector2(randomRange(0, width), randomRange(0, height));
-				points[i] = v;
-			}
-			return points;
-		}
-
-		public void initiliaseMap() {
-			for (double[] row : map) {
-				Arrays.fill(row, 0);
-			}
-		}
-
-		public void generate(Vector2[] points) {
-			double[][] occupantMap = new double[width][height];
-			for (int i = 0; i < numPoints; i++) {
-				Vector2 point = points[i];
-
-			}
-
-		}
-
-		public VoronoiNoise(long seed, int width, int height) {
-			this.r = new Random(seed);
-			this.width = width;
-			this.height = height;
-			initiliaseMap();
-			Vector2[] points = choosePoints();
-			generate(points);
-		}
-
+	public TileType getTile(int x, int y) {
+		return tileMap.getOrDefault(new Vector2(x, y), TileType.WATER_DEEP);
 	}
 
 	/**
-	 * Based on the Perlin Noise algorithm by Ken Perlin, specifically the method
-	 * described here (though with pseudo-random gradients): <a href=
-	 * "https://adrianb.io/2014/08/09/perlinnoise.html">https://adrianb.io/2014/08/09/perlinnoise.html</a>
-	 * <br>
-	 * You can view the original algorithm as described by Perlin here: <a href=
-	 * "https://cs.nyu.edu/~perlin/doc/oscar.html">https://cs.nyu.edu/~perlin/doc/oscar.html</a>
+	 * Returns a collection of tiles that are within the bounds of the rectangle
 	 * 
+	 * @param rect
+	 * @param filterOnlySolid Filter only the tiles that would cause collision
 	 * 
-	 * @author Hector Woods
+	 * @author James Burnell
 	 */
-	public static class PerlinNoise {
+	public Map<Vector2, TileType> getTilesWithinArea(Rectangle rect, boolean filterOnlySolid) {
+		/* Create a scaled rectangle based on tiles, not pixels */
+		int x = MathUtils.floor(rect.x / tile_size);
+		int y = MathUtils.floor(rect.y / tile_size);
+		int width = MathUtils.ceil(rect.width / tile_size);
+		int height = MathUtils.ceil(rect.height / tile_size);
+//		Rectangle scaledRect = new Rectangle(x, y, width, height);
 
-		/** amplitude of our noise function, i.e how "tall" it is */
-		float amplitude;
-		/** frequency of our noise function, i.e how often we reach a peak */
-		float frequency;
-		/** frequency is adjusted by this value for each octave */
-		float lacunarity;
-		/**
-		 * amplitude is adjusted by this value for each octave, i.e the higher
-		 * persistence is the more effect each nth octave has
-		 */
-		float persistence;
-		/**
-		 * How 'zoomed-in' our noise is. The higher the value, the more zoomed in we
-		 * are.
-		 */
-		float scale;
-		/** number of 'layers' per sample. */
-		int octaves;
-		Vector2[][] gradients;
+//		/* Filter out only those tiles that are within the rectangle */
+//		Map<Vector2, TileType> result = tileMap.entrySet().stream()
+//				.filter(e -> (filterOnlySolid ? e.getValue().solid : true)
+//						&& scaledRect.contains(e.getKey()))
+//				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
 
-		/**
-		 * We generate gradients at each point in advance so that we don't have to
-		 * calculate them multiple times. Gradients are random so we get a new map every
-		 * time we load the game!
-		 */
-		void populateGradientMatrix(int width, int height) {
-			for (int i = 0; i < width + 1; i++) {
-				for (int j = 0; j < height + 1; j++) {
-					Vector2 v = new Vector2();
-					v.setToRandomDirection();
-					gradients[i][j] = v;
-				}
+		Map<Vector2, TileType> result = new HashMap<Vector2, TileType>();
+
+		for (int i = x; i <= x + width; i++) {
+			for (int j = y; j <= y + height; j++) {
+				Vector2 key = new Vector2(i, j);
+				TileType t = tileMap.getOrDefault(key, TileType.WATER_DEEP);
+				// Skip to next tile if needs to be solid and isn't
+				if (filterOnlySolid && !t.solid) continue;
+				result.put(key, t);
 			}
 		}
 
-		float lerp(float t, float a1, float a2) {
-			return a1 + t * (a2 - a1);
-		}
-
-		float ease(float t) {
-			return ((6 * t - 15) * t + 10) * t * t * t;
-		}
-
-		Vector2 getConstantVector(Vector2 v) {
-			if (v.x < 0 && v.y < 0)
-				return new Vector2(-1, -1);
-			if (v.x > 0 && v.y < 0)
-				return new Vector2(1, -1);
-			if (v.x < 0 && v.y > 0)
-				return new Vector2(-1, 1);
-			return new Vector2(1, 1);
-		}
-
-		float generateNoiseValue(float x, float y) {
-			// Point (x,y)
-			Vector2 p = new Vector2(x, y);
-
-			// Gradient Vector points
-			int X = (int) Math.floor(x); // round down
-			int Y = (int) Math.floor(y);
-			float xf = x - X;
-			float yf = y - Y;
-
-
-			// Gradient Vectors
-			Vector2 topRightGrad = this.gradients[X + 1][Y + 1];
-			Vector2 topLeftGrad = this.gradients[X][Y + 1];
-			Vector2 btmRightGrad = this.gradients[X + 1][Y];
-			Vector2 btmLeftGrad = this.gradients[X][Y];
-
-
-			// Distance Vectors
-			Vector2 topRightDist = new Vector2(1 - xf, 1 - yf);
-			Vector2 topLeftDist = new Vector2(xf, 1 - yf);
-			Vector2 btmRightDist = new Vector2(1 - xf, yf);
-			Vector2 btmLeftDist = new Vector2(xf, yf);
-
-			// Dot products
-			float dPtopRight = topRightDist.dot((topRightGrad));
-			float dPtopLeft = topLeftDist.dot((topLeftGrad));
-			float dPbtmRight = btmRightDist.dot((btmRightGrad));
-			float dPbtmLeft = btmLeftDist.dot((btmLeftGrad));
-
-			// Linearly-Interpolate between our dot products and (x,y) relative
-			// to d00 to get a weighted average
-			float u = ease(x - X); // This vector represents how where (x,y) is relative to the other points. (or
-									// (x,y) relative to d00)
-			float v = ease(y - Y); // This is what we will interpolate by.
-
-
-			float l1 = lerp(u, dPtopLeft, dPtopRight);
-			float l2 = lerp(u, dPbtmLeft, dPbtmRight);
-			float n = lerp(v, l2, l1);// final weighted average of (x,y)
-										// relative to d00 and all dot products
-
-			return n;
-		}
-
-		/**
-		 * This function implements the concept of multi-layered noise (or forward-brownian motion). The function
-		 * 'layers' multiple noise functions on top of each other to allow for small
-		 * changes. This is the main function to call with the PerlinNoise class
-		 */
-		public float noise(float x, float y) {
-			float n = 0;
-			float amp = this.amplitude;
-			float freq = this.frequency;
-
-			for (int i = 0; i < this.octaves; i++) {
-				float nV = generateNoiseValue(x / this.scale * freq, y / this.scale * freq);
-				n = n + (nV * amp);
-				amp = amp * this.persistence;
-				freq = freq * this.lacunarity;
-			}
-			return n;
-		}
-
-		public PerlinNoise(float amplitude, float scale, int octaves, float frequency, float lacunarity,
-				float persistence, int width, int height) {
-			this.amplitude = amplitude;
-			this.frequency = frequency;
-			this.octaves = octaves;
-			this.lacunarity = lacunarity;
-			this.persistence = persistence;
-			this.scale = scale;
-			width = (int) (width / scale + 1);
-			height = (int) (height / scale + 1);
-			this.gradients = new Vector2[width + 1][height + 1];
-			populateGradientMatrix(width, height);
-		}
+		return result;
 	}
+
+	/**
+	 * By using streams, it returns whether or not there is at least one solid tile
+	 * within a given area. Given the nature of streams and filters, the efficiency
+	 * is poor.
+	 * 
+	 * @author James Burnell
+	 * @see #isSolidTileWithinArea(Rectangle)
+	 */
+	@Deprecated
+	public boolean isSolidTileWithinAreaStream(Rectangle rect) {
+		/* Create a scaled rectangle based on tiles, not pixels */
+		int x = MathUtils.floor(rect.x / tile_size);
+		int y = MathUtils.floor(rect.y / tile_size);
+		int width = MathUtils.ceil(rect.width / tile_size);
+		int height = MathUtils.ceil(rect.height / tile_size);
+		Rectangle scaledRect = new Rectangle(x, y, width, height);
+
+		return tileMap.entrySet().stream()
+				.anyMatch(e -> e.getValue().solid && scaledRect.contains(e.getKey()));
+	}
+
+	/**
+	 * Returns whether or not there is at least one solid tile within a given area
+	 * 
+	 * @author James Burnell
+	 */
+	public boolean isSolidTileWithinArea(Rectangle rect) {
+		/* Create a scaled rectangle based on tiles, not pixels */
+		int x = MathUtils.floor(rect.x / tile_size);
+		int y = MathUtils.floor(rect.y / tile_size);
+		int width = MathUtils.ceil(rect.width / tile_size);
+		int height = MathUtils.ceil(rect.height / tile_size);
+
+		for (int i = x; i <= x + width; i++) {
+			for (int j = y; j <= y + height; j++) {
+				if (getTile(i, j).solid) return true;
+			}
+		}
+
+		return false;
+	}
+
 }
