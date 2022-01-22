@@ -2,13 +2,15 @@ package tk.shardsoftware.util;
 
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.Random;
+
 /**
  * Based on the Perlin Noise algorithm by Ken Perlin, specifically the method
- * described here (though with pseudo-random gradients): <a href=
+ * described here: <a href=
  * "https://adrianb.io/2014/08/09/perlinnoise.html">https://adrianb.io/2014/08/09/perlinnoise.html</a>
  * <br>
  * You can view the original algorithm as described by Perlin here: <a href=
- * "https://cs.nyu.edu/~perlin/doc/oscar.html">https://cs.nyu.edu/~perlin/doc/oscar.html</a>
+ * "https://mrl.cs.nyu.edu/~perlin/paper445.pdf">https://mrl.cs.nyu.edu/~perlin/paper445.pdf</a>
  * 
  * 
  * @author Hector Woods
@@ -33,21 +35,43 @@ public class PerlinNoiseGenerator {
 	public float scale;
 	/** The number of 'layers' per sample. */
 	public int octaves;
-	public Vector2[][] gradients;
+	public int[] permutationTable;
+
 
 	/**
-	 * We generate gradients at each point in advance so that we don't have to
-	 * calculate them multiple times. Gradients are random so we get a new map every
-	 * time we load the game!
+	 * One of four gradients as described in "Improving perlin noise"
 	 */
-	public void populateGradientMatrix(int width, int height) {
-		for (int i = 0; i < width + 1; i++) {
-			for (int j = 0; j < height + 1; j++) {
-				Vector2 v = new Vector2();
-				v.setToRandomDirection();
-				gradients[i][j] = v;
-			}
+	public Vector2 getGradient(int permutation) {
+		int a = permutation % 4;
+		if(a==0){
+			return new Vector2(-1, -1);
+		}else if (a==1){
+			return new Vector2(1, -1);
+		}else if (a==2){
+			return new Vector2(-1, 1);
+		}else{
+			return new Vector2(1, 1);
 		}
+	}
+	/**
+	 * Set up Permutation table for choosing Pseudo-random gradients.
+	 */
+	public void setUpPermutationTable(long seed){
+		int[] p = new int[512];
+		//Populate array with 0-255, we do this twice to prevent overflows from our hash functions.
+		for(int i = 0; i < 512; i++){
+			p[i] = i % 256;
+		}
+		//Shuffle the array based on our seed
+		Random r = new Random(seed);
+		for(int i = 0; i < 512; i++){
+			int currentValue = p[i];
+			int newIndex = r.nextInt(256); //random number <=256
+			int newValue = p[newIndex];
+			p[newIndex] = currentValue;
+			p[i] = newValue;
+		}
+		this.permutationTable = p;
 	}
 
 	public float lerp(float t, float a1, float a2) {
@@ -58,12 +82,7 @@ public class PerlinNoiseGenerator {
 		return ((6 * t - 15) * t + 10) * t * t * t;
 	}
 
-	public Vector2 getConstantVector(Vector2 v) {
-		if (v.x < 0 && v.y < 0) return new Vector2(-1, -1);
-		if (v.x > 0 && v.y < 0) return new Vector2(1, -1);
-		if (v.x < 0 && v.y > 0) return new Vector2(-1, 1);
-		return new Vector2(1, 1);
-	}
+
 
 	public float generateNoiseValue(float x, float y) {
 		// Point (x,y)
@@ -75,11 +94,12 @@ public class PerlinNoiseGenerator {
 		float xf = x - X;
 		float yf = y - Y;
 
-		// Gradient Vectors
-		Vector2 topRightGrad = this.gradients[X + 1][Y + 1];
-		Vector2 topLeftGrad = this.gradients[X][Y + 1];
-		Vector2 btmRightGrad = this.gradients[X + 1][Y];
-		Vector2 btmLeftGrad = this.gradients[X][Y];
+		// Gradient Vectors, gradients are selected based on hash functions computed on the permutation table
+		int[] p = this.permutationTable;
+		Vector2 topRightGrad = getGradient(p[p[X+1]+p[Y+1]]);
+		Vector2 topLeftGrad = getGradient(p[p[X]+p[Y+1]]);
+		Vector2 btmRightGrad = getGradient(p[p[X+1]+p[Y]]);
+		Vector2 btmLeftGrad = getGradient(p[p[X]+p[Y]]);
 
 		// Distance Vectors
 		Vector2 topRightDist = new Vector2(1 - xf, 1 - yf);
@@ -128,16 +148,13 @@ public class PerlinNoiseGenerator {
 	}
 
 	public PerlinNoiseGenerator(float amplitude, float scale, int octaves, float frequency,
-			float lacunarity, float persistence, int width, int height) {
+			float lacunarity, float persistence, int width, int height, long seed) {
 		this.amplitude = amplitude;
 		this.frequency = frequency;
 		this.octaves = octaves;
 		this.lacunarity = lacunarity;
 		this.persistence = persistence;
 		this.scale = scale;
-		width = (int) (width / scale + 1);
-		height = (int) (height / scale + 1);
-		this.gradients = new Vector2[width + 1][height + 1];
-		populateGradientMatrix(width, height);
+		setUpPermutationTable(seed);
 	}
 }

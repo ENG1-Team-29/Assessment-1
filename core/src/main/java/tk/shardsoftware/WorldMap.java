@@ -2,6 +2,7 @@ package tk.shardsoftware;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
@@ -57,11 +58,15 @@ public class WorldMap {
 	}
 
 	public void buildWorld() {
+		//Choose random seed
+		Random r = new Random();
+		long seed = r.nextLong();
+
 		// clear map to allow for regeneration
 		tileMap.clear();
 		// choosing these values is more of an art than a science
-		PerlinNoiseGenerator Perlin = new PerlinNoiseGenerator(1.1f, 50, 8, 1, 1f, 0.3f, width,
-				height);
+		PerlinNoiseGenerator Perlin = new PerlinNoiseGenerator(2f, 100, 12, 1, 1.3f, 0.66f, width,
+				height, seed);
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				Vector2 key = new Vector2(i, j);
