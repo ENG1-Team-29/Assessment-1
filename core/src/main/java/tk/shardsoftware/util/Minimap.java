@@ -15,6 +15,10 @@ import tk.shardsoftware.World;
 import tk.shardsoftware.WorldMap;
 import tk.shardsoftware.util.ResourceUtil;
 
+/**
+ * @author Hector Woods
+ * Draws a Minimap to the screen to help the player navigate.
+ */
 public class Minimap {
     World world;
 
