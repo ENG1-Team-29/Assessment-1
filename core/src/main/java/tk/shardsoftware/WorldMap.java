@@ -2,8 +2,8 @@ package tk.shardsoftware;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,7 +12,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import tk.shardsoftware.util.PerlinNoiseGenerator;
-import tk.shardsoftware.util.ResourceUtil;
 
 /**
  * @author Hector Woods
@@ -20,37 +19,12 @@ import tk.shardsoftware.util.ResourceUtil;
  */
 public class WorldMap {
 
-	/** The different tiles that can be in the world */
-	public enum TileType {
-		WATER_DEEP("noisy-waterdeep.png", false), WATER_SHALLOW("noisy-watershallow.png", false),
-		SAND("noisy-sand.png", true), DIRT("noisy-dirt.png", true), GRASS("noise-grass.png", true);
-
-		private Texture tex;
-		private boolean solid;
-
-		private TileType(String texStr, boolean solid) {
-			this.tex = ResourceUtil.getTileTexture(texStr);
-			this.solid = solid;
-		}
-
-		public Texture getTex() {
-			return tex;
-		}
-
-		public boolean isSolid() {
-			return solid;
-		}
-	}
-
 	/** The width and height of each tile */
 	int tile_size;
 	/** The width of the map in tiles */
 	int width;
 	/** The height of the map in tiles */
 	int height;
-
-	public PerlinNoiseGenerator perlin;
-
 	/** The placement of each tile within the world */
 	HashMap<Vector2, TileType> tileMap = new HashMap<Vector2, TileType>();
 
@@ -60,15 +34,12 @@ public class WorldMap {
 		this.height = world_height;
 	}
 
-	public void buildWorld() {
-		//Choose random seed
-		Random r = new Random();
-		long seed = r.nextLong();
-
+	public void buildWorld(long seed) {
+		Gdx.app.log("WorldMap", "Seed=" + seed);
 		// clear map to allow for regeneration
 		tileMap.clear();
 		// choosing these values is more of an art than a science
-		this.perlin = new PerlinNoiseGenerator(2f, 100, 12, 1, 1.3f, 0.66f, width,
+		PerlinNoiseGenerator perlin = new PerlinNoiseGenerator(2f, 100, 12, 1, 1.3f, 0.66f, width,
 				height, seed);
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
@@ -147,7 +118,7 @@ public class WorldMap {
 				Vector2 key = new Vector2(i, j);
 				TileType t = tileMap.getOrDefault(key, TileType.WATER_DEEP);
 				// Skip to next tile if needs to be solid and isn't
-				if (filterOnlySolid && !t.solid) continue;
+				if (filterOnlySolid && !t.isSolid()) continue;
 				result.put(key, t);
 			}
 		}
@@ -173,7 +144,7 @@ public class WorldMap {
 		Rectangle scaledRect = new Rectangle(x, y, width, height);
 
 		return tileMap.entrySet().stream()
-				.anyMatch(e -> e.getValue().solid && scaledRect.contains(e.getKey()));
+				.anyMatch(e -> e.getValue().isSolid() && scaledRect.contains(e.getKey()));
 	}
 
 	/**
@@ -190,7 +161,7 @@ public class WorldMap {
 
 		for (int i = x; i <= x + width; i++) {
 			for (int j = y; j <= y + height; j++) {
-				if (getTile(i, j).solid) return true;
+				if (getTile(i, j).isSolid()) return true;
 			}
 		}
 

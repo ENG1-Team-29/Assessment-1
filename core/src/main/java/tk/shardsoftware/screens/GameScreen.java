@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -160,7 +161,7 @@ public class GameScreen implements Screen {
 				Gdx.graphics.setForegroundFPS(targetFPS /= 2);
 			}
 			if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-				worldObj.worldMap.buildWorld();
+				worldObj.worldMap.buildWorld(MathUtils.random.nextLong());
 			}
 		}
 		// player.setPosition(0, 0);
@@ -213,7 +214,7 @@ public class GameScreen implements Screen {
 		shapeRenderer.begin(ShapeType.Line);
 		worldObj.getEntities().forEach(e -> {
 			shapeRenderer.setColor(Color.WHITE);
-			shapeRenderer.rect(e.getPosition().x, e.getPosition().y, e.getHitbox().width,
+			shapeRenderer.rect(e.getHitbox().x, e.getHitbox().y, e.getHitbox().width,
 					e.getHitbox().height);
 		});
 		shapeRenderer.end();
@@ -235,9 +236,8 @@ public class GameScreen implements Screen {
 			// e.getHitbox().width, e.getHitbox().height);
 
 			// Draw each entity with its own texture and apply rotation
-			batch.draw(e.getTexture(), e.getPosition().x, e.getPosition().y,
-					e.getHitbox().width / 2, e.getHitbox().height / 2, e.getHitbox().width,
-					e.getHitbox().height, 1, 1, e.getDirection(), false);
+			batch.draw(e.getTexture(), e.getPosition().x, e.getPosition().y, e.getWidth() / 2,
+					e.getHeight() / 2, e.getWidth(), e.getHeight(), 1, 1, e.getDirection(), false);
 		});
 	}
 
