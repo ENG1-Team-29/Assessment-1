@@ -34,8 +34,7 @@ public class ResourceUtil {
 	/**
 	 * Load any required textures into memory
 	 * 
-	 * @param assets
-	 *            the main asset manager for the game
+	 * @param assets the main asset manager for the game
 	 */
 	public static void init(AssetManager assets) {
 		assetManager = assets;
@@ -46,21 +45,19 @@ public class ResourceUtil {
 		addTexture("textures/tiles/noisy-rock.png");
 		addTexture("textures/tiles/noisy-grass.png");
 		addTexture("textures/entity/playership.png");
-		addTexture("textures/tiles/minimap_background.png");
+		addTexture("textures/tiles/minimap-border.png");
 		addTexture("textures/tiles/player-tile.png");
 		nullTexture = generateNullTexture();
 
 		addSound("audio/entity/boat-water-movement.wav");
 		addSound("audio/ambient/ocean.wav");
-		nullSound = Gdx.audio
-				.newSound(Gdx.files.internal("audio/nullsound.mp3"));
+		nullSound = Gdx.audio.newSound(Gdx.files.internal("audio/nullsound.mp3"));
 	}
 
 	/** Load the fonts to be used within the game */
 	private static void loadFonts() {
 		if (Gdx.files.internal("font/cozette.fnt").exists()) {
-			debugFont = new BitmapFont(Gdx.files.internal("font/cozette.fnt"),
-					false);
+			debugFont = new BitmapFont(Gdx.files.internal("font/cozette.fnt"), false);
 			debugFont.setColor(Color.WHITE);
 			debugFont.getData().setScale(0.5f);
 		} else {
@@ -77,8 +74,8 @@ public class ResourceUtil {
 	}
 
 	/**
-	 * @return {@code true} if added texture, {@code false} if texture was
-	 *         already in cache
+	 * @return {@code true} if added texture, {@code false} if texture was already
+	 *         in cache
 	 */
 	private static boolean addTexture(String img) {
 		if (assetManager.contains(img)) return false;
@@ -91,8 +88,8 @@ public class ResourceUtil {
 	}
 
 	/**
-	 * @return {@code true} if added sound, {@code false} if sound was already
-	 *         in cache
+	 * @return {@code true} if added sound, {@code false} if sound was already in
+	 *         cache
 	 */
 	private static boolean addSound(String sound) {
 		if (assetManager.contains(sound)) return false;
@@ -105,8 +102,7 @@ public class ResourceUtil {
 	}
 
 	/**
-	 * Generates the null texture which will be used if a texture cannot be
-	 * found
+	 * Generates the null texture which will be used if a texture cannot be found
 	 */
 	public static Texture generateNullTexture() {
 		Pixmap p = new Pixmap(2, 2, Pixmap.Format.RGB888);
@@ -122,43 +118,36 @@ public class ResourceUtil {
 	/**
 	 * Select a texture according to its filename.
 	 * 
-	 * @param texName
-	 *            The filename/path of the texture
+	 * @param texName The filename/path of the texture
 	 * @return The pre-cached Texture object
 	 */
 	public static Texture getTexture(String texName) {
 		if (!assetManager.isLoaded(texName)) {
-			Gdx.app.error("warn", String
-					.format("texture %s is not loaded, using null", texName));
+			Gdx.app.error("warn", String.format("texture %s is not loaded, using null", texName));
 			return nullTexture;
 		}
-		return assetManager.contains(texName) ? assetManager.get(texName)
-				: nullTexture;
+		return assetManager.contains(texName) ? assetManager.get(texName) : nullTexture;
 	}
 
 	/**
 	 * Select a sound according to its filename.
 	 * 
-	 * @param soundName
-	 *            The filename/path of the sound
+	 * @param soundName The filename/path of the sound
 	 * @return The pre-cached Sound object
 	 */
 	public static Sound getSound(String soundName) {
 		if (!assetManager.isLoaded(soundName)) {
-			Gdx.app.error("warn", String
-					.format("sound %s is not loaded, using null", soundName));
+			Gdx.app.error("warn", String.format("sound %s is not loaded, using null", soundName));
 			return nullSound;
 		}
-		return assetManager.contains(soundName) ? assetManager.get(soundName)
-				: nullSound;
+		return assetManager.contains(soundName) ? assetManager.get(soundName) : nullSound;
 	}
 
 	/**
 	 * Get a tile texture according to its filename. Points to the
 	 * {@code textures/tiles/} folder.
 	 * 
-	 * @param tileName
-	 *            The filename of the tile texture
+	 * @param tileName The filename of the tile texture
 	 * @return The pre-cached Texture object
 	 */
 	public static Texture getTileTexture(String tileName) {
@@ -169,8 +158,7 @@ public class ResourceUtil {
 	 * Get an entity texture according to its filename. Points to the
 	 * {@code textures/entity/} folder.
 	 * 
-	 * @param tileName
-	 *            The filename of the entity texture
+	 * @param tileName The filename of the entity texture
 	 * @return The pre-cached Texture object
 	 */
 	public static Texture getEntityTexture(String entityName) {

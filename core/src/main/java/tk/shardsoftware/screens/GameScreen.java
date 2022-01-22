@@ -5,10 +5,7 @@ import static tk.shardsoftware.util.ResourceUtil.debugFont;
 import static tk.shardsoftware.util.ResourceUtil.font;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -29,7 +26,6 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
 import tk.shardsoftware.PirateGame;
-import tk.shardsoftware.TileType;
 import tk.shardsoftware.World;
 import tk.shardsoftware.entity.EntityShip;
 import tk.shardsoftware.util.DebugUtil;
@@ -45,7 +41,7 @@ public class GameScreen implements Screen {
 	public Sound ambientOcean;
 	private long soundIdBoatMovement;
 
-	private SpriteBatch batch, hudBatch, miniMapBatch;
+	private SpriteBatch batch, hudBatch;
 	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera camera;
 	private int DEFAULT_CAMERA_ZOOM = 1;
@@ -61,16 +57,9 @@ public class GameScreen implements Screen {
 	/** The text to be display the points */
 	public GlyphLayout pointTxtLayout;
 
-	/**
-	 *Makes Sure that the player starts in a valid start point, i.e they don't spawn in the ground.
-	 *
-	 */
-
-
 	public GameScreen(AssetManager assets) {
 		batch = new SpriteBatch();
 		hudBatch = new SpriteBatch();
-		miniMapBatch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
 		camera = new OrthographicCamera(360 * 16f / 9f, 360);
 		camera.zoom = DEFAULT_CAMERA_ZOOM;
@@ -78,9 +67,10 @@ public class GameScreen implements Screen {
 
 		worldObj = new World();
 		player = new EntityShip(worldObj);
-		miniMap = new Minimap(worldObj);
-		player.setPosition(worldObj.worldMap.width/2*worldObj.worldMap.tile_size, worldObj.worldMap.width/2*worldObj.worldMap.tile_size);
+		miniMap = new Minimap(worldObj, 25, 25, 150, 150);
+		player.setPosition(50, 50);
 		worldObj.getEntities().add(player);
+
 		boatWaterMovement = ResourceUtil.getSound("audio/entity/boat-water-movement.wav");
 		ambientOcean = ResourceUtil.getSound("audio/ambient/ocean.wav");
 	}
@@ -175,6 +165,7 @@ public class GameScreen implements Screen {
 			}
 			if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
 				worldObj.worldMap.buildWorld(MathUtils.random.nextLong());
+				miniMap.prepareMap();
 			}
 		}
 		// player.setPosition(0, 0);
@@ -200,13 +191,7 @@ public class GameScreen implements Screen {
 		DebugUtil.saveProcessTime("Entity Draw Time", () -> renderEntities());
 
 		batch.end();
-
-		miniMapBatch.begin();
-		DebugUtil.saveProcessTime("Mini-Map Draw Time", () -> {
-			miniMap.DrawMap(miniMapBatch,150,150,25,25, player.getPosition());
-		});
-		miniMapBatch.end();
-
+		
 
 		if (DEBUG_MODE) DebugUtil.saveProcessTime("Hitbox Render", () -> renderHitboxes());
 
@@ -221,6 +206,9 @@ public class GameScreen implements Screen {
 			// TODO: Change to allow for different screen sizes
 			font.draw(hudBatch, pointTxtLayout, Gdx.graphics.getWidth() - pointTxtLayout.width - 20,
 					Gdx.graphics.getHeight() - 20);
+		});
+		DebugUtil.saveProcessTime("Mini-Map Draw Time", () -> {
+			miniMap.drawMap(hudBatch, player.getPosition());
 		});
 
 		hudBatch.end();
@@ -348,6 +336,7 @@ public class GameScreen implements Screen {
 		batch.dispose();
 		hudBatch.dispose();
 		shapeRenderer.dispose();
+		miniMap.dispose();
 	}
 
 }
