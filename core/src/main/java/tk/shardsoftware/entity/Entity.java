@@ -42,8 +42,8 @@ public abstract class Entity {
 	}
 
 	/**
-	 * Entity constructor to be used only for test purposes where the worldObj
-	 * is not required
+	 * Entity constructor to be used only for test purposes where the worldObj is
+	 * not required
 	 */
 	protected Entity() {
 		this(null, 0, 0, 50, 50);
@@ -52,8 +52,7 @@ public abstract class Entity {
 	/**
 	 * Set the texture of the entity
 	 * 
-	 * @param textureName
-	 *            the path/name of the texture file
+	 * @param textureName the path/name of the texture file
 	 * @return This entity object for easy building
 	 */
 	public Entity setTexture(String textureName) {
@@ -68,8 +67,7 @@ public abstract class Entity {
 	/**
 	 * The logical game function called on each game tick
 	 * 
-	 * @param delta
-	 *            the time between the previous update and this one
+	 * @param delta the time between the previous update and this one
 	 */
 	public void update(float delta) {
 		// prevent entity from traveling faster than the maximum speed
@@ -81,22 +79,27 @@ public abstract class Entity {
 	 * Step the position forward one game tick.<br>
 	 * Tests for collisions with other entities before moving.
 	 * 
-	 * @param delta
-	 *            the time between the previous update and this one
+	 * @param delta the time between the previous update and this one
 	 */
 	protected void stepPosition(float delta) {
 		// Calculate the hitbox after next step
 		Rectangle nextHitbox = new Rectangle(hitbox).setPosition(
-				positionVec.x + velocityVec.x, positionVec.y + velocityVec.y);
+				positionVec.x + velocityVec.x * delta, positionVec.y + velocityVec.y * delta);
 
-		//TODO: Stop ships from leaving the boundaries of the map
+		// TODO: Stop entities from leaving the boundaries of the map
 
 		// TODO: Change to bounding-box hierarchy if performance is too low
-		// TODO: Add collision direction detection
-		boolean collided = worldObj.getEntities().stream()
-				.filter(e -> !e.equals(this))
+		boolean collidedFlag = worldObj.getEntities().stream().filter(e -> !e.equals(this))
 				.anyMatch(e -> e.hitbox.overlaps(nextHitbox));
-		if (!collided) {
+
+		// Calculate world collisions
+		collidedFlag |= worldObj.worldMap.isSolidTileWithinArea(nextHitbox);
+
+		if (collidedFlag) {
+			// Has collided so remove velocity (ignoring momentum)
+			// TODO: Only zero out the direction of collision
+			velocityVec.setZero();
+		} else {
 			// update the position of the entity
 			positionVec.mulAdd(velocityVec, delta);
 			// sync hitbox with entity position
@@ -106,8 +109,7 @@ public abstract class Entity {
 
 	/** Returns the center point of the entity */
 	public Vector2 getCenterPoint() {
-		return new Vector2(positionVec.x + hitbox.width / 2f,
-				positionVec.y + hitbox.height / 2f);
+		return new Vector2(positionVec.x + hitbox.width / 2f, positionVec.y + hitbox.height / 2f);
 	}
 
 	public float getDirection() {
@@ -115,8 +117,7 @@ public abstract class Entity {
 	}
 
 	/**
-	 * Set the angle the entity is facing and standardize to be within 0-360
-	 * degrees
+	 * Set the angle the entity is facing and standardize to be within 0-360 degrees
 	 */
 	public void setDirection(float angle) {
 		float temp = angle % 360;
@@ -161,8 +162,7 @@ public abstract class Entity {
 	/**
 	 * Set the current position of the Entity
 	 * 
-	 * @param pos
-	 *            the new position
+	 * @param pos the new position
 	 * 
 	 * @see #setPosition(float, float)
 	 */
@@ -173,10 +173,8 @@ public abstract class Entity {
 	/**
 	 * Set the current position of the Entity to (x, y)
 	 * 
-	 * @param x
-	 *            the new x position
-	 * @param y
-	 *            the new y position
+	 * @param x the new x position
+	 * @param y the new y position
 	 */
 	public void setPosition(float x, float y) {
 		this.positionVec.set(x, y);
@@ -186,8 +184,7 @@ public abstract class Entity {
 	/**
 	 * Set the maximum speed of the entity
 	 * 
-	 * @param speed
-	 *            the maximum speed
+	 * @param speed the maximum speed
 	 * @return This entity object for easy building
 	 */
 	public Entity setMaxSpeed(float speed) {
