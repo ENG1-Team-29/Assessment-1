@@ -7,6 +7,8 @@ import static tk.shardsoftware.util.ResourceUtil.font;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -63,18 +65,6 @@ public class GameScreen implements Screen {
 	 *Makes Sure that the player starts in a valid start point, i.e they don't spawn in the ground.
 	 *
 	 */
-	private void SetStartPoint(EntityShip player){
-		HashMap<Vector2, TileType> tileMap = worldObj.worldMap.tileMap;
-		int startX = worldObj.worldMap.width/2;
-		int startY = worldObj.worldMap.height/2;
-
-		int hitBoxSize = (int)player.getHitboxScale();
-
-		boolean validPositionFound = false;
-		while(!validPositionFound){
-
-		}
-	}
 
 
 	public GameScreen(AssetManager assets) {
@@ -89,9 +79,8 @@ public class GameScreen implements Screen {
 		worldObj = new World();
 		player = new EntityShip(worldObj);
 		miniMap = new Minimap(worldObj);
-		player.setPosition(50, 50);
+		player.setPosition(worldObj.worldMap.width/2*worldObj.worldMap.tile_size, worldObj.worldMap.width/2*worldObj.worldMap.tile_size);
 		worldObj.getEntities().add(player);
-
 		boatWaterMovement = ResourceUtil.getSound("audio/entity/boat-water-movement.wav");
 		ambientOcean = ResourceUtil.getSound("audio/ambient/ocean.wav");
 	}

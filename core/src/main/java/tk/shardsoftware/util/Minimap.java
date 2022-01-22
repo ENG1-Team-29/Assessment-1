@@ -42,15 +42,15 @@ public class Minimap {
         int startX = playerTileX - width/2;
         int startY = playerTileY - height/2;
 
-        int borderSize = 4; //We don't want to draw over the miniMap borders!
+        int borderSize = 6; //We don't want to draw over the miniMap borders!
 
         int miniMapOriginX = x;
         int miniMapOriginY = y;
 
         for(int i = startX+borderSize; i < startX + width-borderSize; i++){
             for(int j = startY+borderSize; j < startY + height-borderSize; j++){
-                TileType tile = world.worldMap.getTile(i,j);
-                batch.draw(tile.getTex(),miniMapOriginX+i-startX, miniMapOriginY+j-startY,1,1);
+                Texture tex = world.worldMap.getTile(i,j).getTex();
+                batch.draw(tex,miniMapOriginX+i-startX, miniMapOriginY+j-startY,1,1);
             }
         }
 
