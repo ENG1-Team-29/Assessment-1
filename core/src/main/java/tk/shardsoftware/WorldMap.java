@@ -48,6 +48,9 @@ public class WorldMap {
 	int width;
 	/** The height of the map in tiles */
 	int height;
+
+	public PerlinNoiseGenerator perlin;
+
 	/** The placement of each tile within the world */
 	HashMap<Vector2, TileType> tileMap = new HashMap<Vector2, TileType>();
 
@@ -65,13 +68,13 @@ public class WorldMap {
 		// clear map to allow for regeneration
 		tileMap.clear();
 		// choosing these values is more of an art than a science
-		PerlinNoiseGenerator Perlin = new PerlinNoiseGenerator(2f, 100, 12, 1, 1.3f, 0.66f, width,
+		this.perlin = new PerlinNoiseGenerator(2f, 100, 12, 1, 1.3f, 0.66f, width,
 				height, seed);
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				Vector2 key = new Vector2(i, j);
 
-				float n = Perlin.noise(i, j);
+				float n = perlin.noise(i, j);
 
 				if (n > 0.5) {
 					this.tileMap.put(key, TileType.SAND); // sand
