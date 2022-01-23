@@ -67,7 +67,7 @@ public class GameScreen implements Screen {
 	private World worldObj;
 	private Minimap miniMap;
 	private Minimap bigMiniMap;
-	private boolean DRAW_BIGMAP = true;
+	private boolean DRAW_BIGMAP = false;
 
 	/** The ship object that the player will control */
 	private EntityShip player;
@@ -145,6 +145,11 @@ public class GameScreen implements Screen {
 			public void clicked(InputEvent event, float x, float y) {
 				DRAW_BIGMAP = false;
 				closeMapButton.setVisible(false);
+				if(bigMiniMapButton.isChecked()){ //Toggle the button
+					bigMiniMapButton.setChecked(false);
+				}else{
+					bigMiniMapButton.setChecked(true);
+				}
 			}
 		});
 		stage.addActor(bigMiniMapButton);
