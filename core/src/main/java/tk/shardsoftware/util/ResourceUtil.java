@@ -47,6 +47,8 @@ public class ResourceUtil {
 		addTexture("textures/entity/playership.png");
 		addTexture("textures/tiles/minimap-border.png");
 		addTexture("textures/entity/cannonball.png");
+		addTexture("textures/tiles/expand-map-button");
+		addTexture("textures/tiles/minimise-map-button");
 		nullTexture = generateNullTexture();
 
 		addSound("audio/entity/boat-water-movement.wav");

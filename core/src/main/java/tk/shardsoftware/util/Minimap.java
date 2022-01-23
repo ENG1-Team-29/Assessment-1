@@ -71,6 +71,13 @@ public class Minimap implements Disposable {
 		return result;
 	}
 
+	public void drawEntireMap(SpriteBatch batch){
+		// Draw minimap border
+		batch.draw(miniMapBorder, x, y, width, height);
+		// Draw entire map
+		batch.draw(wholeMap,x+BORDER_WIDTH,y+BORDER_WIDTH,width-BORDER_WIDTH*2,height-BORDER_WIDTH*2);
+	}
+
 	public void drawMap(SpriteBatch batch, Vector2 playerPos) {
 
 		int playerTileX = (int) playerPos.x / worldObj.worldMap.tile_size;

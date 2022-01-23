@@ -12,7 +12,7 @@ import java.util.Random;
  * You can view the original algorithm as described by Perlin here: <a href=
  * "https://mrl.cs.nyu.edu/~perlin/paper445.pdf">https://mrl.cs.nyu.edu/~perlin/paper445.pdf</a>
  * 
- * 
+ *  b
  * @author Hector Woods
  */
 public class PerlinNoiseGenerator {
@@ -28,6 +28,7 @@ public class PerlinNoiseGenerator {
 	 * persistence is the more effect each nth octave has
 	 */
 	public float persistence;
+
 	/**
 	 * How 'zoomed-in' our noise is. The higher the value, the more zoomed in we
 	 * are.

@@ -17,11 +17,16 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -50,9 +55,16 @@ public class GameScreen implements Screen {
 
 	private World worldObj;
 	private Minimap miniMap;
+	private Minimap bigMiniMap;
+	private boolean DRAW_BIGMAP = false;
 
 	/** The ship object that the player will control */
 	private EntityShip player;
+
+	/** Minimap button **/
+	Drawable expandDrawable = new TextureRegionDrawable(new TextureRegion(ResourceUtil.getTexture("textures/tiles/expand-map-button")));
+	Drawable minimiseDrawable = new TextureRegionDrawable(new TextureRegion(ResourceUtil.getTexture("textures/tiles/minimise-map-button")));
+	Button bigMiniMapButton = new Button(expandDrawable,minimiseDrawable);
 
 	/** The number of points the player has scored */
 	public int points = 0;
@@ -98,6 +110,7 @@ public class GameScreen implements Screen {
 		worldObj = new World();
 		player = new EntityShip(worldObj);
 		miniMap = new Minimap(worldObj, 25, Gdx.graphics.getHeight() - 150 - 25, 150, 150);
+		bigMiniMap = new Minimap(worldObj,Gdx.graphics.getHeight()/2,Gdx.graphics.getHeight()/4,Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
 		setPlayerStartPosition(player);
 		worldObj.getEntities().add(player);
 
@@ -139,6 +152,8 @@ public class GameScreen implements Screen {
 		boolean horizontalFlag = left || right;
 		boolean vertCancel = up && down;
 		boolean horizCancel = left && right;
+
+
 		// If a key is pressed, the ship should turn
 		boolean turnFlag = (verticalFlag && !vertCancel) || (horizontalFlag && !horizCancel);
 
@@ -201,6 +216,9 @@ public class GameScreen implements Screen {
 				miniMap.prepareMap();
 				setPlayerStartPosition(player);
 			}
+			if(Gdx.input.isKeyJustPressed(Input.Keys.M)){
+				DRAW_BIGMAP = !DRAW_BIGMAP;
+			}
 		}
 		// player.setPosition(0, 0);
 		// System.out.println(player.getVelocity());
@@ -222,6 +240,7 @@ public class GameScreen implements Screen {
 		DebugUtil.saveProcessTime("Map Draw Time", () -> {
 			worldObj.worldMap.drawTilesInRange(camera, batch);
 		});
+
 		DebugUtil.saveProcessTime("Entity Draw Time", () -> renderEntities());
 
 		batch.end();
@@ -230,6 +249,9 @@ public class GameScreen implements Screen {
 
 		hudBatch.begin();
 		miniMap.drawMap(hudBatch, player.getPosition()); // <1% draw time, no point measuring
+		if(DRAW_BIGMAP){
+			bigMiniMap.drawEntireMap(hudBatch);
+		}
 		if (DEBUG_MODE) DebugUtil.saveProcessTime("Debug HUD Draw Time", () -> {
 
 			renderDebug(generateDebugStrings());
@@ -258,6 +280,8 @@ public class GameScreen implements Screen {
 		shapeRenderer.end();
 		batch.end();
 	}
+
+
 
 	/** Renders the debug HUD */
 	private void renderDebug(List<String> debugList) {
@@ -369,5 +393,4 @@ public class GameScreen implements Screen {
 		shapeRenderer.dispose();
 		miniMap.dispose();
 	}
-
 }
