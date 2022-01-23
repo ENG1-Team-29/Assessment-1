@@ -245,6 +245,7 @@ public class GameScreen implements Screen {
 		ScreenUtils.clear(0, 0, 0, 1); // clears the buffer
 		batch.setProjectionMatrix(camera.combined);
 		shapeRenderer.setProjectionMatrix(camera.combined);
+		/* Render objects in scrolling view */
 		batch.begin();
 
 		DebugUtil.saveProcessTime("Map Draw Time", () -> {
@@ -255,6 +256,31 @@ public class GameScreen implements Screen {
 
 		batch.end();
 
+		/* Render shapes in scrolling view */
+		DebugUtil.saveProcessTime("Reload Info Render", () -> {
+			if (player.timeUntilFire > 0) {
+				batch.begin();
+				shapeRenderer.begin(ShapeType.Filled);
+
+				shapeRenderer.setColor(Color.BLACK);
+				Vector2 start = new Vector2(player.getX(), player.getY() + player.getHeight());
+				Vector2 end = new Vector2(player.getX() + player.getWidth(),
+						player.getY() + player.getHeight());
+
+				shapeRenderer.rectLine(start, end, 3);
+
+				start.x += 1;
+				end.x -= 2;
+				shapeRenderer.setColor(Color.GREEN);
+				shapeRenderer.rectLine(start,
+						end.lerp(start, player.timeUntilFire / player.reloadTime), 1);
+
+				shapeRenderer.end();
+				batch.end();
+			}
+		});
+
+		/* Render objects to fixed view */
 		if (DEBUG_MODE) DebugUtil.saveProcessTime("Hitbox Render", () -> renderHitboxes());
 
 		hudBatch.begin();

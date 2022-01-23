@@ -11,6 +11,11 @@ import tk.shardsoftware.util.ResourceUtil;
  */
 public class EntityShip extends Entity {
 
+	/** The length of time in seconds required to wait between firing cannons */
+	public float reloadTime = 1f;
+	/** How much time left until cannons can be fired */
+	public float timeUntilFire = 0f;
+
 	public EntityShip(World worldObj) {
 		super(worldObj, 0, 0, 50, 50);
 		this.setTexture("textures/entity/playership.png");
@@ -25,6 +30,8 @@ public class EntityShip extends Entity {
 
 		// TODO: Write water drag system
 		velocityVec.scl(0.99f);
+		timeUntilFire -= delta;
+		timeUntilFire = timeUntilFire <= 0 ? 0 : timeUntilFire;
 	}
 
 	/**
@@ -64,12 +71,22 @@ public class EntityShip extends Entity {
 		}
 	}
 
-	public void fireCannons() {
+	/**
+	 * Spawns two cannonballs, one on each side of the ship.
+	 * 
+	 * @return {@code true} if spawned cannonballs, {@code false} if still reloading
+	 */
+	public boolean fireCannons() {
+		// Do not fire if still reloading
+		if (timeUntilFire > 0) return false;
 		fireCannon(true);
 		fireCannon(false);
+		// Reload
+		timeUntilFire += reloadTime;
+		return true;
 	}
 
-	public void fireCannon(boolean rightSide) {
+	private void fireCannon(boolean rightSide) {
 		Vector2 center = getCenterPoint();
 
 		Vector2 dirVec = new Vector2(1, 1).setAngleDeg(direction + (rightSide ? -90 : 90))

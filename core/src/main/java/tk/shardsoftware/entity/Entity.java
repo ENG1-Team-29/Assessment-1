@@ -303,4 +303,12 @@ public abstract class Entity {
 		this.isSolid = isSolid;
 	}
 
+	public float getX() {
+		return positionVec.x;
+	}
+
+	public float getY() {
+		return positionVec.y;
+	}
+
 }
