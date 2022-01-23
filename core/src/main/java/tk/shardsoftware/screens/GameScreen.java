@@ -209,7 +209,7 @@ public class GameScreen implements Screen {
 
 		// TODO: Add pause screen with toggle
 		if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-			instOverlay.shouldDisplay = true;
+			instOverlay.shouldDisplay = !instOverlay.shouldDisplay;
 		}
 
 		if (DEBUG_MODE) {
