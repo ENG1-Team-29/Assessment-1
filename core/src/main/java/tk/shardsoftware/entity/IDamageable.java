@@ -3,6 +3,9 @@ package tk.shardsoftware.entity;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
+ * A collection of methods to allow objects to be damaged. To be used in
+ * conjunction with {@link Entity}.
+ * 
  * @author James Burnell
  */
 public interface IDamageable {
