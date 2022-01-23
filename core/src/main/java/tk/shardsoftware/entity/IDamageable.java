@@ -1,5 +1,7 @@
 package tk.shardsoftware.entity;
 
+import com.badlogic.gdx.math.Rectangle;
+
 /**
  * @author James Burnell
  */
@@ -13,5 +15,8 @@ public interface IDamageable {
 
 	/** Damage the object by a given amount */
 	public void damage(float dmgAmount);
+
+	/** The hitbox of the object */
+	public Rectangle getHitbox();
 
 }
