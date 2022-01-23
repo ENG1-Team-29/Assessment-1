@@ -39,21 +39,26 @@ public class ResourceUtil {
 	public static void init(AssetManager assets) {
 		assetManager = assets;
 		loadFonts();
+		/* Tile */
 		addTexture("textures/tiles/noisy-waterdeep.png");
 		addTexture("textures/tiles/noisy-watershallow.png");
 		addTexture("textures/tiles/noisy-sand.png");
 		addTexture("textures/tiles/noisy-rock.png");
 		addTexture("textures/tiles/noisy-grass.png");
+		/* Entity */
 		addTexture("textures/entity/playership.png");
-		addTexture("textures/tiles/minimap-border.png");
 		addTexture("textures/entity/cannonball.png");
-		addTexture("textures/tiles/expand-map-button.png");
-		addTexture("textures/tiles/minimise-map-button.png");
-		addTexture("textures/tiles/close-map-button.png");
-		nullTexture = generateNullTexture();
+		/* UI */
+		addTexture("textures/ui/expand-map-button.png");
+		addTexture("textures/ui/minimise-map-button.png");
+		addTexture("textures/ui/close-map-button.png");
+		addTexture("textures/ui/minimap-border.png");
 
+		/* Sound */
 		addSound("audio/entity/boat-water-movement.wav");
 		addSound("audio/ambient/ocean.wav");
+		/* Null Resources */
+		nullTexture = generateNullTexture();
 		nullSound = Gdx.audio.newSound(Gdx.files.internal("audio/nullsound.mp3"));
 	}
 

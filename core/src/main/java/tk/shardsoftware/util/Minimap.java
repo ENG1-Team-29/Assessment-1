@@ -3,12 +3,21 @@ package tk.shardsoftware.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import tk.shardsoftware.TileType;
 import tk.shardsoftware.World;
@@ -25,22 +34,73 @@ public class Minimap implements Disposable {
 	private Texture miniMapBorder;
 	private Texture wholeMap;
 
+	/** Minimap button **/
+	public Stage stage;
+	public Drawable closeDrawable;
+	public Drawable expandDrawable;
+	public Drawable minimiseDrawable;
+	public ImageButton bigMiniMapButton;
+	public ImageButton closeMapButton;
+
 	public float x;
 	public float y;
 	public int width;
 	public int height;
 
+	private float fullSizeX;
+	private float fullSizeY;
+
+	public boolean drawBigmap = false;
+
 	public static final int BORDER_WIDTH = 4;
 
-	public Minimap(World world, float x, float y, int width, int height) {
+	public Minimap(World world, float x, float y, int width, int height, SpriteBatch batch) {
 		this.worldObj = world;
-		miniMapBorder = ResourceUtil.getTexture("textures/tiles/minimap-border.png");
+		miniMapBorder = ResourceUtil.getTexture("textures/ui/minimap-border.png");
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
 
 		prepareMap();
+
+		stage = new Stage(new ScreenViewport(), batch);
+		expandDrawable = new TextureRegionDrawable(
+				new TextureRegion(ResourceUtil.getTexture("textures/ui/expand-map-button.png")));
+		minimiseDrawable = new TextureRegionDrawable(
+				new TextureRegion(ResourceUtil.getTexture("textures/ui/minimise-map-button.png")));
+		closeDrawable = new TextureRegionDrawable(
+				new TextureRegion(ResourceUtil.getTexture("textures/ui/close-map-button.png")));
+		bigMiniMapButton = new ImageButton(expandDrawable, minimiseDrawable, minimiseDrawable);
+		bigMiniMapButton.setPosition(145, Gdx.graphics.getHeight() - 170);
+		bigMiniMapButton.setSize(25, 25);
+		closeMapButton = new ImageButton(closeDrawable);
+		closeMapButton.setPosition(fullSizeX + wholeMap.getWidth(),
+				fullSizeY + wholeMap.getHeight());
+		closeMapButton.setSize(35, 35);
+		closeMapButton.setVisible(drawBigmap); // false by default
+		Gdx.input.setInputProcessor(stage);
+
+		/** Detect when big minimap button pressed **/
+		bigMiniMapButton.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				drawBigmap = !drawBigmap;
+				closeMapButton.setVisible(drawBigmap);
+			}
+		});
+		closeMapButton.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				drawBigmap = false;
+				closeMapButton.setVisible(false);
+				if (bigMiniMapButton.isChecked()) { // Toggle the button
+					bigMiniMapButton.setChecked(false);
+				} else {
+					bigMiniMapButton.setChecked(true);
+				}
+			}
+		});
+		stage.addActor(bigMiniMapButton);
+		stage.addActor(closeMapButton);
 	}
 
 	/** Generate an image of the entire map */
@@ -58,6 +118,11 @@ public class Minimap implements Disposable {
 		}
 		wholeMap = new Texture(screen);
 		screen.dispose();
+
+		this.fullSizeX = Gdx.graphics.getWidth() / 2 - wholeMap.getWidth() / 2;
+		this.fullSizeY = Gdx.graphics.getHeight() / 2 - wholeMap.getHeight() / 2;
+		if (closeMapButton != null) closeMapButton.setPosition(fullSizeX + wholeMap.getWidth(),
+				fullSizeY + wholeMap.getHeight());
 	}
 
 	/** Generate a map of tile types and their corner pixel color */
@@ -71,14 +136,22 @@ public class Minimap implements Disposable {
 		return result;
 	}
 
-	public void drawEntireMap(SpriteBatch batch){
+	public void drawEntireMap(SpriteBatch batch) {
 		// Draw minimap border
-		batch.draw(miniMapBorder, x, y, width, height);
+		batch.draw(miniMapBorder, fullSizeX, fullSizeY, wholeMap.getWidth(), wholeMap.getHeight());
 		// Draw entire map
-		batch.draw(wholeMap,x+BORDER_WIDTH,y+BORDER_WIDTH,width-BORDER_WIDTH*2,height-BORDER_WIDTH*2);
+//		batch.draw(wholeMap, xPos + BORDER_WIDTH, yPos + BORDER_WIDTH, fullWidth - BORDER_WIDTH * 2,
+//				fullHeight - BORDER_WIDTH * 2);
+		batch.draw(wholeMap, fullSizeX + BORDER_WIDTH, fullSizeY + BORDER_WIDTH,
+				wholeMap.getWidth() - BORDER_WIDTH * 2, wholeMap.getHeight() - BORDER_WIDTH * 2, 0,
+				0, wholeMap.getWidth(), wholeMap.getHeight(), false, true);
 	}
 
 	public void drawMap(SpriteBatch batch, Vector2 playerPos) {
+
+		if (drawBigmap) {
+			drawEntireMap(batch);
+		}
 
 		int playerTileX = (int) playerPos.x / worldObj.worldMap.tile_size;
 		int playerTileY = (int) playerPos.y / worldObj.worldMap.tile_size;
@@ -113,5 +186,15 @@ public class Minimap implements Disposable {
 	public void dispose() {
 		wholeMap.dispose();
 		miniMapBorder.dispose();
+	}
+
+	public void onToggleKeyJustPressed() {
+		drawBigmap = !drawBigmap;
+		if (bigMiniMapButton.isChecked()) { // Toggle the button
+			bigMiniMapButton.setChecked(false);
+		} else {
+			bigMiniMapButton.setChecked(true);
+		}
+		closeMapButton.setVisible(drawBigmap);
 	}
 }
