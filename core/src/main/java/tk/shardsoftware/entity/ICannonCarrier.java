@@ -24,4 +24,7 @@ public interface ICannonCarrier {
 	 */
 	public float getReloadProgress();
 
+	/** Returns the average amount of damage each cannonball will do */
+	public float getCannonDamage();
+
 }
