@@ -67,7 +67,7 @@ public class ResourceUtil {
 			font = new BitmapFont(Gdx.files.internal("font/jagged-font.fnt"), // jagged-font
 					false);
 			font.setColor(Color.WHITE);
-			font.getData().setScale(0.2f);
+			font.getData().setScale(0.4f);
 		} else {
 			Gdx.app.error("error", "Could not locate jagged font file");
 		}
