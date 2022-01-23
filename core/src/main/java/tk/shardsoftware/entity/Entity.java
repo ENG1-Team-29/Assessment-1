@@ -315,4 +315,8 @@ public abstract class Entity {
 		return positionVec.y;
 	}
 
+	/** Called when entity is removed from the world */
+	public void onRemove() {
+	}
+
 }
