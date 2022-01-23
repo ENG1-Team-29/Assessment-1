@@ -109,14 +109,15 @@ public class GameScreen implements Screen {
 
 		worldObj = new World();
 		player = new EntityShip(worldObj);
-		EntityAIShip exampleEnemy = new EntityAIShip(worldObj,player);
+		EntityAIShip exampleEnemy = new EntityAIShip(worldObj, player);
 
 		miniMap = new Minimap(worldObj, 25, Gdx.graphics.getHeight() - 150 - 25, 150, 150,
 				hudBatch);
 		setPlayerStartPosition(player);
-		worldObj.getEntities().add(player);
-		exampleEnemy.setPosition(new Vector2(player.getPosition().x-20, player.getPosition().y-20));
-		worldObj.getEntities().add(exampleEnemy);
+		worldObj.addEntity(player);
+		exampleEnemy
+				.setPosition(new Vector2(player.getPosition().x - 20, player.getPosition().y - 20));
+		worldObj.addEntity(exampleEnemy);
 
 		boatWaterMovement = ResourceUtil.getSound("audio/entity/boat-water-movement.wav");
 		ambientOcean = ResourceUtil.getSound("audio/ambient/ocean.wav");
@@ -331,8 +332,8 @@ public class GameScreen implements Screen {
 			// e.getHitbox().width, e.getHitbox().height);
 
 			// Draw each entity with its own texture and apply rotation
-			batch.draw(e.getTexture(), e.getPosition().x, e.getPosition().y, e.getWidth() / 2,
-					e.getHeight() / 2, e.getWidth(), e.getHeight(), 1, 1, e.getDirection(), false);
+			batch.draw(e.getTexture(), e.getX(), e.getY(), e.getWidth() / 2, e.getHeight() / 2,
+					e.getWidth(), e.getHeight(), 1, 1, e.getDirection(), false);
 		});
 	}
 
