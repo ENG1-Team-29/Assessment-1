@@ -7,7 +7,7 @@ import java.util.List;
 public class DebugUtil {
 
 	/** Controls additional logging and on-screen data */
-	public static final boolean DEBUG_MODE = true;
+	public static final boolean DEBUG_MODE = false;
 
 	/** Stores times of how long it took to process code snippets */
 	public static HashMap<String, Long> processingTimes = new HashMap<String, Long>();
