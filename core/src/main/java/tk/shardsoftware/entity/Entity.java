@@ -100,19 +100,25 @@ public abstract class Entity {
 
 	/** Ensure the entity doesn't leave the world */
 	private void keepWithinWorldBounds() {
+		boolean flag = false;
 		if (positionVec.x < 0) {
 			setPosition(0, positionVec.y);
-		}
-		if (positionVec.x + width > World.getWidth()) {
+			flag = true;
+		} else if (positionVec.x + width > World.getWidth()) {
 			setPosition(World.getWidth() - width, positionVec.y);
+			flag = true;
 		}
 		if (positionVec.y < 0) {
 			setPosition(positionVec.x, 0);
-		}
-		if (positionVec.y + height > World.getHeight()) {
+			flag = true;
+		} else if (positionVec.y + height > World.getHeight()) {
 			setPosition(positionVec.x, World.getHeight() - height);
+			flag = true;
 		}
-		// onTouchingBorder();
+		if (flag) onTouchingBorder();
+	}
+
+	public void onTouchingBorder() {
 	}
 
 	/**

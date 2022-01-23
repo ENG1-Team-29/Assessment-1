@@ -51,4 +51,9 @@ public class EntityCannonball extends Entity {
 		return dmgObj.equals(parentObj);
 	}
 
+	@Override
+	public void onTouchingBorder() {
+		this.remove = true;
+	}
+
 }
