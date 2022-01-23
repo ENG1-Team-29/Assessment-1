@@ -1,12 +1,17 @@
 package tk.shardsoftware.entity;
 
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+
 import tk.shardsoftware.World;
 
 /** @author James Burnell */
 public class EntityCannonball extends Entity {
 
-	public EntityCannonball(World worldObj, float x, float y) {
-		super(worldObj, x, y, 5, 5);
+	private ICannonCarrier parentObj;
+
+	public EntityCannonball(World worldObj, float x, float y, ICannonCarrier parentObj) {
+		super(worldObj, 5, 5);
 		this.setCenter(x, y);
 		this.setMaxSpeed(250);
 		this.setHitboxScale(0.5f);
@@ -14,6 +19,17 @@ public class EntityCannonball extends Entity {
 		this.setIgnoreEntityCollision(true);
 		this.setTexture("textures/entity/cannonball.png");
 		this.setSolid(false);
+		this.parentObj = parentObj;
+	}
+
+	public EntityCannonball(World worldObj, float x, float y, Vector2 dirVec,
+			ICannonCarrier parentObj) {
+		this(worldObj, x, y, parentObj);
+		setDirection(dirVec);
+	}
+
+	public void setDirection(Vector2 dirVec) {
+		this.setVelocity(dirVec.setLength(maximumSpeed));
 	}
 
 	@Override
@@ -22,6 +38,14 @@ public class EntityCannonball extends Entity {
 		// System.out.println(positionVec);
 		this.setDirection(direction + delta * 60 * 15);
 		super.update(delta);
+	}
+
+	@SuppressWarnings("unlikely-arg-type")
+	public void onTouchingDamageable(IDamageable obj) {
+		if (obj.equals(parentObj)) return;
+		obj.damage(
+				MathUtils.random(parentObj.getCannonDamage() - 2, parentObj.getCannonDamage() + 2));
+		this.remove = true;
 	}
 
 }
