@@ -42,9 +42,13 @@ public abstract class Entity {
 	protected boolean isSolid = true;
 
 	protected Entity(World worldObj, float x, float y, float w, float h) {
+		this(worldObj, w, h);
+		setPosition(x, y);
+	}
+
+	protected Entity(World worldObj, float w, float h) {
 		// If texture is unset, use null
 		texture = new TextureRegion(ResourceUtil.nullTexture);
-		setPosition(x, y);
 		setWidth(w);
 		setHeight(h);
 		this.worldObj = worldObj;
