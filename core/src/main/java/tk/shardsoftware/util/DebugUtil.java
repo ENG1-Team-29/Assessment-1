@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * @author James Burnell
+ */
 public class DebugUtil {
 
 	/** Controls additional logging and on-screen data */

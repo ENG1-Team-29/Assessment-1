@@ -48,7 +48,10 @@ import tk.shardsoftware.util.DebugUtil;
 import tk.shardsoftware.util.Minimap;
 import tk.shardsoftware.util.ResourceUtil;
 
-/** Handles game controls, rendering, and logic */
+/** Handles game controls, rendering, and
+ * @author James Burnell
+ * @author Hector Woods
+ * */
 public class GameScreen implements Screen {
 
 	/** The sound played as the boat moves through the water */

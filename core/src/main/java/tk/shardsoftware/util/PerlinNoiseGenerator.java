@@ -11,8 +11,7 @@ import java.util.Random;
  * <br>
  * You can view the original algorithm as described by Perlin here: <a href=
  * "https://mrl.cs.nyu.edu/~perlin/paper445.pdf">https://mrl.cs.nyu.edu/~perlin/paper445.pdf</a>
- * 
- *  b
+ *
  * @author Hector Woods
  */
 public class PerlinNoiseGenerator {
