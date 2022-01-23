@@ -359,7 +359,7 @@ public class GameScreen implements Screen {
 	private void renderDebug(List<String> debugList) {
 		for (int i = 0; i < debugList.size(); i++) {
 			debugFont.draw(hudBatch, debugList.get(i), 0,
-					Gdx.graphics.getHeight() - (debugFont.getLineHeight()) * i);
+					20 + (debugFont.getLineHeight()) * i);
 		}
 	}
 
