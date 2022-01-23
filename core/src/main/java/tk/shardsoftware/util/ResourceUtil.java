@@ -53,6 +53,8 @@ public class ResourceUtil {
 		addTexture("textures/ui/minimise-map-button.png");
 		addTexture("textures/ui/close-map-button.png");
 		addTexture("textures/ui/minimap-border.png");
+		addTexture("textures/ui/enemy-map-icon.png");
+		addTexture("textures/ui/player-map-icon.png");
 
 		/* Sound */
 		addSound("audio/entity/boat-water-movement.wav");
