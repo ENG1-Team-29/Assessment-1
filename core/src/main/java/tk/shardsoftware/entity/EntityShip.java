@@ -9,12 +9,15 @@ import tk.shardsoftware.util.ResourceUtil;
 /**
  * @author James Burnell
  */
-public class EntityShip extends Entity {
+public class EntityShip extends Entity implements ICannonCarrier, IRepairable {
 
 	/** The length of time in seconds required to wait between firing cannons */
 	public float reloadTime = 1f;
 	/** How much time left until cannons can be fired */
 	public float timeUntilFire = 0f;
+
+	private float maxHealth = 100f;
+	private float health = maxHealth;
 
 	public EntityShip(World worldObj) {
 		super(worldObj, 0, 0, 50, 50);
@@ -95,9 +98,45 @@ public class EntityShip extends Entity {
 		float xPos = center.x + dirVec.x;
 		float yPos = center.y + dirVec.y;
 
-		EntityCannonball cb = new EntityCannonball(worldObj, xPos, yPos);
-		cb.setVelocity(dirVec.setLength(cb.maximumSpeed));
+		EntityCannonball cb = new EntityCannonball(worldObj, xPos, yPos, dirVec, this);
 		worldObj.addEntity(cb);
+	}
+
+	@Override
+	public float getReloadTime() {
+		return reloadTime;
+	}
+
+	@Override
+	public float getReloadProgress() {
+		return timeUntilFire;
+	}
+
+	@Override
+	public float getMaxHealth() {
+		return maxHealth;
+	}
+
+	@Override
+	public float getHealth() {
+		return health;
+	}
+
+	@Override
+	public void damage(float dmgAmount) {
+		health -= dmgAmount;
+		health = health < 0 ? 0 : health;
+	}
+
+	@Override
+	public void repair(float repairAmount) {
+		health += repairAmount;
+		health = health > maxHealth ? maxHealth : health;
+	}
+
+	@Override
+	public float getCannonDamage() {
+		return 10;
 	}
 
 }
