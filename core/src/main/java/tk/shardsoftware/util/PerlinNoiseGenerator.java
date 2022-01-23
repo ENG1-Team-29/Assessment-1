@@ -15,8 +15,9 @@ import java.util.Random;
  * @author Hector Woods
  */
 public class PerlinNoiseGenerator {
-
-	/** Our noise function, i.e how "tall" it is */
+	/** The number of 'layers' per sample, combined to make the overall noise function. */
+	public int octaves;
+	/** Amplitude of our noise function, i.e how "tall" it is */
 	public float amplitude;
 	/** The frequency of our noise function, i.e how often we reach a peak */
 	public float frequency;
@@ -33,8 +34,7 @@ public class PerlinNoiseGenerator {
 	 * are.
 	 */
 	public float scale;
-	/** The number of 'layers' per sample. */
-	public int octaves;
+
 	public int[] permutationTable;
 
 
@@ -55,6 +55,7 @@ public class PerlinNoiseGenerator {
 	}
 	/**
 	 * Set up Permutation table for choosing Pseudo-random gradients.
+	 * Method for choosing random gradients as described in 'Improving Perlin Noise'
 	 */
 	public void setUpPermutationTable(long seed){
 		int[] p = new int[512];
@@ -85,9 +86,6 @@ public class PerlinNoiseGenerator {
 
 
 	public float generateNoiseValue(float x, float y) {
-		// Point (x,y)
-		// Vector2 p = new Vector2(x, y);
-
 		// Gradient Vector points
 		int X = (int) Math.floor(x); // round down
 		int Y = (int) Math.floor(y);
