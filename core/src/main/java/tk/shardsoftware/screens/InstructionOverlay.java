@@ -37,7 +37,9 @@ public class InstructionOverlay implements Disposable {
 		shapeRend.circle(50 + 90 + 90, Gdx.graphics.getHeight() - 50 - 90, 35); // right
 		shapeRend.circle(50 + 90, Gdx.graphics.getHeight() - 50 - 90 - 90, 35); // bottom
 
-		shapeRend.circle(50, Gdx.graphics.getHeight() - 420, 35);
+		shapeRend.circle(50, Gdx.graphics.getHeight() - 420, 35); // fire
+
+		shapeRend.circle(50, Gdx.graphics.getHeight() - 420 - 90, 35); // map
 
 		shapeRend.setColor(Color.BLACK);
 		shapeRend.rectLine(50 + 50, Gdx.graphics.getHeight() - 50 - 90, 50 + 40 + 90,
@@ -54,8 +56,11 @@ public class InstructionOverlay implements Disposable {
 		ResourceUtil.font.draw(batch, "A", 40, Gdx.graphics.getHeight() - 35 - 90); // left
 		ResourceUtil.font.draw(batch, "D", 40 + 90 + 90, Gdx.graphics.getHeight() - 35 - 90); // right
 
-		ResourceUtil.font.draw(batch, "F", 45, Gdx.graphics.getHeight() - 410); // right
+		ResourceUtil.font.draw(batch, "F", 45, Gdx.graphics.getHeight() - 410); // fire
 		ResourceUtil.font.draw(batch, "Fire Cannons", 40 + 70, Gdx.graphics.getHeight() - 410);
+
+		ResourceUtil.font.draw(batch, "M", 40, Gdx.graphics.getHeight() - 410 - 90); // map
+		ResourceUtil.font.draw(batch, "Toggle Map", 40 + 70, Gdx.graphics.getHeight() - 410 - 90);
 
 		ResourceUtil.font.draw(batch, "Move Controls", 40,
 				Gdx.graphics.getHeight() - 50 - 90 - 90 - 70);
