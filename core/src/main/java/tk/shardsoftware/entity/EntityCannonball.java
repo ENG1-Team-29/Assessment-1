@@ -40,12 +40,15 @@ public class EntityCannonball extends Entity {
 		super.update(delta);
 	}
 
-	@SuppressWarnings("unlikely-arg-type")
 	public void onTouchingDamageable(IDamageable obj) {
-		if (obj.equals(parentObj)) return;
 		obj.damage(
 				MathUtils.random(parentObj.getCannonDamage() - 2, parentObj.getCannonDamage() + 2));
 		this.remove = true;
+	}
+
+	@SuppressWarnings("unlikely-arg-type")
+	public boolean isObjParent(IDamageable dmgObj) {
+		return dmgObj.equals(parentObj);
 	}
 
 }
