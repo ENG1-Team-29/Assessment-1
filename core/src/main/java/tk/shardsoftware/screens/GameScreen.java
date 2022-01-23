@@ -53,6 +53,8 @@ public class GameScreen implements Screen {
 	private OrthographicCamera camera;
 	private int DEFAULT_CAMERA_ZOOM = 1;
 
+	private InstructionOverlay instOverlay;
+
 	private World worldObj;
 	private Minimap miniMap;
 	private Minimap bigMiniMap;
@@ -106,6 +108,8 @@ public class GameScreen implements Screen {
 		camera = new OrthographicCamera(360 * 16f / 9f, 360);
 		camera.zoom = DEFAULT_CAMERA_ZOOM;
 		pointTxtLayout = new GlyphLayout();
+		instOverlay = new InstructionOverlay(hudBatch);
+		instOverlay.shouldDisplay = false;
 
 		worldObj = new World();
 		player = new EntityShip(worldObj);
@@ -200,6 +204,11 @@ public class GameScreen implements Screen {
 			player.fireCannons();
 		}
 
+		// TODO: Add pause screen with toggle
+		if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+			instOverlay.shouldDisplay = true;
+		}
+
 		if (DEBUG_MODE) {
 			// Instantly halt the player movement
 			if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
@@ -223,6 +232,7 @@ public class GameScreen implements Screen {
 		// player.setPosition(0, 0);
 		// System.out.println(player.getVelocity());
 		// System.out.println(player.getDirection());
+
 	}
 
 	@Override
@@ -266,6 +276,7 @@ public class GameScreen implements Screen {
 
 		hudBatch.end();
 
+		if (instOverlay.shouldDisplay) instOverlay.render();
 	}
 
 	/** Renders the hitbox outline for all entities */
@@ -287,7 +298,7 @@ public class GameScreen implements Screen {
 	private void renderDebug(List<String> debugList) {
 		for (int i = 0; i < debugList.size(); i++) {
 			debugFont.draw(hudBatch, debugList.get(i), 0,
-					Gdx.graphics.getHeight() - (font.getLineHeight()) * i);
+					Gdx.graphics.getHeight() - (debugFont.getLineHeight()) * i);
 		}
 	}
 
@@ -327,7 +338,7 @@ public class GameScreen implements Screen {
 		// if the game is muted, skip processing
 		if (PirateGame.gameVolume == 0) return;
 		float vol = (player.getVelocity().len2() / (player.getMaxSpeed() * player.getMaxSpeed()));
-		boatWaterMovement.setVolume(soundIdBoatMovement, vol);
+		boatWaterMovement.setVolume(soundIdBoatMovement, vol * PirateGame.gameVolume * 0.8f);
 	}
 
 	/**
