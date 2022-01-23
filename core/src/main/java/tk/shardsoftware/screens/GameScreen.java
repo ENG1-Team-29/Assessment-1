@@ -344,6 +344,7 @@ public class GameScreen implements Screen {
 		lines.add(String.format("Goal angle: %6.1f", goalAngle));
 		lines.add(String.format("Speed %4.1fp/s", player.getVelocity().len()));
 		lines.add("FPS: " + Gdx.graphics.getFramesPerSecond());
+		lines.add(String.format("Entities %3d", worldObj.getEntities().size()));
 		lines.add("");// blank line
 		lines.addAll(DebugUtil.processingTimePercentages());
 
