@@ -29,6 +29,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 import tk.shardsoftware.PirateGame;
 import tk.shardsoftware.TileType;
 import tk.shardsoftware.World;
+import tk.shardsoftware.entity.EntityAIShip;
 import tk.shardsoftware.entity.EntityShip;
 import tk.shardsoftware.util.DebugUtil;
 import tk.shardsoftware.util.Minimap;
@@ -108,10 +109,14 @@ public class GameScreen implements Screen {
 
 		worldObj = new World();
 		player = new EntityShip(worldObj);
+		EntityAIShip exampleEnemy = new EntityAIShip(worldObj,player);
+
 		miniMap = new Minimap(worldObj, 25, Gdx.graphics.getHeight() - 150 - 25, 150, 150,
 				hudBatch);
 		setPlayerStartPosition(player);
 		worldObj.getEntities().add(player);
+		exampleEnemy.setPosition(new Vector2(player.getPosition().x-20, player.getPosition().y-20));
+		worldObj.getEntities().add(exampleEnemy);
 
 		boatWaterMovement = ResourceUtil.getSound("audio/entity/boat-water-movement.wav");
 		ambientOcean = ResourceUtil.getSound("audio/ambient/ocean.wav");
