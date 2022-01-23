@@ -38,7 +38,7 @@ public class EntityAIShip extends EntityShip {
         Vector2 playerPos = player.getPosition();
         Vector2 shipPos = this.getPosition();
         float distToPlayer = shipPos.dst(playerPos);
-        if(distToPlayer > 300){ //If the player is too far away, do nothing
+        if(distToPlayer > 750){ //If the player is too far away, do nothing
             AIState = "idle";
         }else{
             AIState = "CirclePlayer";
