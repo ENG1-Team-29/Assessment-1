@@ -9,7 +9,7 @@ import tk.shardsoftware.util.ResourceUtil;
 public class PirateGame extends Game {
 
 	/** The universal game volume */
-	public static float gameVolume = 1;
+	public static float gameVolume = 0.5f;
 
 	public AssetManager assets;
 
@@ -17,7 +17,7 @@ public class PirateGame extends Game {
 	public void create() {
 		assets = new AssetManager();
 		ResourceUtil.init(assets);
-		//this.setScreen(new LoadScreen(assets, this));
+		// this.setScreen(new LoadScreen(assets, this));
 
 		/* -=TESTING ONLY=- Assets should be loaded within the loading screen */
 		assets.finishLoading(); // XXX: Remove before exporting
