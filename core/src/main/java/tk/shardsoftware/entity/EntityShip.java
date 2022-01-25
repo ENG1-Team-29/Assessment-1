@@ -23,7 +23,7 @@ public class EntityShip extends Entity implements ICannonCarrier, IRepairable {
 		super(worldObj, 0, 0, 50, 50);
 		this.setTexture("textures/entity/playership.png");
 		this.setMaxSpeed(100);
-		this.setHitboxScale(0.4f);
+		this.setHitboxScale(0.39f);
 	}
 
 	public void update(float delta) {
