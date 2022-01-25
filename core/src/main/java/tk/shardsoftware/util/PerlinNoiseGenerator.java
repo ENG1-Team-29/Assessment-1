@@ -55,7 +55,9 @@ public class PerlinNoiseGenerator {
 	}
 	/**
 	 * Set up Permutation table for choosing Pseudo-random gradients.
-	 * Method for choosing random gradients as described in 'Improving Perlin Noise'
+	 * Method for choosing one of four random gradients as described in 'Improving Perlin Noise'
+	 * Generates an array of integers 1-255, twice. In generateNoiseValue we hash the values of x and y to get one of the values in this array,
+	 * then in getGradient we do value mod 4 to get one of four different gradients.
 	 */
 	public void setUpPermutationTable(long seed){
 		int[] p = new int[512];
@@ -66,6 +68,7 @@ public class PerlinNoiseGenerator {
 		//Shuffle the array based on our seed
 		Random r = new Random(seed);
 		for(int i = 0; i < 512; i++){
+			//Swap a random index j with i
 			int currentValue = p[i];
 			int newIndex = r.nextInt(256); //random number <=256
 			int newValue = p[newIndex];
@@ -75,16 +78,23 @@ public class PerlinNoiseGenerator {
 		this.permutationTable = p;
 	}
 
+	//Linear interpolation between a1 and a2 by proportion of t, e.g for lerp(t= 0.3, a1=0, a2=10) == (1/3)
 	public float lerp(float t, float a1, float a2) {
 		return a1 + t * (a2 - a1);
 	}
 
+	//Polynomial function 6t^5 + 5t^4 - 5t^3, used to ease our interpolation
 	public float ease(float t) {
 		return ((6 * t - 15) * t + 10) * t * t * t;
 	}
 
 
-
+	/**
+	 * Compute noise value -1 < n < 1 for point P = (x,y)
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public float generateNoiseValue(float x, float y) {
 		// Gradient Vector points
 		int X = (int) Math.floor(x); // round down
@@ -99,13 +109,13 @@ public class PerlinNoiseGenerator {
 		Vector2 btmRightGrad = getGradient(p[p[X+1]+p[Y]]);
 		Vector2 btmLeftGrad = getGradient(p[p[X]+p[Y]]);
 
-		// Distance Vectors
+		// Distance Vectors, distance from each of the corners of the unit square for point P=(x,y)
 		Vector2 topRightDist = new Vector2(1 - xf, 1 - yf);
 		Vector2 topLeftDist = new Vector2(xf, 1 - yf);
 		Vector2 btmRightDist = new Vector2(1 - xf, yf);
 		Vector2 btmLeftDist = new Vector2(xf, yf);
 
-		// Dot products
+		// Dot products, dot product of distance vectors for each corner of unit square and the gradient that corresponds to that unit square
 		float dPtopRight = topRightDist.dot((topRightGrad));
 		float dPtopLeft = topLeftDist.dot((topLeftGrad));
 		float dPbtmRight = btmRightDist.dot((btmRightGrad));
@@ -116,7 +126,7 @@ public class PerlinNoiseGenerator {
 		float u = ease(x - X); // This vector represents how where (x,y) is relative to the other
 								// points. (or
 								// (x,y) relative to d00)
-		float v = ease(y - Y); // This is what we will interpolate by.
+		float v = ease(y - Y); // This is what we will interpolate by. We compute f(y-Y) where f is a polynomial in order to 'smooth out' our values
 
 		float l1 = lerp(u, dPtopLeft, dPtopRight);
 		float l2 = lerp(u, dPbtmLeft, dPbtmRight);
