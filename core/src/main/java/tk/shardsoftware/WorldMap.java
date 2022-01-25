@@ -2,8 +2,6 @@ package tk.shardsoftware;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
 import com.badlogic.gdx.Gdx;
@@ -43,25 +41,27 @@ public class WorldMap {
 		Gdx.app.log("WorldMap", "Seed=" + seed);
 		// clear map to allow for regeneration
 		tileMap.clear();
-		// choosing these values is more of an art than a science, see PerlinNoiseGenerator for more info
-		this.perlin = new PerlinNoiseGenerator(2f, 100, 12, 1, 1.3f, 0.66f, width,
-				height, seed);
+		// choosing these values is more of an art than a science, see
+		// PerlinNoiseGenerator for more info
+		this.perlin = new PerlinNoiseGenerator(2f, 100, 12, 1, 1.3f, 0.66f, width, height, seed);
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				Vector2 key = new Vector2(i, j);
 
 				float n = perlin.noise(i, j);
-				
-				if (n > 0.95) {
+
+				if (n > 1) {
 					this.tileMap.put(key, TileType.GRASS);
-				} else if (n > 0.9) {
+				} else if (n > 0.95) {
 					this.tileMap.put(key, TileType.DIRT);
 				} else if (n > 0.5) {
 					this.tileMap.put(key, TileType.SAND); // sand
 				} else if (n > 0) {
 					this.tileMap.put(key, TileType.WATER_SHALLOW);
 				}
-				//If none of these are satisfied then when this tile is read the result will be null which is interpreted as TileType.WATER_DEEP. This was done to save memory
+				// If none of these are satisfied then when this tile is read the result will be
+				// null which is interpreted as TileType.WATER_DEEP. This was done to save
+				// memory
 
 			}
 		}
@@ -73,31 +73,28 @@ public class WorldMap {
 		batch.draw(texture, x * tile_size, y * tile_size, tile_size, tile_size);
 	}
 
-
 	/**
 	 * Searches the map based on the result of a function passed as an argument.
 	 * Accepts any Function which accepts a Vector2 as input and returns a boolean.
 	 * See GameScreen.SetPlayerStartPosition() for an example of its use
 	 */
-	public Vector2 SearchMap(Function<Vector2,Boolean> searchCond) {
-		for(int i = 0; i < this.width; i++){
-			for(int j = 0; j < this.height; j++){
+	public Vector2 SearchMap(Function<Vector2, Boolean> searchCond) {
+		for (int i = 0; i < this.width; i++) {
+			for (int j = 0; j < this.height; j++) {
 				Boolean satisfiesCond = false;
-				Vector2 v = new Vector2(i,j);
-				try{ //Catch any exceptions in the passed method
+				Vector2 v = new Vector2(i, j);
+				try { // Catch any exceptions in the passed method
 					satisfiesCond = searchCond.apply(v);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				if(satisfiesCond){
+				if (satisfiesCond) {
 					return v;
 				}
 			}
 		}
 		return null;
 	}
-
-
 
 	// TODO: Render once to off-screen buffer then render buffer to screen
 	public void drawTilesInRange(Camera cam, SpriteBatch batch) {
