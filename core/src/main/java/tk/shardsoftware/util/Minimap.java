@@ -162,6 +162,13 @@ public class Minimap implements Disposable {
 				if(tileX > startX && tileY > startY && tileX-startX < width && tileY-startY < height){ //if within range of the map
 					batch.draw(npcIcon,x+tileX-startX,y+tileY-startY,5,5);
 				}
+			}else if(e instanceof College){
+				Vector2 pos = e.getPosition();
+				int tileX = (int)pos.x/worldObj.worldMap.tile_size;
+				int tileY = (int)pos.y/worldObj.worldMap.tile_size;
+				if(tileX > startX && tileY > startY && tileX-startX < width && tileY-startY < height){ //if within range of the map
+					batch.draw(npcIcon,x+tileX-startX,y+tileY-startY,5,5);
+				}
 			}
 		}
 		//Draw player

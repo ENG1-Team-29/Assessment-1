@@ -23,7 +23,7 @@ import tk.shardsoftware.World;
 public class College extends Entity {
     public String collegeName;
     public String collegeTextureName = "textures/ui/expand-map-button.png";
-    public static ArrayList<College> Colleges;
+    public static ArrayList<College> Colleges = new ArrayList<College>();
     public static ArrayList<String> availableCollegeNames = new ArrayList<>(
         Arrays.asList("James","Constantine","Alcuin","Anne Lister","David Kato", "Derwent", "Goodricke","Halifax","Langwith","Vanbrugh","Wentworth"));
 
@@ -61,10 +61,16 @@ public class College extends Entity {
      * @param collegeMinDist Minimum distance between each college
      */
     public static void generateColleges(World worldObj, int numColleges, float collegeMinDist){
+        Colleges = new ArrayList<College>();
         WorldMap map = worldObj.worldMap;
         Function<Vector2, Boolean> collegePositionConds = vector2 -> {
             int x = (int)vector2.x;
             int y = (int)vector2.y;
+
+            //Check that the college is not too close to the edges of the map
+            if(x < 50 || y < 50 || x > map.width-50 || y > map.height-50){
+                return false;
+            }
 
             //Check that the college is located on land
             TileType collegeTile = map.getTile(x,y);
@@ -96,7 +102,8 @@ public class College extends Entity {
             //Check that the college is not too close to other colleges in the world (as determined by collegeMinDist)
             for(College c : Colleges){
                 Vector2 pos = c.getPosition();
-                float dist = pos.dst(vector2); //Compare distance from the college to the point we want to place on
+                Vector2 collegePosTiles = new Vector2(pos.x/map.tile_size,pos.y/ map.tile_size);
+                float dist = vector2.dst(collegePosTiles); //Compare distance from the college to the point we want to place on
                 if(dist < collegeMinDist){
                     return false;
                 }
@@ -108,7 +115,7 @@ public class College extends Entity {
         for(int i = 0; i<numColleges; i++){
             Vector2 collegePos = worldObj.worldMap.SearchMap(collegePositionConds);
             if(collegePos != null){
-                College c = new College(worldObj,collegePos.x, collegePos.y, map.tile_size,map.tile_size); //This is added to Colleges array by the constructor automatically
+                College c = new College(worldObj,collegePos.x * worldObj.worldMap.tile_size, collegePos.y * worldObj.worldMap.tile_size, map.tile_size,map.tile_size); //This is added to Colleges array by the constructor automatically
             }
         }
     }

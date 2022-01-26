@@ -116,7 +116,7 @@ public class GameScreen implements Screen {
 				hudBatch);
 		setPlayerStartPosition(player);
 		worldObj.addEntity(player);
-		College.generateColleges(worldObj,3,20);
+		placeColleges();
 		exampleEnemy
 				.setPosition(new Vector2(player.getPosition().x - 20, player.getPosition().y - 20));
 		worldObj.addEntity(exampleEnemy);
@@ -191,6 +191,15 @@ public class GameScreen implements Screen {
 	 */
 	private int targetFPS = 60;
 
+
+	public void placeColleges(){
+		College.generateColleges(worldObj,5,100);
+		for(College c : College.Colleges){
+			worldObj.addEntity(c);
+			System.out.println(c.collegeName);
+		}
+	}
+
 	/** Handles user input */
 	public void controls(float delta) {
 		goalAngle = calcGoalAngle();
@@ -226,8 +235,12 @@ public class GameScreen implements Screen {
 				Gdx.graphics.setForegroundFPS(targetFPS /= 2);
 			}
 			if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+				worldObj.clearEntities();
+				player = new EntityShip(worldObj);
+				worldObj.addEntity(player);
 				worldObj.worldMap.buildWorld(MathUtils.random.nextLong());
 				miniMap.prepareMap();
+				placeColleges();
 				setPlayerStartPosition(player);
 			}
 

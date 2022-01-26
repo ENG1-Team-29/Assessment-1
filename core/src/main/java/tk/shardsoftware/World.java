@@ -98,6 +98,13 @@ public class World {
 		});
 	}
 
+	/**Removes all entities from the world*/
+	public void clearEntities(){
+		for (Entity e : entities){
+			e.remove = true;
+		}
+	}
+
 	/** The list of entities contained within the world */
 	public List<Entity> getEntities() {
 		return entities;
