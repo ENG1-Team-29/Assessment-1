@@ -31,6 +31,7 @@ import tk.shardsoftware.TileType;
 import tk.shardsoftware.World;
 import tk.shardsoftware.entity.EntityAIShip;
 import tk.shardsoftware.entity.EntityShip;
+import tk.shardsoftware.util.College;
 import tk.shardsoftware.util.DebugUtil;
 import tk.shardsoftware.util.Minimap;
 import tk.shardsoftware.util.ResourceUtil;
@@ -115,6 +116,7 @@ public class GameScreen implements Screen {
 				hudBatch);
 		setPlayerStartPosition(player);
 		worldObj.addEntity(player);
+		College.generateColleges(worldObj,3,20);
 		exampleEnemy
 				.setPosition(new Vector2(player.getPosition().x - 20, player.getPosition().y - 20));
 		worldObj.addEntity(exampleEnemy);
