@@ -24,8 +24,7 @@ public class College extends Entity {
     public String collegeName;
     public String collegeTextureName = "textures/ui/expand-map-button.png";
     public static ArrayList<College> Colleges = new ArrayList<College>();
-    public static ArrayList<String> availableCollegeNames = new ArrayList<>(
-        Arrays.asList("James","Constantine","Alcuin","Anne Lister","David Kato", "Derwent", "Goodricke","Halifax","Langwith","Vanbrugh","Wentworth"));
+    public static ArrayList<String> availableCollegeNames;
 
 
     /**
@@ -37,6 +36,24 @@ public class College extends Entity {
         }
         int i = new Random().nextInt(availableCollegeNames.size());
         return availableCollegeNames.remove(i);
+    }
+
+    /**
+     * Gets a college of the specified name.
+     * @param name Name of the college
+     * @return
+     */
+    public static College getCollegeWithName(String name){
+        for(College c : Colleges){
+            if(c.getName() == name){
+                return c;
+            }
+        }
+        return null;
+    }
+
+    public String getName(){
+        return this.collegeName;
     }
 
     /**
@@ -61,6 +78,8 @@ public class College extends Entity {
      * @param collegeMinDist Minimum distance between each college
      */
     public static void generateColleges(World worldObj, int numColleges, float collegeMinDist){
+        availableCollegeNames = new ArrayList<>(
+                Arrays.asList("James","Constantine","Alcuin","Anne Lister","David Kato", "Derwent", "Goodricke","Halifax","Langwith","Vanbrugh","Wentworth"));
         Colleges = new ArrayList<College>();
         WorldMap map = worldObj.worldMap;
         Function<Vector2, Boolean> collegePositionConds = vector2 -> {
@@ -82,23 +101,24 @@ public class College extends Entity {
                     && !(map.getTile(x,y+1) == TileType.WATER_SHALLOW) && !(map.getTile(x,y-1) == TileType.WATER_SHALLOW)){
                 return false;
             }
-
-            //Check that at least 25% of the tiles around the college are water, so that the player is able to reach the college
-           // float numWater = 0;
-           // float numLand = 0;
-           // for (int i = x - 20; i < x + 20; i++) {
-            //    for (int j = y - 20; j < y + 20; j++) {
-            //        TileType tile = worldObj.worldMap.getTile(i, j);
-              //      if (tile == TileType.WATER_DEEP || tile == TileType.WATER_SHALLOW) {
-             //           numWater = numWater + 1;
-             //       }else{
-              //          numLand = numLand + 1;
-              //      }
-            //    }
-           // }
-           // if(numWater / numLand < 0.25){
-              //  return false;
-            //}
+            /////I commented out the below check because on testing I found it was unnecessary.////////
+                    //Check that at least 25% of the tiles around the college are water, so that the player is able to reach the college
+                   // float numWater = 0;
+                   // float numLand = 0;
+                   // for (int i = x - 20; i < x + 20; i++) {
+                    //    for (int j = y - 20; j < y + 20; j++) {
+                    //        TileType tile = worldObj.worldMap.getTile(i, j);
+                      //      if (tile == TileType.WATER_DEEP || tile == TileType.WATER_SHALLOW) {
+                     //           numWater = numWater + 1;
+                     //       }else{
+                      //          numLand = numLand + 1;
+                      //      }
+                    //    }
+                   // }
+                   // if(numWater / numLand < 0.25){
+                      //  return false;
+                    //}
+            //////
             //Check that the college is not too close to other colleges in the world (as determined by collegeMinDist)
             for(College c : Colleges){
                 Vector2 pos = c.getPosition();
@@ -115,7 +135,7 @@ public class College extends Entity {
         for(int i = 0; i<numColleges; i++){
             Vector2 collegePos = worldObj.worldMap.SearchMap(collegePositionConds);
             if(collegePos != null){
-                College c = new College(worldObj,collegePos.x * worldObj.worldMap.tile_size, collegePos.y * worldObj.worldMap.tile_size, map.tile_size,map.tile_size); //This is added to Colleges array by the constructor automatically
+                College c = new College(worldObj,collegePos.x * worldObj.worldMap.tile_size, collegePos.y * worldObj.worldMap.tile_size, map.tile_size*3,map.tile_size*3); //This is added to Colleges array by the constructor automatically
             }
         }
     }

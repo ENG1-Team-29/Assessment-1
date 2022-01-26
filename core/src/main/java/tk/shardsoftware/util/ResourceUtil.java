@@ -29,7 +29,7 @@ public class ResourceUtil {
 	/** The game's asset manager */
 	private static AssetManager assetManager;
 
-	public static BitmapFont font, debugFont;
+	public static BitmapFont font, debugFont, collegeFont;
 
 	/**
 	 * Load any required textures into memory
@@ -78,6 +78,10 @@ public class ResourceUtil {
 					false);
 			font.setColor(Color.WHITE);
 			font.getData().setScale(0.4f);
+			collegeFont = new BitmapFont(Gdx.files.internal("font/jagged-font.fnt"), // jagged-font
+					false);
+			collegeFont.setColor(Color.WHITE);
+			collegeFont.getData().setScale(0.2f);
 		} else {
 			Gdx.app.error("error", "Could not locate jagged font file");
 		}

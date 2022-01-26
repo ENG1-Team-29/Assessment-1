@@ -1,6 +1,7 @@
 package tk.shardsoftware.screens;
 
 import static tk.shardsoftware.util.DebugUtil.DEBUG_MODE;
+import static tk.shardsoftware.util.ResourceUtil.collegeFont;
 import static tk.shardsoftware.util.ResourceUtil.debugFont;
 import static tk.shardsoftware.util.ResourceUtil.font;
 
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -348,7 +350,14 @@ public class GameScreen implements Screen {
 
 			//We draw the college name above it
 			if(e instanceof College){
-				
+				String cName = ((College) e).getName() + " College";
+
+				//Get the width of the text after we draw it
+				GlyphLayout gLayout = new GlyphLayout();
+				gLayout.setText(collegeFont,cName);
+				float w = gLayout.width;
+
+				collegeFont.draw(batch,cName,e.getX()-w/2,e.getY()-10);
 			}
 
 			// Draw each entity with its own texture and apply rotation
