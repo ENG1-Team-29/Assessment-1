@@ -57,7 +57,7 @@ public class PerlinNoiseGenerator {
 	 * Set up Permutation table for choosing Pseudo-random gradients.
 	 * Method for choosing one of four random gradients as described in 'Improving Perlin Noise'
 	 * Generates an array of integers 1-255, twice. In generateNoiseValue we hash the values of x and y to get one of the values in this array,
-	 * then in getGradient we do value mod 4 to get one of four different gradients.
+	 * then in getGradient we do x mod 4 to get one of four different gradients.
 	 */
 	public void setUpPermutationTable(long seed){
 		int[] p = new int[512];
@@ -83,7 +83,7 @@ public class PerlinNoiseGenerator {
 		return a1 + t * (a2 - a1);
 	}
 
-	//Polynomial function 6t^5 + 5t^4 - 5t^3, used to ease our interpolation
+	//Polynomial function 6t^5 - 15t^4 + 10t^3, used to ease our interpolation
 	public float ease(float t) {
 		return ((6 * t - 15) * t + 10) * t * t * t;
 	}

@@ -31,12 +31,22 @@ public class WorldMap {
 
 	public PerlinNoiseGenerator perlin;
 
+	/**
+	 * Constructor for WorldMap.
+	 * @param world_tile_size The dimensions of each tile (in pixels) tile width = world_tile_size = tile height
+	 * @param world_width The number of tiles on each row
+	 * @param world_height The number of tiles on each column
+	 */
 	public WorldMap(int world_tile_size, int world_width, int world_height) {
 		this.tile_size = world_tile_size;
 		this.width = world_width;
 		this.height = world_height;
 	}
 
+	/**
+	 * Generates a heightmap based on the seed, then samples this heightmap to choose either water, sand or grass tiles.
+	 * @param seed A long used for the seed of the heightmap. Using the same seed will always generate the same heightmap.
+	 */
 	public void buildWorld(long seed) {
 		Gdx.app.log("WorldMap", "Seed=" + seed);
 		// clear map to allow for regeneration
@@ -68,6 +78,12 @@ public class WorldMap {
 
 	}
 
+	/**
+	 * Draw the tile located at point P=(x,y). See getTile().
+	 * @param x The x position of the tile
+	 * @param y The y position of the tile
+	 * @param batch The SpriteBatch that the tile is to be drawn by
+	 */
 	public void drawTile(int x, int y, SpriteBatch batch) {
 		Texture texture = this.getTile(x, y).getTex();
 		batch.draw(texture, x * tile_size, y * tile_size, tile_size, tile_size);
@@ -77,7 +93,11 @@ public class WorldMap {
 	 * Searches the map based on the result of a function passed as an argument.
 	 * Accepts any Function which accepts a Vector2 as input and returns a boolean.
 	 * See GameScreen.SetPlayerStartPosition() for an example of its use
+	 *
+	 * @param searchCond A function that takes a vector2 as input and returns either true or false based on whether that position is valid
+	 * @return Returns either a valid Vector2 representing a position that passed the search conditions (i.e searchCond returns true), or null if no such position exists.
 	 */
+
 	public Vector2 SearchMap(Function<Vector2, Boolean> searchCond) {
 		for (int i = 0; i < this.width; i++) {
 			for (int j = 0; j < this.height; j++) {
@@ -97,6 +117,11 @@ public class WorldMap {
 	}
 
 	// TODO: Render once to off-screen buffer then render buffer to screen
+	/**
+	 * Draws all tiles in range of the camera.
+	 * @param cam The camera. Contains information about the viewport width and height as well as the position of the camera in the world.
+	 * @param batch The SpriteBatch that will draw the tiles.
+	 */
 	public void drawTilesInRange(Camera cam, SpriteBatch batch) {
 		int numberOfTilesX = (int) (cam.viewportWidth / tile_size);
 		int numberOfTilesY = (int) (cam.viewportHeight / tile_size);
@@ -117,6 +142,8 @@ public class WorldMap {
 	/**
 	 * Get the tile type of the tile positioned at (x,y). If there is no tile
 	 * defined at this point, it will return {@link TileType#WATER_DEEP}.
+	 * @param x The x position of the tile
+	 * @param y The y position of the tile
 	 */
 	public TileType getTile(int x, int y) {
 		return tileMap.getOrDefault(new Vector2(x, y), TileType.WATER_DEEP);
