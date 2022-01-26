@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -33,7 +32,7 @@ import tk.shardsoftware.TileType;
 import tk.shardsoftware.World;
 import tk.shardsoftware.entity.EntityAIShip;
 import tk.shardsoftware.entity.EntityShip;
-import tk.shardsoftware.util.College;
+import tk.shardsoftware.entity.College;
 import tk.shardsoftware.util.DebugUtil;
 import tk.shardsoftware.util.Minimap;
 import tk.shardsoftware.util.ResourceUtil;

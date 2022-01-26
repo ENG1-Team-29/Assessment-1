@@ -1,9 +1,7 @@
-package tk.shardsoftware.util;
+package tk.shardsoftware.entity;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -11,8 +9,6 @@ import java.util.function.Function;
 
 import tk.shardsoftware.TileType;
 import tk.shardsoftware.WorldMap;
-import tk.shardsoftware.util.ResourceUtil;
-import tk.shardsoftware.entity.Entity;
 import tk.shardsoftware.World;
 /**
  * Represents the physical location of a college on a map.

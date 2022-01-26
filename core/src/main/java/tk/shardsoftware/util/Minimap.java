@@ -2,11 +2,11 @@ package tk.shardsoftware.util;
 
 
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import tk.shardsoftware.entity.College;
 import tk.shardsoftware.entity.Entity;
 
 import com.badlogic.gdx.Gdx;
@@ -28,7 +28,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import tk.shardsoftware.TileType;
 import tk.shardsoftware.World;
 import tk.shardsoftware.entity.EntityAIShip;
-import tk.shardsoftware.entity.EntityShip;
 
 /**
  * Draws a Minimap to the screen to help the player navigate.
