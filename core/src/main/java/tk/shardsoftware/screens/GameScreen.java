@@ -346,6 +346,11 @@ public class GameScreen implements Screen {
 			// batch.draw(e.getTexture(), e.getPosition().x, e.getPosition().y,
 			// e.getHitbox().width, e.getHitbox().height);
 
+			//We draw the college name above it
+			if(e instanceof College){
+				
+			}
+
 			// Draw each entity with its own texture and apply rotation
 			batch.draw(e.getTexture(), e.getX(), e.getY(), e.getWidth() / 2, e.getHeight() / 2,
 					e.getWidth(), e.getHeight(), 1, 1, e.getDirection(), false);

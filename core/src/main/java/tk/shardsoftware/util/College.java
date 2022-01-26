@@ -84,21 +84,21 @@ public class College extends Entity {
             }
 
             //Check that at least 25% of the tiles around the college are water, so that the player is able to reach the college
-            float numWater = 0;
-            float numLand = 0;
-            for (int i = x - 20; i < x + 20; i++) {
-                for (int j = y - 20; j < y + 20; j++) {
-                    TileType tile = worldObj.worldMap.getTile(i, j);
-                    if (tile == TileType.WATER_DEEP || tile == TileType.WATER_SHALLOW) {
-                        numWater = numWater + 1;
-                    }else{
-                        numLand = numLand + 1;
-                    }
-                }
-            }
-            if(numWater / numLand < 0.25){
-                return false;
-            }
+           // float numWater = 0;
+           // float numLand = 0;
+           // for (int i = x - 20; i < x + 20; i++) {
+            //    for (int j = y - 20; j < y + 20; j++) {
+            //        TileType tile = worldObj.worldMap.getTile(i, j);
+              //      if (tile == TileType.WATER_DEEP || tile == TileType.WATER_SHALLOW) {
+             //           numWater = numWater + 1;
+             //       }else{
+              //          numLand = numLand + 1;
+              //      }
+            //    }
+           // }
+           // if(numWater / numLand < 0.25){
+              //  return false;
+            //}
             //Check that the college is not too close to other colleges in the world (as determined by collegeMinDist)
             for(College c : Colleges){
                 Vector2 pos = c.getPosition();
