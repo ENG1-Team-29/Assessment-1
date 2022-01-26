@@ -163,18 +163,31 @@ public abstract class Entity {
 		return collidedFlag;
 	}
 
-	/** Returns the center point of the entity */
+	/**
+	 * Calculates the center point of the entity
+	 * 
+	 * @return The center point of the entity
+	 */
 	public Vector2 getCenterPoint() {
 		return new Vector2(positionVec.x + width / 2f, positionVec.y + height / 2f);
 	}
 
-	/** Set the center point of the entity */
+	/**
+	 * Set the center point of the entity
+	 * 
+	 * @param x the new center x position
+	 * @param y the new center y position
+	 */
 	public void setCenter(float x, float y) {
 		positionVec.x = x - width / 2f;
 		positionVec.y = y - height / 2f;
 	}
 
-	/** Set the center point of the entity */
+	/**
+	 * Set the center point of the entity
+	 * 
+	 * @param center the new center point of the entity
+	 */
 	public void setCenter(Vector2 center) {
 		setCenter(center.x, center.y);
 		updateHitbox();
@@ -186,6 +199,8 @@ public abstract class Entity {
 
 	/**
 	 * Set the angle the entity is facing and standardize to be within 0-360 degrees
+	 * 
+	 * @param angle the angle in degrees
 	 */
 	public void setDirection(float angle) {
 		float temp = angle % 360;
@@ -194,6 +209,8 @@ public abstract class Entity {
 
 	/**
 	 * Adds a value to the direction
+	 * 
+	 * @param angle the angle in degrees to rotate by
 	 */
 	public void rotate(float angle) {
 		this.setDirection(direction + angle);
