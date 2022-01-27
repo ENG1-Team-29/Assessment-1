@@ -1,6 +1,9 @@
 package tk.shardsoftware.util;
 
 
+import static tk.shardsoftware.util.ResourceUtil.collegeFont;
+import static tk.shardsoftware.util.ResourceUtil.miniMapFont;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.HashMap;
@@ -13,6 +16,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -42,6 +46,7 @@ public class Minimap implements Disposable {
 	private Texture wholeMap;
 	private Texture playerIcon;
 	private Texture npcIcon;
+	private Texture collegeIcon;
 
 	/** Minimap button **/
 	public Stage stage;
@@ -68,7 +73,7 @@ public class Minimap implements Disposable {
 		miniMapBorder = ResourceUtil.getTexture("textures/ui/minimap-border.png");
 		playerIcon = ResourceUtil.getTexture("textures/ui/player-map-icon.png");
 		npcIcon = ResourceUtil.getTexture("textures/ui/enemy-map-icon.png");
-
+		collegeIcon = ResourceUtil.getTexture("textures/ui/college-map-icon.png");
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -126,6 +131,7 @@ public class Minimap implements Disposable {
 				TileType tile = worldObj.worldMap.getTile(i, j);
 				screen.setColor(colors.get(tile));
 				screen.drawPixel(i, j);
+
 			}
 		}
 		wholeMap = new Texture(screen);
@@ -166,7 +172,17 @@ public class Minimap implements Disposable {
 				int tileX = (int)pos.x/worldObj.worldMap.tile_size;
 				int tileY = (int)pos.y/worldObj.worldMap.tile_size;
 				if(tileX > startX && tileY > startY && tileX-startX < width && tileY-startY < height){ //if within range of the map
-					batch.draw(npcIcon,x+tileX-startX,y+tileY-startY,5,5);
+					String cName = ((College) e).getName();
+
+					//Get the width of the text after we draw it
+					GlyphLayout gLayout = new GlyphLayout();
+					gLayout.setText(miniMapFont,cName);
+					float w = gLayout.width;
+
+
+
+					miniMapFont.draw(batch,cName,x+tileX-startX-w/2,y+tileY-startY);
+					batch.draw(collegeIcon,x+tileX-startX,y+tileY-startY,5,5);
 				}
 			}
 		}

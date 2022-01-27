@@ -29,7 +29,7 @@ public class ResourceUtil {
 	/** The game's asset manager */
 	private static AssetManager assetManager;
 
-	public static BitmapFont font, debugFont, collegeFont;
+	public static BitmapFont font, debugFont, collegeFont, miniMapFont;
 
 	/**
 	 * Load any required textures into memory
@@ -55,6 +55,7 @@ public class ResourceUtil {
 		addTexture("textures/ui/minimap-border.png");
 		addTexture("textures/ui/enemy-map-icon.png");
 		addTexture("textures/ui/player-map-icon.png");
+		addTexture("textures/ui/college-map-icon.png");
 
 		/* Sound */
 		addSound("audio/entity/boat-water-movement.wav");
@@ -82,6 +83,10 @@ public class ResourceUtil {
 					false);
 			collegeFont.setColor(Color.WHITE);
 			collegeFont.getData().setScale(0.2f);
+			miniMapFont = new BitmapFont(Gdx.files.internal("font/jagged-font.fnt"), // jagged-font
+					false);
+			miniMapFont.setColor(Color.WHITE);
+			miniMapFont.getData().setScale(0.2f);
 		} else {
 			Gdx.app.error("error", "Could not locate jagged font file");
 		}
