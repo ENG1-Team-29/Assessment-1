@@ -29,6 +29,13 @@ public class EntityAIShip extends EntityShip {
 		goalAngle = directionVector.angleDeg();// Convert to degrees and round down
 		super.rotateTowardsGoal(goalAngle, delta);
 	}
+	
+	public void CircleCollege(float delta, float distToCollege) {
+		
+		
+		
+		
+	}
 
 	public void update(float delta) {
 		super.update(delta);
@@ -37,7 +44,7 @@ public class EntityAIShip extends EntityShip {
 		Vector2 shipPos = this.getPosition();
 		float distToPlayer = shipPos.dst(playerPos);
 		if (distToPlayer > 750 || distToPlayer < 50) { // If the player is too far away, do nothing
-			aiState = AIState.IDLE;
+			aiState = AIState.CIRCLE_COLLEGE;
 		} else {
 			aiState = AIState.CIRCLE_PLAYER;
 		}
