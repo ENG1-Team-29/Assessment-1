@@ -194,10 +194,9 @@ public class GameScreen implements Screen {
 
 
 	public void placeColleges(){
-		College.generateColleges(worldObj,5,100);
+		College.generateColleges(worldObj,5,50);
 		for(College c : College.Colleges){
 			worldObj.addEntity(c);
-			System.out.println(c.collegeName);
 		}
 	}
 

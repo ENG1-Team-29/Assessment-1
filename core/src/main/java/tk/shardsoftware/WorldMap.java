@@ -2,6 +2,7 @@ package tk.shardsoftware;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Function;
 
 import com.badlogic.gdx.Gdx;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 import tk.shardsoftware.util.PerlinNoiseGenerator;
 
@@ -99,10 +101,31 @@ public class WorldMap {
 	 */
 
 	public Vector2 SearchMap(Function<Vector2, Boolean> searchCond) {
+		//Generate a 2D array containing every location on the map, then shuffle it so that our start position is randomised.
+		//If this is not done then the lower left corner of the map is heavily favoured by this function.
+		Vector2[][] randomisedMap = new Vector2[width][height];
+		for (int i = 0; i < this.width; i++) {
+			for (int j = 0; j < this.height; j++) {
+				randomisedMap[i][j] = new Vector2(i,j);
+			}
+		}
+		Random r = new Random();
+		for (int i = 0; i < this.width; i++) {
+			for (int j = 0; j < this.height; j++) {
+				int randI = r.nextInt(width);
+				int randJ = r.nextInt(height);
+				//swap values to shuffle
+				Vector2 temp = randomisedMap[randI][randJ];
+				randomisedMap[randI][randJ] = randomisedMap[i][j];
+				randomisedMap[i][j] = temp;
+			}
+		}
+
+
 		for (int i = 0; i < this.width; i++) {
 			for (int j = 0; j < this.height; j++) {
 				Boolean satisfiesCond = false;
-				Vector2 v = new Vector2(i, j);
+				Vector2 v = randomisedMap[i][j];
 				try { // Catch any exceptions in the passed method
 					satisfiesCond = searchCond.apply(v);
 				} catch (Exception e) {
