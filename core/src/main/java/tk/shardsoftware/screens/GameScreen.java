@@ -33,6 +33,7 @@ import tk.shardsoftware.World;
 import tk.shardsoftware.entity.EntityAIShip;
 import tk.shardsoftware.entity.EntityShip;
 import tk.shardsoftware.entity.College;
+import tk.shardsoftware.util.Bar;
 import tk.shardsoftware.util.DebugUtil;
 import tk.shardsoftware.util.Minimap;
 import tk.shardsoftware.util.ResourceUtil;
@@ -302,22 +303,11 @@ public class GameScreen implements Screen {
 		DebugUtil.saveProcessTime("Reload Info Render", () -> {
 			if (player.timeUntilFire > 0) {
 				batch.begin();
-				shapeRenderer.begin(ShapeType.Filled);
-
-				shapeRenderer.setColor(Color.BLACK);
+				float lerpAlpha = player.timeUntilFire / player.reloadTime; //time the bar should lerp by
 				Vector2 start = new Vector2(player.getX(), player.getY() + player.getHeight());
 				Vector2 end = new Vector2(player.getX() + player.getWidth(),
 						player.getY() + player.getHeight());
-
-				shapeRenderer.rectLine(start, end, 3);
-
-				start.x += 1;
-				end.x -= 2;
-				shapeRenderer.setColor(Color.GREEN);
-				shapeRenderer.rectLine(start,
-						end.lerp(start, player.timeUntilFire / player.reloadTime), 1);
-
-				shapeRenderer.end();
+				Bar.DrawBar(batch,shapeRenderer,start,end,lerpAlpha);
 				batch.end();
 			}
 		});
