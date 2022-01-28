@@ -126,6 +126,9 @@ public class EntityShip extends Entity implements ICannonCarrier, IRepairable {
 	public void damage(float dmgAmount) {
 		health -= dmgAmount;
 		health = health < 0 ? 0 : health;
+		if(health <= 0) {
+			this.remove = true;
+		}
 	}
 
 	@Override

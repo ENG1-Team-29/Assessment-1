@@ -33,6 +33,8 @@ import tk.shardsoftware.World;
 import tk.shardsoftware.entity.EntityAIShip;
 import tk.shardsoftware.entity.EntityShip;
 import tk.shardsoftware.entity.College;
+import tk.shardsoftware.entity.IDamageable;
+import tk.shardsoftware.entity.IRepairable;
 import tk.shardsoftware.util.Bar;
 import tk.shardsoftware.util.DebugUtil;
 import tk.shardsoftware.util.Minimap;
@@ -69,6 +71,19 @@ public class GameScreen implements Screen {
 	public int points = 0;
 	/** The text to be display the points */
 	public GlyphLayout pointTxtLayout;
+
+
+	/**
+	 * Causes d damage to all entities in the game. intended for debug only.
+	 * @param d
+	 */
+	public void DamageAllEntities(int d){
+		worldObj.getEntities().forEach(e -> {
+			if(e instanceof  IDamageable){
+				((IDamageable) e).damage(d);
+			}
+		});
+	}
 
 	/**
 	 * 	 * Search the world map for a region that contains only water to spawn the
@@ -294,7 +309,7 @@ public class GameScreen implements Screen {
 		DebugUtil.saveProcessTime("Map Draw Time", () -> {
 			worldObj.worldMap.drawTilesInRange(camera, batch);
 		});
-
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 		DebugUtil.saveProcessTime("Entity Draw Time", () -> renderEntities());
 
 		batch.end();
@@ -303,14 +318,15 @@ public class GameScreen implements Screen {
 		DebugUtil.saveProcessTime("Reload Info Render", () -> {
 			if (player.timeUntilFire > 0) {
 				batch.begin();
-				float lerpAlpha = player.timeUntilFire / player.reloadTime; //time the bar should lerp by
-				Vector2 start = new Vector2(player.getX(), player.getY() + player.getHeight());
+				float p = player.timeUntilFire / player.reloadTime; //time the bar should lerp by
+				Vector2 start = new Vector2(player.getX(), player.getY() - 5);
 				Vector2 end = new Vector2(player.getX() + player.getWidth(),
-						player.getY() + player.getHeight());
-				Bar.DrawBar(batch,shapeRenderer,start,end,lerpAlpha);
+						player.getY() - 5);
+				Bar.DrawBar(batch,shapeRenderer,start,end,p);
 				batch.end();
 			}
 		});
+		shapeRenderer.end();
 
 		/* Render objects to fixed view */
 		if (DEBUG_MODE) DebugUtil.saveProcessTime("Hitbox Render", () -> renderHitboxes());
@@ -376,10 +392,18 @@ public class GameScreen implements Screen {
 
 				collegeFont.draw(batch,cName,e.getX()-w/2,e.getY()-10);
 			}
-
 			// Draw each entity with its own texture and apply rotation
 			batch.draw(e.getTexture(), e.getX(), e.getY(), e.getWidth() / 2, e.getHeight() / 2,
 					e.getWidth(), e.getHeight(), 1, 1, e.getDirection(), false);
+			if(e instanceof IDamageable){
+				IDamageable eDamageable = ((IDamageable) e); //cast to IDamageable so we can get the health value
+				float health = eDamageable.getHealth();
+				float maxHealth = eDamageable.getMaxHealth();
+				if(health < maxHealth){
+					Bar.DrawBar(batch,shapeRenderer,new Vector2(e.getX(),e.getY()+e.getHeight()),
+							new Vector2(e.getX()+e.getWidth(),e.getY()+e.getHeight()), 1-(health/maxHealth), Color.BLACK, Color.RED);
+				}
+			}
 		});
 	}
 
