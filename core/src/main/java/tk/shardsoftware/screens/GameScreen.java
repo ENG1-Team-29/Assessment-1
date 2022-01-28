@@ -158,6 +158,7 @@ public class GameScreen implements Screen {
 		miniMap.prepareMap();
 		placeColleges();
 		setPlayerStartPosition(player);
+		points = 0;
 	}
 
 
