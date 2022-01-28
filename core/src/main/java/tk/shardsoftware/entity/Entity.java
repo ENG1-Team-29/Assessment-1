@@ -41,11 +41,25 @@ public abstract class Entity {
 	/** Determines if it prevents other entities from moving if they collide */
 	protected boolean isSolid = true;
 
+	/**
+	 * Constructor for Entity.
+	 * @param worldObj World object that the entity will be part of - World
+	 * @param x x-position of the entity -int
+	 * @param y y-position of the entity - int
+	 * @param w width of the entity - int
+	 * @param h height of the entity - int
+	 */
 	protected Entity(World worldObj, float x, float y, float w, float h) {
 		this(worldObj, w, h);
 		setPosition(x, y);
 	}
 
+	/**
+	 * Constructor for Entity.
+	 * @param worldObj World object that the entity will be part of - World
+	 * @param w width of the entity - int
+	 * @param h height of the entity - int
+	 */
 	protected Entity(World worldObj, float w, float h) {
 		// If texture is unset, use null
 		texture = new TextureRegion(ResourceUtil.nullTexture);
@@ -73,15 +87,27 @@ public abstract class Entity {
 		return this;
 	}
 
+	/**
+	 * Get the Texture of the entity
+	 * @return a TextureRegion - the entity's texture
+	 */
 	public TextureRegion getTexture() {
 		return texture;
 	}
 
+	/**
+	 * Set the scale of the entity's hitbox relative to its size (useful if the texture you are using doesn't match the hitbox)
+	 * @param hbScale float - the new scale of the hitbox
+	 */
 	public void setHitboxScale(float hbScale) {
 		this.hitboxScale = hbScale;
 		updateHitbox();
 	}
 
+	/**
+	 * Get the scale of the entity's hitbox
+	 * @return float the scale of the entity's hitbox
+	 */
 	public float getHitboxScale() {
 		return this.hitboxScale;
 	}
@@ -118,6 +144,9 @@ public abstract class Entity {
 		if (flag) onTouchingBorder();
 	}
 
+	/**
+	 * Called when the entity touches the border of the map.
+	 */
 	public void onTouchingBorder() {
 	}
 
@@ -146,6 +175,11 @@ public abstract class Entity {
 		}
 	}
 
+	/**
+	 * Check if the entity's hitbox collides with another hitbox.
+	 * @param nextHitbox The other hitbox
+	 * @return boolean
+	 */
 	public boolean testCollision(Rectangle nextHitbox) {
 		// TODO: Change to bounding-box hierarchy if performance is too low
 		boolean collidedFlag = false;
@@ -193,6 +227,10 @@ public abstract class Entity {
 		updateHitbox();
 	}
 
+	/**
+	 * Get the direction of the entity
+	 * @return float- the direction of the entity
+	 */
 	public float getDirection() {
 		return direction;
 	}

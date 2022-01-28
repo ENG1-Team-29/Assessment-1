@@ -13,14 +13,27 @@ import tk.shardsoftware.World;
 public class EntityAIShip extends EntityShip {
 	public AIState aiState;
 	EntityShip player;
-
+	int chaseDistance = 500;
+	int minDistance = 50;
 	public EntityAIShip(World world, EntityShip player) {
 		super(world);
 		this.aiState = AIState.IDLE;
 		this.player = player;
 	}
+	public EntityAIShip(World world, EntityShip player, int chaseDistance, int minDistance){
+		super(world);
+		this.aiState = AIState.IDLE;
+		this.player = player;
+		this.chaseDistance = chaseDistance;
+		this.minDistance = minDistance;
+	}
 
-	public void CirclePlayer(float delta, float distToPlayer) {
+
+	/**
+	 * Makes the ship follow the player.
+	 * @param delta time since last frame
+	 */
+	public void FollowPlayer(float delta) {
 		float goalAngle = -999;
 		Vector2 playerPos = player.getPosition();
 		// playerPos = new Vector2(playerPos.x,playerPos.y+50);
@@ -30,19 +43,26 @@ public class EntityAIShip extends EntityShip {
 		super.rotateTowardsGoal(goalAngle, delta);
 	}
 
+	/**
+	 * Called once a frame for each entity.
+	 * @param delta time since last frame
+	 */
 	public void update(float delta) {
 		super.update(delta);
 
 		Vector2 playerPos = player.getPosition();
 		Vector2 shipPos = this.getPosition();
 		float distToPlayer = shipPos.dst(playerPos);
-		if (distToPlayer > 750 || distToPlayer < 50) { // If the player is too far away, do nothing
+		if (distToPlayer > chaseDistance || distToPlayer < minDistance) { // If the player is too far away, or too close, do nothing
 			aiState = AIState.IDLE;
+			//very slowly come to a stop
+			Vector2 currentVelocity = this.getVelocity();
+			this.setVelocity(new Vector2((float)(currentVelocity.x*0.99), (float)((currentVelocity.y*0.99))));
 		} else {
-			aiState = AIState.CIRCLE_PLAYER;
+			aiState = AIState.FOLLOW_PLAYER;
 		}
-		if (aiState == AIState.CIRCLE_PLAYER) {
-			CirclePlayer(delta, distToPlayer);
+		if (aiState == AIState.FOLLOW_PLAYER) {
+			FollowPlayer(delta);
 		}
 
 	}

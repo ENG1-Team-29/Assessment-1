@@ -1,7 +1,8 @@
 package tk.shardsoftware.entity;
 
+
 public enum AIState {
 	
-	IDLE, CIRCLE_PLAYER
+	IDLE, FOLLOW_PLAYER
 
 }
