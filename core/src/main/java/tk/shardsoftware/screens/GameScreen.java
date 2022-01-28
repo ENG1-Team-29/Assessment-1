@@ -70,9 +70,10 @@ public class GameScreen implements Screen {
 	public GlyphLayout pointTxtLayout;
 
 	/**
-	 * Search the world map for a region that contains only water to spawn the
-	 * player in. Once this has been found, it will set the player position to this
-	 * location.
+	 * 	 * Search the world map for a region that contains only water to spawn the
+	 * 	 * player in. Once this has been found, it will set the player position to this
+	 * 	 * location.
+	 * @param player The player's ship (an instance of EntityShip)
 	 */
 	public void setPlayerStartPosition(EntityShip player) {
 		Function<Vector2, Boolean> startPositionConditions = vector2 -> {
@@ -97,6 +98,10 @@ public class GameScreen implements Screen {
 		player.setPosition(startPos);
 	}
 
+	/**
+	 * Constructor for GameScreen.
+	 * @param assets Unused. Instance of AssetManager.
+	 */
 	public GameScreen(AssetManager assets) {
 		batch = new SpriteBatch();
 
@@ -126,6 +131,9 @@ public class GameScreen implements Screen {
 		ambientOcean = ResourceUtil.getSound("audio/ambient/ocean.wav");
 	}
 
+	/**
+	 * Starts a timer that increments points and begins playing ambient noise.
+	 */
 	@Override
 	public void show() {
 		soundIdBoatMovement = boatWaterMovement.loop(0);
@@ -140,13 +148,13 @@ public class GameScreen implements Screen {
 	}
 
 	/**
-	 * Restarts the game, generating a new map with colleges and e.t.c.
+	 * Restarts the game, generating a new map with colleges, clearing entities e.t.c.
 	 */
 	public void Restart(){
 		worldObj.clearEntities();
 		player = new EntityShip(worldObj);
 		worldObj.addEntity(player);
-		worldObj.worldMap.buildWorld(MathUtils.random.nextLong());
+		worldObj.worldMap.buildWorld(MathUtils.random.nextLong()); //generate a new map with a random seed
 		miniMap.prepareMap();
 		placeColleges();
 		setPlayerStartPosition(player);
@@ -206,7 +214,9 @@ public class GameScreen implements Screen {
 	 */
 	private int targetFPS = 60;
 
-
+	/**
+	 * Calls College.generateColleges(), generating the colleges on the map, and adds them to the entity handler.
+	 */
 	public void placeColleges(){
 		College.generateColleges(worldObj,5,50);
 		for(College c : College.Colleges){
@@ -214,7 +224,10 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	/** Handles user input */
+	/**
+	 * Handles user input
+	 * @param delta time since the last frame
+	 */
 	public void controls(float delta) {
 		goalAngle = calcGoalAngle();
 
@@ -259,6 +272,10 @@ public class GameScreen implements Screen {
 
 	}
 
+	/**
+	 * Renders the game.
+	 * @param delta time since the last frame.
+	 */
 	@Override
 	public void render(float delta) {
 		DebugUtil.saveProcessTime("Logic Time", () -> {
@@ -341,7 +358,10 @@ public class GameScreen implements Screen {
 		batch.end();
 	}
 
-	/** Renders the debug HUD */
+	/**
+	 * Renders the debug HUD
+	 * @param debugList List of strings to be drawn on the debug HUD
+	 */
 	private void renderDebug(List<String> debugList) {
 		for (int i = 0; i < debugList.size(); i++) {
 			debugFont.draw(hudBatch, debugList.get(i), 0, 20 + (debugFont.getLineHeight()) * i);
@@ -372,7 +392,10 @@ public class GameScreen implements Screen {
 		});
 	}
 
-	/** Generates the debug hud's displayed text */
+	/**
+	 * Generates the debug hud's displayed text
+	 * @return list of strings to be drawn on the debug hud
+	 */
 	private List<String> generateDebugStrings() {
 		ArrayList<String> lines = new ArrayList<String>();
 		lines.add(String.format("Current angle: %5.1f", player.getDirection()));
@@ -386,7 +409,10 @@ public class GameScreen implements Screen {
 		return lines;
 	}
 
-	/** Any logical processing that needs to occur in the game */
+	/**
+	 * Any logical processing that needs to occur in the game
+	 * @param delta time since the last frame
+	 */
 	private void logic(float delta) {
 		worldObj.update(delta);
 
@@ -432,6 +458,11 @@ public class GameScreen implements Screen {
 		camera.update();
 	}
 
+	/**
+	 * Resize the game camera.
+	 * @param width new width of the window
+	 * @param height new height of the window
+	 */
 	@Override
 	public void resize(int width, int height) {
 		camera.setToOrtho(false, width / 2, height / 2);
