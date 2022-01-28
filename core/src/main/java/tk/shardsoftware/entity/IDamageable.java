@@ -16,7 +16,10 @@ public interface IDamageable {
 	/** Returns the current health of the object */
 	public float getHealth();
 
-	/** Damage the object by a given amount */
+	/**
+	 * Damage the object by a given amount
+	 * @param dmgAmount the amount of damage for the object to take
+	 */
 	public void damage(float dmgAmount);
 
 	/** The hitbox of the object */
