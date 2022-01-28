@@ -77,7 +77,7 @@ public class GameScreen implements Screen {
 	 * Causes d damage to all entities in the game. intended for debug only.
 	 * @param d
 	 */
-	public void DamageAllEntities(int d){
+	public void DamageAllEntities(float d){
 		worldObj.getEntities().forEach(e -> {
 			if(e instanceof  IDamageable){
 				((IDamageable) e).damage(d);
@@ -280,6 +280,9 @@ public class GameScreen implements Screen {
 			}
 			if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
 				Restart();
+			}
+			if (Gdx.input.isKeyJustPressed(Input.Keys.N)){
+				DamageAllEntities(5); //cause 5 damage to all entities
 			}
 
 		}
