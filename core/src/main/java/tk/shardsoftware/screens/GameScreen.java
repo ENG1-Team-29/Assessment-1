@@ -140,6 +140,20 @@ public class GameScreen implements Screen {
 	}
 
 	/**
+	 * Restarts the game, generating a new map with colleges and e.t.c.
+	 */
+	public void Restart(){
+		worldObj.clearEntities();
+		player = new EntityShip(worldObj);
+		worldObj.addEntity(player);
+		worldObj.worldMap.buildWorld(MathUtils.random.nextLong());
+		miniMap.prepareMap();
+		placeColleges();
+		setPlayerStartPosition(player);
+	}
+
+
+	/**
 	 * Calculates the goal angle of the player ship based on user input. If no input
 	 * is provided, the angle will be {@code -999} to easily detect when the ship
 	 * should not rotate. <br>
@@ -235,13 +249,7 @@ public class GameScreen implements Screen {
 				Gdx.graphics.setForegroundFPS(targetFPS /= 2);
 			}
 			if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-				worldObj.clearEntities();
-				player = new EntityShip(worldObj);
-				worldObj.addEntity(player);
-				worldObj.worldMap.buildWorld(MathUtils.random.nextLong());
-				miniMap.prepareMap();
-				placeColleges();
-				setPlayerStartPosition(player);
+				Restart();
 			}
 
 		}
