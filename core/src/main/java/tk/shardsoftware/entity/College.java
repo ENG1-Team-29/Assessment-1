@@ -84,4 +84,8 @@ public class College extends Entity implements IDamageable, IRepairable {
 		this.collegeName = collegeName;
 	}
 
+	public void onRemove() {
+		worldObj.onCollegeDestroyed(this);
+	}
+
 }

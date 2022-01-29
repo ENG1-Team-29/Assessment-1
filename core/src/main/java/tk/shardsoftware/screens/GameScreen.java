@@ -72,8 +72,10 @@ public class GameScreen implements Screen {
 	/** The amount of plunder the player has stolen */
 	public int plunder = 0;
 
-	/** The text to be display the points */
+	/** The text to display the points */
 	public GlyphLayout pointTxtLayout;
+	/**The text to display the number of remaining colleges*/
+	public GlyphLayout remainingCollegeTxtLayout;
 
 
 	/**
@@ -137,6 +139,7 @@ public class GameScreen implements Screen {
 
 		camera.zoom = DEFAULT_CAMERA_ZOOM;
 		pointTxtLayout = new GlyphLayout();
+		remainingCollegeTxtLayout = new GlyphLayout();
 		instOverlay = new InstructionOverlay(hudBatch);
 		instOverlay.shouldDisplay = false;
 
@@ -357,6 +360,7 @@ public class GameScreen implements Screen {
 			// TODO: Change to allow for different screen sizes
 			font.draw(hudBatch, pointTxtLayout, Gdx.graphics.getWidth() - pointTxtLayout.width - 20,
 					Gdx.graphics.getHeight() - 20);
+			font.draw(hudBatch, remainingCollegeTxtLayout, Gdx.graphics.getWidth() - remainingCollegeTxtLayout.width - 20, Gdx.graphics.getHeight()-60);
 		});
 
 		hudBatch.end();
@@ -447,6 +451,8 @@ public class GameScreen implements Screen {
 		}
 
 		worldObj.update(delta);
+		
+		remainingCollegeTxtLayout.setText(font, "Remaining Colleges: "+(Colleges.collegeList.size()-worldObj.destroyedColleges));
 
 		lerpCamera(player.getCenterPoint(), 0.04f, delta);
 

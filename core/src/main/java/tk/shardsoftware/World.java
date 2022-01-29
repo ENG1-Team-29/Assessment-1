@@ -11,7 +11,6 @@ import tk.shardsoftware.entity.College;
 import tk.shardsoftware.entity.Entity;
 import tk.shardsoftware.entity.EntityCannonball;
 import tk.shardsoftware.entity.IDamageable;
-import tk.shardsoftware.screens.GameScreen;
 
 /** @author James Burnell */
 public class World {
@@ -22,6 +21,9 @@ public class World {
 	public static final int WORLD_WIDTH = 500;
 	public static final int WORLD_HEIGHT = 300;
 	public static final int WORLD_TILE_SIZE = 10;
+
+	/** The number of colleges that have been destroyed */
+	public int destroyedColleges;
 
 	/** The collection of entities that are in the world. */
 	private List<Entity> entities;
@@ -100,9 +102,9 @@ public class World {
 		});
 	}
 
-	/**Removes all entities from the world*/
-	public void clearEntities(){
-		for (Entity e : entities){
+	/** Removes all entities from the world */
+	public void clearEntities() {
+		for (Entity e : entities) {
 			e.remove = true;
 		}
 	}
@@ -128,6 +130,16 @@ public class World {
 
 	public static float getHeight() {
 		return WORLD_TILE_SIZE * WORLD_HEIGHT;
+	}
+
+	/**
+	 * Called when a college is destroyed
+	 * 
+	 * @param The college that was destroyed
+	 */
+	public void onCollegeDestroyed(College college) {
+		destroyedColleges++;
+		// TODO: Add message to say college was defeated
 	}
 
 }
