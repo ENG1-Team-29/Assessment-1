@@ -12,6 +12,7 @@ import tk.shardsoftware.entity.Entity;
 import tk.shardsoftware.entity.EntityCannonball;
 import tk.shardsoftware.entity.IDamageable;
 import tk.shardsoftware.screens.GameScreen;
+import tk.shardsoftware.util.Colleges;
 
 /** @author James Burnell */
 public class World {
@@ -22,6 +23,9 @@ public class World {
 	public static final int WORLD_WIDTH = 500;
 	public static final int WORLD_HEIGHT = 300;
 	public static final int WORLD_TILE_SIZE = 10;
+
+	/** The number of colleges that have been destroyed */
+	public int destroyedColleges;
 
 	/** The collection of entities that are in the world. */
 	private List<Entity> entities;
@@ -36,6 +40,9 @@ public class World {
 	/** The map of the world */
 	public WorldMap worldMap;
 
+	/** The {@link GameScreen} object that the world can use to call functions */
+	private GameScreen game;
+
 	public World() {
 		entities = new ArrayList<Entity>();
 		damagableObjs = new ArrayList<IDamageable>();
@@ -48,6 +55,11 @@ public class World {
 		} else {
 
 		}
+	}
+	
+	/**Set the {@link GameScreen} object for the World*/
+	public void setGameScreen(GameScreen gs) {
+		this.game = gs;
 	}
 
 	/**
@@ -100,16 +112,27 @@ public class World {
 		});
 	}
 
-	/**Removes all entities from the world*/
-	public void clearEntities(){
-		for (Entity e : entities){
+	/** Removes all entities from the world */
+	public void clearEntities() {
+		for (Entity e : entities) {
 			e.remove = true;
 		}
 	}
 
-	/** The list of entities contained within the world */
+	/**
+	 * The list of entities contained within the world. This should NEVER be used to
+	 * add entities to the world.
+	 */
 	public List<Entity> getEntities() {
 		return entities;
+	}
+
+	/**
+	 * The list of all damageable entities within the world. This should NEVER be
+	 * used to add entities to the world.
+	 */
+	public List<IDamageable> getAllDamageable() {
+		return damagableObjs;
 	}
 
 	public void addEntity(Entity e) {
@@ -128,6 +151,21 @@ public class World {
 
 	public static float getHeight() {
 		return WORLD_TILE_SIZE * WORLD_HEIGHT;
+	}
+
+	/**
+	 * Called when a college is destroyed
+	 * 
+	 * @param The college that was destroyed
+	 */
+	public void onCollegeDestroyed(College college) {
+		destroyedColleges++;
+		if(game != null) game.onCollegeDestroyed(college);
+	}
+
+	/** @return The number of colleges remaining in the world */
+	public int getRemainingColleges() {
+		return Colleges.collegeList.size() - destroyedColleges;
 	}
 
 }
