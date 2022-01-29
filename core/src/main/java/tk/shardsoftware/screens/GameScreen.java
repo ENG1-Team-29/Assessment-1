@@ -308,11 +308,6 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void render(float delta) {
-		//Check if the player has lost the game, and if so open a loss screen
-		if(player.getHealth() <= 0){
-			pg.openNewLossScreen();
-		}
-
 		DebugUtil.saveProcessTime("Logic Time", () -> {
 			controls(delta);
 			logic(delta);
@@ -446,6 +441,11 @@ public class GameScreen implements Screen {
 	 * @param delta time since the last frame
 	 */
 	private void logic(float delta) {
+		// Check if the player has lost the game, and if so open a loss screen
+		if(player.getHealth() <= 0) {
+			pg.openNewLossScreen();
+		}
+
 		worldObj.update(delta);
 
 		lerpCamera(player.getCenterPoint(), 0.04f, delta);
