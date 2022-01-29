@@ -41,7 +41,7 @@ import tk.shardsoftware.util.Minimap;
 import tk.shardsoftware.util.ResourceUtil;
 
 /**
- * Handles game controls, rendering, and
+ * Handles game controls, rendering, and logic
  * 
  * @author James Burnell
  * @author Hector Woods
@@ -74,8 +74,12 @@ public class GameScreen implements Screen {
 
 	/** The text to display the points */
 	public GlyphLayout pointTxtLayout;
-	/**The text to display the number of remaining colleges*/
+	/** The text to display the number of remaining colleges */
 	public GlyphLayout remainingCollegeTxtLayout;
+	/** The text to display victory over a college */
+	public GlyphLayout collegeDestroyTxtLayout;
+	/** Whether or not the college destroyed text should be rendered */
+	private boolean displayCollegeDestroyTxt = true;
 
 
 	public void addPlunder(int p){
@@ -127,10 +131,12 @@ public class GameScreen implements Screen {
 		camera.zoom = DEFAULT_CAMERA_ZOOM;
 		pointTxtLayout = new GlyphLayout();
 		remainingCollegeTxtLayout = new GlyphLayout();
+		collegeDestroyTxtLayout = new GlyphLayout();
 		instOverlay = new InstructionOverlay(hudBatch);
 		instOverlay.shouldDisplay = false;
 
 		worldObj = new World();
+		worldObj.setGameScreen(this);
 		player = new EntityShip(worldObj);
 		EntityAIShip exampleEnemy = new EntityAIShip(worldObj, player,750,75);
 
@@ -175,6 +181,7 @@ public class GameScreen implements Screen {
 		placeColleges();
 		setPlayerStartPosition(player);
 		points = 0;
+		worldObj.destroyedColleges = 0;
 	}
 
 
@@ -348,6 +355,10 @@ public class GameScreen implements Screen {
 			font.draw(hudBatch, pointTxtLayout, Gdx.graphics.getWidth() - pointTxtLayout.width - 20,
 					Gdx.graphics.getHeight() - 20);
 			font.draw(hudBatch, remainingCollegeTxtLayout, Gdx.graphics.getWidth() - remainingCollegeTxtLayout.width - 20, Gdx.graphics.getHeight()-60);
+			
+			if(displayCollegeDestroyTxt) font.draw(hudBatch, collegeDestroyTxtLayout, 
+					(Gdx.graphics.getWidth() - collegeDestroyTxtLayout.width)/2, 
+					(Gdx.graphics.getHeight() - collegeDestroyTxtLayout.height)/2);
 		});
 
 		hudBatch.end();
@@ -501,6 +512,18 @@ public class GameScreen implements Screen {
 		// hudBatch.setProjectionMatrix();
 		shapeRenderer.setProjectionMatrix(camera.combined);
 	}
+	
+	/** Called when a college is destroyed 
+	 * @param college the destroyed college */
+	public void onCollegeDestroyed(College college) {
+		collegeDestroyTxtLayout.setText(font, "Victory Over "+college.collegeName+" College!");
+		displayCollegeDestroyTxt = true;
+		Timer.schedule(new Task() {
+			public void run() {
+				displayCollegeDestroyTxt = false;
+			}
+		}, 10);
+	}
 
 	@Override
 	public void pause() {
@@ -523,4 +546,5 @@ public class GameScreen implements Screen {
 		shapeRenderer.dispose();
 		miniMap.dispose();
 	}
+
 }

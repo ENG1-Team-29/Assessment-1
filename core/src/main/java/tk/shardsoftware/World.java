@@ -11,6 +11,7 @@ import tk.shardsoftware.entity.College;
 import tk.shardsoftware.entity.Entity;
 import tk.shardsoftware.entity.EntityCannonball;
 import tk.shardsoftware.entity.IDamageable;
+import tk.shardsoftware.screens.GameScreen;
 import tk.shardsoftware.util.Colleges;
 
 /** @author James Burnell */
@@ -39,6 +40,9 @@ public class World {
 	/** The map of the world */
 	public WorldMap worldMap;
 
+	/** The {@link GameScreen} object that the world can use to call functions */
+	private GameScreen game;
+
 	public World() {
 		entities = new ArrayList<Entity>();
 		damagableObjs = new ArrayList<IDamageable>();
@@ -51,6 +55,11 @@ public class World {
 		} else {
 
 		}
+	}
+	
+	/**Set the {@link GameScreen} object for the World*/
+	public void setGameScreen(GameScreen gs) {
+		this.game = gs;
 	}
 
 	/**
@@ -151,7 +160,7 @@ public class World {
 	 */
 	public void onCollegeDestroyed(College college) {
 		destroyedColleges++;
-		// TODO: Add message to say college was defeated
+		if(game != null) game.onCollegeDestroyed(college);
 	}
 
 	/** @return The number of colleges remaining in the world */
