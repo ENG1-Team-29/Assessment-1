@@ -1,5 +1,6 @@
 package tk.shardsoftware.entity;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -17,6 +18,9 @@ public class EntityShip extends Entity implements ICannonCarrier, IRepairable {
 	public float timeUntilFire = 0f;
 
 	private float maxHealth = 100f;
+
+	private Sound cannonSfx = ResourceUtil.getSound("audio/entity/cannon.mp3");
+
 	private float health = maxHealth;
 
 	public EntityShip(World worldObj) {
@@ -86,6 +90,8 @@ public class EntityShip extends Entity implements ICannonCarrier, IRepairable {
 		fireCannon(false);
 		// Reload
 		timeUntilFire += reloadTime;
+		// Play sfx
+		cannonSfx.play();
 		return true;
 	}
 

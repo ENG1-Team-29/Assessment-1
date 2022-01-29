@@ -1,5 +1,6 @@
 package tk.shardsoftware.entity;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
@@ -10,6 +11,8 @@ import java.util.function.Function;
 import tk.shardsoftware.TileType;
 import tk.shardsoftware.WorldMap;
 import tk.shardsoftware.World;
+import tk.shardsoftware.util.ResourceUtil;
+
 /**
  * Represents the physical location of a college on a map.
  * College is implemented as an extension of Entity which does not move. (i.e physics are never applied to it)
@@ -19,6 +22,7 @@ import tk.shardsoftware.World;
 public class College extends Entity implements IDamageable, IRepairable {
     public String collegeName;
     public String collegeTextureName = "textures/entity/college.png";
+    public Sound hitSound = ResourceUtil.getSound("audio/entity/college-hit.mp3");
     public static ArrayList<College> Colleges = new ArrayList<College>();
     public static ArrayList<String> availableCollegeNames;
     public float maxHealth = 100;

@@ -63,6 +63,9 @@ public class EntityCannonball extends Entity {
 	public void onTouchingDamageable(IDamageable obj) {
 		obj.damage(
 				MathUtils.random(parentObj.getCannonDamage() - 2, parentObj.getCannonDamage() + 2));
+		if(obj instanceof College){
+			((College) obj).hitSound.play();
+		}
 		this.remove = true;
 	}
 

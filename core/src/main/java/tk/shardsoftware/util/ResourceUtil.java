@@ -64,6 +64,10 @@ public class ResourceUtil {
 		/* Sound */
 		addSound("audio/entity/boat-water-movement.wav");
 		addSound("audio/ambient/ocean.wav");
+		addSound("audio/entity/cannon.mp3");
+		addSound("audio/entity/college-hit.mp3");
+
+		/* Music */
 		addSound("audio/music/folk-round.mp3");
 		addSound("audio/music/sonatina-in-c-minor.mp3");
 		addSound("audio/music/the-pyre.mp3");
