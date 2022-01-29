@@ -30,12 +30,12 @@ import com.badlogic.gdx.utils.Timer.Task;
 import tk.shardsoftware.PirateGame;
 import tk.shardsoftware.TileType;
 import tk.shardsoftware.World;
+import tk.shardsoftware.entity.College;
 import tk.shardsoftware.entity.EntityAIShip;
 import tk.shardsoftware.entity.EntityShip;
-import tk.shardsoftware.entity.College;
 import tk.shardsoftware.entity.IDamageable;
-import tk.shardsoftware.entity.IRepairable;
 import tk.shardsoftware.util.Bar;
+import tk.shardsoftware.util.Colleges;
 import tk.shardsoftware.util.DebugUtil;
 import tk.shardsoftware.util.Minimap;
 import tk.shardsoftware.util.ResourceUtil;
@@ -245,8 +245,8 @@ public class GameScreen implements Screen {
 	 * Calls College.generateColleges(), generating the colleges on the map, and adds them to the entity handler.
 	 */
 	public void placeColleges(){
-		College.generateColleges(worldObj,5,50);
-		for(College c : College.Colleges){
+		Colleges.generateColleges(worldObj,5,50);
+		for(College c : Colleges.collegeList){
 			worldObj.addEntity(c);
 		}
 	}
