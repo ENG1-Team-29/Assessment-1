@@ -487,6 +487,7 @@ public class GameScreen implements Screen {
 		}
 		
 		if(worldObj.getRemainingColleges() <= 0) {
+			stopMusic();
 			pg.openNewWinScreen();
 		}
 
