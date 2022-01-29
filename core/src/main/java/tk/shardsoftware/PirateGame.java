@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 
 import tk.shardsoftware.screens.GameScreen;
 import tk.shardsoftware.screens.LossScreen;
+import tk.shardsoftware.screens.VictoryScreen;
 import tk.shardsoftware.util.ResourceUtil;
 
 public class PirateGame extends Game {
@@ -49,5 +50,9 @@ public class PirateGame extends Game {
 	@Override
 	public void dispose() {
 
+	}
+
+	public void openNewWinScreen() {
+		this.setScreen(new VictoryScreen(assets, this));
 	}
 }

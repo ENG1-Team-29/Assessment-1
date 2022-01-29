@@ -436,10 +436,14 @@ public class GameScreen implements Screen {
 		if(player.getHealth() <= 0) {
 			pg.openNewLossScreen();
 		}
+		
+		if(worldObj.getRemainingColleges() <= 0) {
+			pg.openNewWinScreen();
+		}
 
 		worldObj.update(delta);
 		
-		remainingCollegeTxtLayout.setText(font, "Remaining Colleges: "+(Colleges.collegeList.size()-worldObj.destroyedColleges));
+		remainingCollegeTxtLayout.setText(font, "Remaining Colleges: " + worldObj.getRemainingColleges());
 
 		lerpCamera(player.getCenterPoint(), 0.04f, delta);
 

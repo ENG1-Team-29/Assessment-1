@@ -11,6 +11,7 @@ import tk.shardsoftware.entity.College;
 import tk.shardsoftware.entity.Entity;
 import tk.shardsoftware.entity.EntityCannonball;
 import tk.shardsoftware.entity.IDamageable;
+import tk.shardsoftware.util.Colleges;
 
 /** @author James Burnell */
 public class World {
@@ -109,8 +110,10 @@ public class World {
 		}
 	}
 
-	/** The list of entities contained within the world. This should NEVER be
-	 * used to add entities to the world. */
+	/**
+	 * The list of entities contained within the world. This should NEVER be used to
+	 * add entities to the world.
+	 */
 	public List<Entity> getEntities() {
 		return entities;
 	}
@@ -149,6 +152,11 @@ public class World {
 	public void onCollegeDestroyed(College college) {
 		destroyedColleges++;
 		// TODO: Add message to say college was defeated
+	}
+
+	/** @return The number of colleges remaining in the world */
+	public int getRemainingColleges() {
+		return Colleges.collegeList.size() - destroyedColleges;
 	}
 
 }
