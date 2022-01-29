@@ -78,19 +78,6 @@ public class GameScreen implements Screen {
 	public GlyphLayout remainingCollegeTxtLayout;
 
 
-	/**
-	 * Causes d damage to all entities in the game. intended for debug only.
-	 * @param d
-	 */
-	public void DamageAllEntities(float d){
-		worldObj.getEntities().forEach(e -> {
-			if(e instanceof  IDamageable){
-				((IDamageable) e).damage(d);
-			}
-		});
-	}
-
-
 	public void addPlunder(int p){
 		plunder = plunder + p;
 	}
@@ -295,7 +282,7 @@ public class GameScreen implements Screen {
 				Restart();
 			}
 			if (Gdx.input.isKeyJustPressed(Input.Keys.N)){
-				DamageAllEntities(5); //cause 5 damage to all entities
+				DebugUtil.damageAllEntities(worldObj, 5); //cause 5 damage to all entities
 			}
 
 		}

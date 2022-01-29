@@ -109,9 +109,18 @@ public class World {
 		}
 	}
 
-	/** The list of entities contained within the world */
+	/** The list of entities contained within the world. This should NEVER be
+	 * used to add entities to the world. */
 	public List<Entity> getEntities() {
 		return entities;
+	}
+
+	/**
+	 * The list of all damageable entities within the world. This should NEVER be
+	 * used to add entities to the world.
+	 */
+	public List<IDamageable> getAllDamageable() {
+		return damagableObjs;
 	}
 
 	public void addEntity(Entity e) {

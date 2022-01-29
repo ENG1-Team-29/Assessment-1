@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import tk.shardsoftware.World;
+
 /**
  * @author James Burnell
  */
@@ -70,6 +72,15 @@ public class DebugUtil {
 	public static void saveProcessTime(String name, Runnable r) {
 		long time = measureProcessTime(r);
 		processingTimes.put(name, time);
+	}
+	
+	/**
+	 * Causes d damage to all entities in the game. intended for debug only.
+	 * @param worldObj the world object that contains the entities
+	 * @param d the amount of damage
+	 */
+	public static void damageAllEntities(World worldObj, float d){
+		worldObj.getAllDamageable().forEach(e -> e.damage(d));
 	}
 
 }
