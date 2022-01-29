@@ -53,7 +53,7 @@ public class GameScreen implements Screen {
 	/** Ambient ocean sounds */
 	public Sound ambientOcean;
 	private long soundIdBoatMovement;
-
+	private PirateGame pg;
 	private SpriteBatch batch, hudBatch;
 	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera camera;
@@ -118,8 +118,9 @@ public class GameScreen implements Screen {
 	 * Constructor for GameScreen.
 	 * @param assets Unused. Instance of AssetManager.
 	 */
-	public GameScreen(AssetManager assets) {
+	public GameScreen(AssetManager assets, PirateGame pg) {
 		batch = new SpriteBatch();
+		this.pg = pg;
 
 		hudBatch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
@@ -132,7 +133,7 @@ public class GameScreen implements Screen {
 
 		worldObj = new World();
 		player = new EntityShip(worldObj);
-		EntityAIShip exampleEnemy = new EntityAIShip(worldObj, player);
+		EntityAIShip exampleEnemy = new EntityAIShip(worldObj, player,750,75);
 
 		miniMap = new Minimap(worldObj, 25, Gdx.graphics.getHeight() - 150 - 25, 150, 150,
 				hudBatch);
@@ -298,6 +299,10 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void render(float delta) {
+		//Check if the player has lost the game, and if so open a loss screen
+		if(player.getHealth() <= 0){
+			pg.openNewLossScreen();
+		}
 		DebugUtil.saveProcessTime("Logic Time", () -> {
 			controls(delta);
 			logic(delta);

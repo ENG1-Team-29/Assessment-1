@@ -13,13 +13,27 @@ import tk.shardsoftware.World;
 public class EntityAIShip extends EntityShip {
 	public AIState aiState;
 	EntityShip player;
-	int chaseDistance = 500;
-	int minDistance = 50;
+	int chaseDistance = 500; //the range at which the ship will start chasing the player
+	int minDistance = 50; //min distance the entity maintains from the player
+
+	/**
+	 * Constructor for EntityAIShip.
+	 * @param world world the Entity is part of
+	 * @param player the ship controlled by the player
+	 */
 	public EntityAIShip(World world, EntityShip player) {
 		super(world);
 		this.aiState = AIState.IDLE;
 		this.player = player;
 	}
+
+	/**
+	 * Constructor for EntityAIShip, specifying unique chaseDistance and minDistance
+	 * @param world
+	 * @param player
+	 * @param chaseDistance
+	 * @param minDistance
+	 */
 	public EntityAIShip(World world, EntityShip player, int chaseDistance, int minDistance){
 		super(world);
 		this.aiState = AIState.IDLE;

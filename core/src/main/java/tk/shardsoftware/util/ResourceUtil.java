@@ -56,6 +56,8 @@ public class ResourceUtil {
 		addTexture("textures/ui/enemy-map-icon.png");
 		addTexture("textures/ui/player-map-icon.png");
 		addTexture("textures/ui/college-map-icon.png");
+		addTexture("textures/ui/loss-screen-background.png");
+		addTexture("textures/ui/victory-screen-background.png");
 
 		/* Sound */
 		addSound("audio/entity/boat-water-movement.wav");

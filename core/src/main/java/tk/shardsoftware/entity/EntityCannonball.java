@@ -63,7 +63,6 @@ public class EntityCannonball extends Entity {
 	public void onTouchingDamageable(IDamageable obj) {
 		obj.damage(
 				MathUtils.random(parentObj.getCannonDamage() - 2, parentObj.getCannonDamage() + 2));
-		System.out.println(obj.getHealth());
 		this.remove = true;
 	}
 
