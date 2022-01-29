@@ -77,8 +77,11 @@ public class GameScreen implements Screen {
 	/** The amount of plunder the player has stolen */
 	public int plunder = 0;
 
-	/** The text to be display the points */
+	/** The text to display the points */
 	public GlyphLayout pointTxtLayout;
+
+	/** The text to display the plunder */
+	public GlyphLayout plunderTxtLayout;
 
 
 	/**
@@ -142,6 +145,7 @@ public class GameScreen implements Screen {
 
 		camera.zoom = DEFAULT_CAMERA_ZOOM;
 		pointTxtLayout = new GlyphLayout();
+		plunderTxtLayout = new GlyphLayout();
 		instOverlay = new InstructionOverlay(hudBatch);
 		instOverlay.shouldDisplay = false;
 
@@ -163,7 +167,7 @@ public class GameScreen implements Screen {
 	}
 
 	/**
-	 * Starts a timer that increments points and begins playing ambient noise.
+	 * Starts a timer that increments points, starts playing music and ambient noise.
 	 */
 	@Override
 	public void show() {
@@ -174,6 +178,7 @@ public class GameScreen implements Screen {
 		Timer.schedule(new Task() {
 			public void run() {
 				pointTxtLayout.setText(font, "Points: " + (++points));
+				plunderTxtLayout.setText(font, "Plunder: " + plunder);
 			}
 		}, 1, 1);
 
@@ -392,6 +397,8 @@ public class GameScreen implements Screen {
 			// TODO: Change to allow for different screen sizes
 			font.draw(hudBatch, pointTxtLayout, Gdx.graphics.getWidth() - pointTxtLayout.width - 20,
 					Gdx.graphics.getHeight() - 20);
+			font.draw(hudBatch,plunderTxtLayout,Gdx.graphics.getWidth()-plunderTxtLayout.width-20,
+					Gdx.graphics.getHeight()-60);
 		});
 
 		hudBatch.end();
