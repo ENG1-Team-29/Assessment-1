@@ -4,7 +4,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-import tk.shardsoftware.world.World;
+import tk.shardsoftware.World;
 import tk.shardsoftware.util.ResourceUtil;
 
 /**

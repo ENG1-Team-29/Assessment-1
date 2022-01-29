@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import tk.shardsoftware.TileType;
-import tk.shardsoftware.world.World;
+import tk.shardsoftware.World;
 import tk.shardsoftware.entity.EntityAIShip;
 
 /**

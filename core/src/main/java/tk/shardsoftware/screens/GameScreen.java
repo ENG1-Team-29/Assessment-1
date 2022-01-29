@@ -390,7 +390,7 @@ public class GameScreen implements Screen {
 			font.draw(hudBatch,plunderTxtLayout,Gdx.graphics.getWidth()-plunderTxtLayout.width-20,
 					Gdx.graphics.getHeight()-60);
 
-			font.draw(hudBatch, remainingCollegeTxtLayout, Gdx.graphics.getWidth() - remainingCollegeTxtLayout.width - 20, Gdx.graphics.getHeight()-60);
+			font.draw(hudBatch, remainingCollegeTxtLayout, Gdx.graphics.getWidth() - remainingCollegeTxtLayout.width - 20, Gdx.graphics.getHeight()-100);
 			
 			if(displayCollegeDestroyTxt) font.draw(hudBatch, collegeDestroyTxtLayout, 
 					(Gdx.graphics.getWidth() - collegeDestroyTxtLayout.width)/2, 

@@ -1,4 +1,4 @@
-package tk.shardsoftware.world;
+package tk.shardsoftware;
 
 import java.util.HashMap;
 import java.util.Map;
