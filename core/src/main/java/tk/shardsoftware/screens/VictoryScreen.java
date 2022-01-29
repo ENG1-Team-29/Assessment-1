@@ -62,6 +62,7 @@ public class VictoryScreen implements Screen {
 	public void render(float delta) {
 		//Restart the game when a key is pressed
 		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+			victoryMusic.stop();
 			pirateGameObj.openNewGameScreen();
 		}
 

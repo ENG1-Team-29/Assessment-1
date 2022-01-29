@@ -2,6 +2,7 @@ package tk.shardsoftware.util;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -169,6 +170,8 @@ public class ResourceUtil {
 		}
 		return assetManager.contains(soundName) ? assetManager.get(soundName) : nullSound;
 	}
+
+
 
 	/**
 	 * Get a tile texture according to its filename. Points to the

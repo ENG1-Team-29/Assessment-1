@@ -6,13 +6,17 @@ import static tk.shardsoftware.util.ResourceUtil.debugFont;
 import static tk.shardsoftware.util.ResourceUtil.font;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.function.Function;
 
+import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -58,7 +62,8 @@ public class GameScreen implements Screen {
 	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera camera;
 	private int DEFAULT_CAMERA_ZOOM = 1;
-
+	Music[] songs = {Gdx.audio.newMusic(Gdx.files.internal("audio/music/the-pyre.mp3")), Gdx.audio.newMusic(Gdx.files.internal("audio/music/folk-round.mp3"))};
+	int currentSongIndex = 0;
 	private InstructionOverlay instOverlay;
 
 	private World worldObj;
@@ -171,6 +176,22 @@ public class GameScreen implements Screen {
 				pointTxtLayout.setText(font, "Points: " + (++points));
 			}
 		}, 1, 1);
+
+		//Set completion listener for each song so that it plays the next song in Songs[]
+		for (int i = 0; i < songs.length; i++) {
+			songs[i].setOnCompletionListener(new Music.OnCompletionListener() {
+				@Override
+				public void onCompletion(Music music) {
+					currentSongIndex = (currentSongIndex + 1) % songs.length;
+					System.out.println("Song Finished. Now playing song " + currentSongIndex);
+					songs[currentSongIndex].play();
+				}
+			});
+		}
+		//Choose a random song in the list and play it
+		currentSongIndex = new Random().nextInt(songs.length);
+		System.out.println("Playing song " + currentSongIndex);
+		songs[currentSongIndex].play();
 	}
 
 	/**
@@ -302,6 +323,15 @@ public class GameScreen implements Screen {
 
 	}
 
+	public void stopMusic(){
+		for(int i = 0; i < songs.length; i++){
+			if(songs[i].isPlaying()){
+				System.out.println(i);
+				songs[i].stop();
+			}
+		}
+	}
+
 	/**
 	 * Renders the game.
 	 * @param delta time since the last frame.
@@ -310,9 +340,9 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 		//Check if the player has lost the game, and if so open a loss screen
 		if(player.getHealth() <= 0){
+			stopMusic();
 			pg.openNewLossScreen();
 		}
-
 		DebugUtil.saveProcessTime("Logic Time", () -> {
 			controls(delta);
 			logic(delta);
@@ -521,6 +551,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
+		System.out.println("gfsfdh");
 		batch.dispose();
 		hudBatch.dispose();
 		shapeRenderer.dispose();
