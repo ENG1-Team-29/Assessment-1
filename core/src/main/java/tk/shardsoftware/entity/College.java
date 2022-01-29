@@ -18,7 +18,7 @@ import tk.shardsoftware.World;
  */
 public class College extends Entity implements IDamageable, IRepairable {
     public String collegeName;
-    public String collegeTextureName = "textures/ui/expand-map-button.png";
+    public String collegeTextureName = "textures/entity/college.png";
     public static ArrayList<College> Colleges = new ArrayList<College>();
     public static ArrayList<String> availableCollegeNames;
     public float maxHealth = 100;
@@ -176,7 +176,8 @@ public class College extends Entity implements IDamageable, IRepairable {
         for(int i = 0; i<numColleges; i++){
             Vector2 collegePos = worldObj.worldMap.SearchMap(collegePositionConds);
             if(collegePos != null){
-                College c = new College(worldObj,collegePos.x * worldObj.worldMap.tile_size, collegePos.y * worldObj.worldMap.tile_size, map.tile_size*3,map.tile_size*3); //This is added to Colleges array by the constructor automatically
+                College c = new College(worldObj,collegePos.x * worldObj.worldMap.tile_size,
+                        collegePos.y * worldObj.worldMap.tile_size, map.tile_size*6,map.tile_size*6); //This is added to Colleges array by the constructor automatically
             }
         }
     }

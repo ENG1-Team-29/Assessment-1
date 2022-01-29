@@ -48,6 +48,7 @@ public class ResourceUtil {
 		/* Entity */
 		addTexture("textures/entity/playership.png");
 		addTexture("textures/entity/cannonball.png");
+		addTexture("textures/entity/college.png");
 		/* UI */
 		addTexture("textures/ui/expand-map-button.png");
 		addTexture("textures/ui/minimise-map-button.png");
@@ -178,8 +179,7 @@ public class ResourceUtil {
 	/**
 	 * Get an entity texture according to its filename. Points to the
 	 * {@code textures/entity/} folder.
-	 * 
-	 * @param tileName The filename of the entity texture
+	 * @param entityName The filename of the entity texture
 	 * @return The pre-cached Texture object
 	 */
 	public static Texture getEntityTexture(String entityName) {

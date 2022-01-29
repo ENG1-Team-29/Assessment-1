@@ -69,6 +69,9 @@ public class GameScreen implements Screen {
 
 	/** The number of points the player has scored */
 	public int points = 0;
+	/** The amount of plunder the player has stolen */
+	public int plunder = 0;
+
 	/** The text to be display the points */
 	public GlyphLayout pointTxtLayout;
 
@@ -84,6 +87,12 @@ public class GameScreen implements Screen {
 			}
 		});
 	}
+
+
+	public void addPlunder(int p){
+		plunder = plunder + p;
+	}
+
 
 	/**
 	 * 	 * Search the world map for a region that contains only water to spawn the
@@ -303,6 +312,7 @@ public class GameScreen implements Screen {
 		if(player.getHealth() <= 0){
 			pg.openNewLossScreen();
 		}
+
 		DebugUtil.saveProcessTime("Logic Time", () -> {
 			controls(delta);
 			logic(delta);
@@ -397,7 +407,6 @@ public class GameScreen implements Screen {
 				GlyphLayout gLayout = new GlyphLayout();
 				gLayout.setText(collegeFont,cName);
 				float w = gLayout.width;
-
 				collegeFont.draw(batch,cName,e.getX()-w/2,e.getY()-10);
 			}
 			// Draw each entity with its own texture and apply rotation
