@@ -1,4 +1,4 @@
-package tk.shardsoftware;
+package tk.shardsoftware.world;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
+import tk.shardsoftware.TileType;
 import tk.shardsoftware.util.PerlinNoiseGenerator;
 
 /**

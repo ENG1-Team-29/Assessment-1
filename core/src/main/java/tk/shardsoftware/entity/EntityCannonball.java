@@ -3,7 +3,7 @@ package tk.shardsoftware.entity;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-import tk.shardsoftware.World;
+import tk.shardsoftware.world.World;
 
 /** @author James Burnell */
 public class EntityCannonball extends Entity {

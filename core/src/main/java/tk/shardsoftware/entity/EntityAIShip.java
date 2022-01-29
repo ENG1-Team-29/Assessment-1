@@ -2,7 +2,7 @@ package tk.shardsoftware.entity;
 
 import com.badlogic.gdx.math.Vector2;
 
-import tk.shardsoftware.World;
+import tk.shardsoftware.world.World;
 
 /**
  * A simple AI ship that circles around the player. It can't fire yet as this

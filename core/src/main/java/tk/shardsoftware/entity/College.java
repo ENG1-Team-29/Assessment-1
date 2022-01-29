@@ -9,8 +9,8 @@ import java.util.Random;
 import java.util.function.Function;
 
 import tk.shardsoftware.TileType;
-import tk.shardsoftware.WorldMap;
-import tk.shardsoftware.World;
+import tk.shardsoftware.world.WorldMap;
+import tk.shardsoftware.world.World;
 import tk.shardsoftware.util.ResourceUtil;
 
 /**

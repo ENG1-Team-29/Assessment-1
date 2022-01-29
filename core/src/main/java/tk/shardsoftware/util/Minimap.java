@@ -1,7 +1,6 @@
 package tk.shardsoftware.util;
 
 
-import static tk.shardsoftware.util.ResourceUtil.collegeFont;
 import static tk.shardsoftware.util.ResourceUtil.miniMapFont;
 
 import java.util.Iterator;
@@ -30,7 +29,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import tk.shardsoftware.TileType;
-import tk.shardsoftware.World;
+import tk.shardsoftware.world.World;
 import tk.shardsoftware.entity.EntityAIShip;
 
 /**

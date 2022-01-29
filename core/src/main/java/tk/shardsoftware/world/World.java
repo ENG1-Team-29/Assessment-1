@@ -1,4 +1,4 @@
-package tk.shardsoftware;
+package tk.shardsoftware.world;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -7,11 +7,9 @@ import java.util.List;
 
 import com.badlogic.gdx.math.MathUtils;
 
-import tk.shardsoftware.entity.College;
 import tk.shardsoftware.entity.Entity;
 import tk.shardsoftware.entity.EntityCannonball;
 import tk.shardsoftware.entity.IDamageable;
-import tk.shardsoftware.screens.GameScreen;
 
 /** @author James Burnell */
 public class World {
