@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -22,6 +23,7 @@ public class LossScreen implements Screen {
 	 */
 	private AssetManager assets;
 	private SpriteBatch batch;
+	Sound lossMusic = ResourceUtil.getSound("audio/music/sonatina-in-c-minor.mp3");
 
 	/** Width of the display */
 	private int width;
@@ -54,18 +56,19 @@ public class LossScreen implements Screen {
 	@Override
 	public void show() {
 		System.out.println("The player has lost, showing the loss screen...");
+		lossMusic.play();
 	}
 
 	@Override
 	public void render(float delta) {
 		//Restart the game when a key is pressed
-		if(Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)){
+		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
 			pirateGameObj.openNewGameScreen();
 		}
 
 		batch.begin();
 		batch.draw(background,0,0,width,height);
-		font.draw(batch,"You were defeated! Press any key to restart...",(int)(width*0.25),(int)(height*0.6));
+		font.draw(batch,"You were defeated! Press the space key to restart...",(int)(width*0.25),(int)(height*0.6));
 		batch.end();
 	}
 

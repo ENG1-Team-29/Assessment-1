@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -22,7 +23,7 @@ public class VictoryScreen implements Screen {
 	 */
 	private AssetManager assets;
 	private SpriteBatch batch;
-
+	Sound victoryMusic = ResourceUtil.getSound("audio/music/tiki-bar-mixer.mp3");
 	/** Width of the display */
 	private int width;
 	/** Height of the display */
@@ -54,18 +55,19 @@ public class VictoryScreen implements Screen {
 	@Override
 	public void show() {
 		System.out.println("The player has won, showing the victory screen...");
+		victoryMusic.play();
 	}
 
 	@Override
 	public void render(float delta) {
 		//Restart the game when a key is pressed
-		if(Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)){
+		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
 			pirateGameObj.openNewGameScreen();
 		}
 
 		batch.begin();
 		batch.draw(background,0,0,width,height);
-		font.draw(batch,"Congratulations, you have triumphed! Press any key to restart...",(int)(width*0.25),(int)(height*0.6));
+		font.draw(batch,"Congratulations, you have triumphed! Press the space key to restart...",(int)(width*0.125),(int)(height*0.6));
 		batch.end();
 	}
 
