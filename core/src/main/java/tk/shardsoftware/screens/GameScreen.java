@@ -31,18 +31,19 @@ import com.badlogic.gdx.utils.Timer.Task;
 
 import tk.shardsoftware.PirateGame;
 import tk.shardsoftware.TileType;
-import tk.shardsoftware.world.World;
+import tk.shardsoftware.World;
+import tk.shardsoftware.entity.College;
 import tk.shardsoftware.entity.EntityAIShip;
 import tk.shardsoftware.entity.EntityShip;
-import tk.shardsoftware.entity.College;
 import tk.shardsoftware.entity.IDamageable;
 import tk.shardsoftware.util.Bar;
+import tk.shardsoftware.util.Colleges;
 import tk.shardsoftware.util.DebugUtil;
 import tk.shardsoftware.util.Minimap;
 import tk.shardsoftware.util.ResourceUtil;
 
 /**
- * Handles game controls, rendering, and
+ * Handles game controls, rendering, and logic
  * 
  * @author James Burnell
  * @author Hector Woods
@@ -76,22 +77,14 @@ public class GameScreen implements Screen {
 
 	/** The text to display the points */
 	public GlyphLayout pointTxtLayout;
-
 	/** The text to display the plunder */
 	public GlyphLayout plunderTxtLayout;
-
-
-	/**
-	 * Causes d damage to all entities in the game. intended for debug only.
-	 * @param d
-	 */
-	public void DamageAllEntities(float d){
-		worldObj.getEntities().forEach(e -> {
-			if(e instanceof  IDamageable){
-				((IDamageable) e).damage(d);
-			}
-		});
-	}
+	/** The text to display the number of remaining colleges */
+	public GlyphLayout remainingCollegeTxtLayout;
+	/** The text to display victory over a college */
+	public GlyphLayout collegeDestroyTxtLayout;
+	/** Whether or not the college destroyed text should be rendered */
+	private boolean displayCollegeDestroyTxt = true;
 
 
 	public void addPlunder(int p){
@@ -143,10 +136,13 @@ public class GameScreen implements Screen {
 		camera.zoom = DEFAULT_CAMERA_ZOOM;
 		pointTxtLayout = new GlyphLayout();
 		plunderTxtLayout = new GlyphLayout();
+		remainingCollegeTxtLayout = new GlyphLayout();
+		collegeDestroyTxtLayout = new GlyphLayout();
 		instOverlay = new InstructionOverlay(hudBatch);
 		instOverlay.shouldDisplay = false;
 
 		worldObj = new World();
+		worldObj.setGameScreen(this);
 		player = new EntityShip(worldObj);
 		EntityAIShip exampleEnemy = new EntityAIShip(worldObj, player,750,75);
 
@@ -208,6 +204,7 @@ public class GameScreen implements Screen {
 		placeColleges();
 		setPlayerStartPosition(player);
 		points = 0;
+		worldObj.destroyedColleges = 0;
 	}
 
 
@@ -268,8 +265,8 @@ public class GameScreen implements Screen {
 	 * Calls College.generateColleges(), generating the colleges on the map, and adds them to the entity handler.
 	 */
 	public void placeColleges(){
-		College.generateColleges(worldObj,5,50);
-		for(College c : College.Colleges){
+		Colleges.generateColleges(worldObj,5,50);
+		for(College c : Colleges.collegeList){
 			worldObj.addEntity(c);
 		}
 	}
@@ -315,7 +312,7 @@ public class GameScreen implements Screen {
 				Restart();
 			}
 			if (Gdx.input.isKeyJustPressed(Input.Keys.N)){
-				DamageAllEntities(5); //cause 5 damage to all entities
+				DebugUtil.damageAllEntities(worldObj, 5); //cause 5 damage to all entities
 			}
 
 		}
@@ -340,11 +337,6 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void render(float delta) {
-		//Check if the player has lost the game, and if so open a loss screen
-		if(player.getHealth() <= 0){
-			stopMusic();
-			pg.openNewLossScreen();
-		}
 		DebugUtil.saveProcessTime("Logic Time", () -> {
 			controls(delta);
 			logic(delta);
@@ -394,8 +386,16 @@ public class GameScreen implements Screen {
 			// TODO: Change to allow for different screen sizes
 			font.draw(hudBatch, pointTxtLayout, Gdx.graphics.getWidth() - pointTxtLayout.width - 20,
 					Gdx.graphics.getHeight() - 20);
+
 			font.draw(hudBatch,plunderTxtLayout,Gdx.graphics.getWidth()-plunderTxtLayout.width-20,
 					Gdx.graphics.getHeight()-60);
+
+			font.draw(hudBatch, remainingCollegeTxtLayout, Gdx.graphics.getWidth() - remainingCollegeTxtLayout.width - 20, Gdx.graphics.getHeight()-60);
+			
+			if(displayCollegeDestroyTxt) font.draw(hudBatch, collegeDestroyTxtLayout, 
+					(Gdx.graphics.getWidth() - collegeDestroyTxtLayout.width)/2, 
+					(Gdx.graphics.getHeight() - collegeDestroyTxtLayout.height)/2);
+
 		});
 
 		hudBatch.end();
@@ -480,7 +480,19 @@ public class GameScreen implements Screen {
 	 * @param delta time since the last frame
 	 */
 	private void logic(float delta) {
+		//Check if the player has lost the game, and if so open a loss screen
+		if(player.getHealth() <= 0){
+			stopMusic();
+			pg.openNewLossScreen();
+		}
+		
+		if(worldObj.getRemainingColleges() <= 0) {
+			pg.openNewWinScreen();
+		}
+
 		worldObj.update(delta);
+		
+		remainingCollegeTxtLayout.setText(font, "Remaining Colleges: " + worldObj.getRemainingColleges());
 
 		lerpCamera(player.getCenterPoint(), 0.04f, delta);
 
@@ -538,6 +550,18 @@ public class GameScreen implements Screen {
 		// hudBatch.setProjectionMatrix();
 		shapeRenderer.setProjectionMatrix(camera.combined);
 	}
+	
+	/** Called when a college is destroyed 
+	 * @param college the destroyed college */
+	public void onCollegeDestroyed(College college) {
+		collegeDestroyTxtLayout.setText(font, "Victory Over "+college.collegeName+" College!");
+		displayCollegeDestroyTxt = true;
+		Timer.schedule(new Task() {
+			public void run() {
+				displayCollegeDestroyTxt = false;
+			}
+		}, 10);
+	}
 
 	@Override
 	public void pause() {
@@ -561,4 +585,5 @@ public class GameScreen implements Screen {
 		shapeRenderer.dispose();
 		miniMap.dispose();
 	}
+
 }

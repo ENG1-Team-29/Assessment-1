@@ -55,4 +55,8 @@ public class PirateGame extends Game {
 	public void dispose() {
 
 	}
+
+	public void openNewWinScreen() {
+		this.setScreen(new VictoryScreen(assets, this));
+	}
 }
