@@ -71,7 +71,7 @@ public class Colleges {
 			int y = (int) vector2.y;
 
 			// Check that the college is not too close to the edges of the map
-			if (x < 50 || y < 50 || x > map.width - 50 || y > map.height - 50) {
+			if (x < 25 || y < 25 || x > map.width - 25 || y > map.height - 25) {
 				return false;
 			}
 

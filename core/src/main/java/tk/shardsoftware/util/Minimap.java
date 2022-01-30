@@ -40,9 +40,9 @@ import tk.shardsoftware.entity.EntityAIShip;
  */
 public class Minimap implements Disposable {
 
-	private World worldObj;
-	private Texture miniMapBorder;
-	private Texture wholeMap;
+	public World worldObj;
+	public Texture miniMapBorder;
+	public Texture wholeMap;
 	private Texture playerIcon;
 	private Texture npcIcon;
 	private Texture collegeIcon;
@@ -67,7 +67,7 @@ public class Minimap implements Disposable {
 
 	public static final int BORDER_WIDTH = 4;
 
-	public Minimap(World world, float x, float y, int width, int height, SpriteBatch batch) {
+	public Minimap(World world, float x, float y, int width, int height, SpriteBatch batch, Stage stage) {
 		this.worldObj = world;
 		miniMapBorder = ResourceUtil.getTexture("textures/ui/minimap-border.png");
 		playerIcon = ResourceUtil.getTexture("textures/ui/player-map-icon.png");
@@ -80,7 +80,7 @@ public class Minimap implements Disposable {
 
 		prepareMap();
 
-		stage = new Stage(new ScreenViewport(), batch);
+		this.stage = stage;
 		expandDrawable = new TextureRegionDrawable(
 				new TextureRegion(ResourceUtil.getTexture("textures/ui/expand-map-button.png")));
 		minimiseDrawable = new TextureRegionDrawable(
@@ -135,6 +135,8 @@ public class Minimap implements Disposable {
 		}
 		wholeMap = new Texture(screen);
 		screen.dispose();
+
+
 
 		this.fullSizeX = Gdx.graphics.getWidth() / 2 - wholeMap.getWidth() / 2;
 		this.fullSizeY = Gdx.graphics.getHeight() / 2 - wholeMap.getHeight() / 2;

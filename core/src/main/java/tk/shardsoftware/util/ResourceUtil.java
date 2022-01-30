@@ -29,7 +29,7 @@ public class ResourceUtil {
 	/** The game's asset manager */
 	private static AssetManager assetManager;
 
-	public static BitmapFont font, debugFont, collegeFont, miniMapFont;
+	public static BitmapFont font, debugFont, collegeFont, miniMapFont, chooseCollegeFont;
 
 	/**
 	 * Load any required textures into memory
@@ -60,6 +60,8 @@ public class ResourceUtil {
 		addTexture("textures/ui/loss-screen-background.png");
 		addTexture("textures/ui/victory-screen-background.png");
 		addTexture("textures/ui/college-choose-background.png");
+		addTexture("textures/ui/college-choose-button-unselected.png");
+		addTexture("textures/ui/college-choose-button-selected.png");
 
 		/* Sound */
 		addSound("audio/entity/boat-water-movement.wav");

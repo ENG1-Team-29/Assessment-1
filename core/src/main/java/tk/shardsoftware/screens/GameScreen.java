@@ -25,9 +25,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import tk.shardsoftware.PirateGame;
 import tk.shardsoftware.TileType;
@@ -37,10 +39,13 @@ import tk.shardsoftware.entity.EntityAIShip;
 import tk.shardsoftware.entity.EntityShip;
 import tk.shardsoftware.entity.IDamageable;
 import tk.shardsoftware.util.Bar;
+import tk.shardsoftware.util.ChooseCollegeDisplay;
 import tk.shardsoftware.util.Colleges;
 import tk.shardsoftware.util.DebugUtil;
 import tk.shardsoftware.util.Minimap;
 import tk.shardsoftware.util.ResourceUtil;
+
+
 
 /**
  * Handles game controls, rendering, and logic
@@ -59,6 +64,8 @@ public class GameScreen implements Screen {
 	private SpriteBatch batch, hudBatch;
 	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera camera;
+	public ChooseCollegeDisplay cDisplay;
+	public Stage stage;
 	private int DEFAULT_CAMERA_ZOOM = 1;
 	Music[] songs = {Gdx.audio.newMusic(Gdx.files.internal("audio/music/the-pyre.mp3")), Gdx.audio.newMusic(Gdx.files.internal("audio/music/folk-round.mp3"))};
 	int currentSongIndex = 0;
@@ -132,7 +139,7 @@ public class GameScreen implements Screen {
 		hudBatch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
 		camera = new OrthographicCamera(360 * 16f / 9f, 360);
-
+		stage = new Stage(new ScreenViewport(), batch);
 		camera.zoom = DEFAULT_CAMERA_ZOOM;
 		pointTxtLayout = new GlyphLayout();
 		plunderTxtLayout = new GlyphLayout();
@@ -147,7 +154,7 @@ public class GameScreen implements Screen {
 		EntityAIShip exampleEnemy = new EntityAIShip(worldObj, player,750,75);
 
 		miniMap = new Minimap(worldObj, 25, Gdx.graphics.getHeight() - 150 - 25, 150, 150,
-				hudBatch);
+				hudBatch,stage);
 		setPlayerStartPosition(player);
 		worldObj.addEntity(player);
 		placeColleges();
@@ -157,11 +164,19 @@ public class GameScreen implements Screen {
 
 		boatWaterMovement = ResourceUtil.getSound("audio/entity/boat-water-movement.wav");
 		ambientOcean = ResourceUtil.getSound("audio/ambient/ocean.wav");
+		cDisplay = new ChooseCollegeDisplay(worldObj,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),batch,stage, Colleges.collegeList, this);
+
 	}
 
 	/**
 	 * Starts a timer that increments points, starts playing music and ambient noise.
 	 */
+
+	public void SetPlayerCollege(String collegeName){
+		player.collegeName = collegeName;
+	}
+
+
 	@Override
 	public void show() {
 		soundIdBoatMovement = boatWaterMovement.loop(0);
@@ -203,8 +218,10 @@ public class GameScreen implements Screen {
 		player = new EntityShip(worldObj);
 		worldObj.addEntity(player);
 		worldObj.worldMap.buildWorld(MathUtils.random.nextLong()); //generate a new map with a random seed
-		miniMap.prepareMap();
 		placeColleges();
+		miniMap.prepareMap();
+		cDisplay = new ChooseCollegeDisplay(worldObj,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),batch,stage, Colleges.collegeList,this);
+		cDisplay.prepareMap();
 		setPlayerStartPosition(player);
 		points = 0;
 		worldObj.destroyedColleges = 0;
@@ -318,6 +335,7 @@ public class GameScreen implements Screen {
 				DebugUtil.damageAllEntities(worldObj, 5); //cause 5 damage to all entities
 			}
 
+
 		}
 		// player.setPosition(0, 0);
 		// System.out.println(player.getVelocity());
@@ -328,7 +346,6 @@ public class GameScreen implements Screen {
 	public void stopMusic(){
 		for(int i = 0; i < songs.length; i++){
 			if(songs[i].isPlaying()){
-				System.out.println(i);
 				songs[i].stop();
 			}
 		}
@@ -340,6 +357,17 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void render(float delta) {
+		if(Gdx.input.isKeyJustPressed(Input.Keys.L)){
+			player.collegeName = "Derwent";
+		}
+		if(player.collegeName == null){
+			hudBatch.begin();
+			cDisplay.drawChooseCollegeDisplay(hudBatch);
+			hudBatch.end();
+			return;
+		}
+
+
 		DebugUtil.saveProcessTime("Logic Time", () -> {
 			controls(delta);
 			logic(delta);
@@ -377,7 +405,6 @@ public class GameScreen implements Screen {
 		if (DEBUG_MODE) DebugUtil.saveProcessTime("Hitbox Render", () -> renderHitboxes());
 
 		hudBatch.begin();
-
 		miniMap.drawMap(hudBatch, player.getPosition()); // <1% draw time, no point measuring
 		if (DEBUG_MODE) DebugUtil.saveProcessTime("Debug HUD Draw Time", () -> {
 
@@ -387,6 +414,7 @@ public class GameScreen implements Screen {
 		});
 		DebugUtil.saveProcessTime("HUD Draw Time", () -> {
 			// TODO: Change to allow for different screen sizes
+
 			font.draw(hudBatch, pointTxtLayout, Gdx.graphics.getWidth() - pointTxtLayout.width - 20,
 					Gdx.graphics.getHeight() - 20);
 

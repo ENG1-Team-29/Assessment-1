@@ -16,7 +16,7 @@ public class EntityShip extends Entity implements ICannonCarrier, IRepairable {
 	public float reloadTime = 1f;
 	/** How much time left until cannons can be fired */
 	public float timeUntilFire = 0f;
-
+	public String collegeName;
 	private float maxHealth = 100f;
 
 	private Sound cannonSfx = ResourceUtil.getSound("audio/entity/cannon.mp3");
