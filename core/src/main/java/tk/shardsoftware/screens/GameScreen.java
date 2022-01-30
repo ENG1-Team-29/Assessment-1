@@ -562,6 +562,7 @@ public class GameScreen implements Screen {
 				displayCollegeDestroyTxt = false;
 			}
 		}, 10);
+		plunder = plunder + 100;
 	}
 
 	@Override
