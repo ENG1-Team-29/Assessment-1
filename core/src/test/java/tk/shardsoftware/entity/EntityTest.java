@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import com.badlogic.gdx.math.Rectangle;
 
-import tk.shardsoftware.world.World;
+import tk.shardsoftware.World;
 
 /** @author James Burnell */
 public class EntityTest {

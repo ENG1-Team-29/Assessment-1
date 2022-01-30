@@ -60,7 +60,27 @@ public class EntityCannonball extends Entity {
 	 * Called when the cannonball touches an entity which implements IDamageable
 	 * @param obj
 	 */
+
+	/**
+	 * Check that the cannonball is able to damage the object
+	 * @param obj object to be damaged
+	 * @return boolean
+	 */
+	public boolean checkCanDamage(IDamageable obj){
+		//if parent is a college, then
+		if(parentObj instanceof College && (obj instanceof College || (obj instanceof EntityAIShip))){
+			return false;
+		}
+		return true;
+	}
+
 	public void onTouchingDamageable(IDamageable obj) {
+
+		if(!checkCanDamage(obj)){
+			return;
+		}
+
+
 		obj.damage(
 				MathUtils.random(parentObj.getCannonDamage() - 2, parentObj.getCannonDamage() + 2));
 		if(obj instanceof College){
