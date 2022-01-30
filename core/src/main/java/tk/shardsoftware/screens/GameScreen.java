@@ -106,24 +106,38 @@ public class GameScreen implements Screen {
 	 * @param player The player's ship (an instance of EntityShip)
 	 */
 	public void setPlayerStartPosition(EntityShip player) {
-		Function<Vector2, Boolean> startPositionConditions = vector2 -> {
-			for (int i = (int) vector2.x - 20; i < vector2.x + 20; i++) {
-				for (int j = (int) vector2.y - 20; j < vector2.y + 20; j++) {
-					if (i < 0 || i > worldObj.worldMap.width || j < 0
-							|| j > worldObj.worldMap.height) {
-						return false;
-					}
-					TileType tile = worldObj.worldMap.getTile(i, j);
-					if (tile != TileType.WATER_DEEP && tile != TileType.WATER_SHALLOW) {
-						return false;
-					}
-				}
+		College playerCollege = Colleges.getCollegeWithName(player.collegeName);
+		if(playerCollege == null){
+			return;
+		}
+
+		Vector2 cPos = playerCollege.getPosition();
+		int tileSize = worldObj.worldMap.tile_size;
+		Function<Vector2, Boolean> startPosConds = vector2 -> {
+			TileType tile = worldObj.worldMap.getTile((int)vector2.x,(int)vector2.y);
+
+			if(tile != TileType.WATER_DEEP && tile != TileType.WATER_SHALLOW){
+				return false;
+			}
+
+			int tileX = (int)vector2.x * tileSize;
+			int tileY = (int)vector2.y * tileSize;
+			float distFromCollege = cPos.dst(tileX,tileY);
+			if(distFromCollege > 150){
+				return false;
 			}
 			return true;
 		};
-		Vector2 startPos = worldObj.worldMap.SearchMap(startPositionConditions);
-		startPos.x = startPos.x * worldObj.worldMap.tile_size;
-		startPos.y = startPos.y * worldObj.worldMap.tile_size;
+
+
+
+
+		Vector2 startPos = worldObj.worldMap.SearchMap(startPosConds);
+
+		startPos = new Vector2(startPos.x*tileSize, startPos.y*tileSize);
+
+		//Vector2 startPos = new Vector2(cPos.x*tileSize, cPos.y*tileSize);
+
 		System.out.println("Start Position: " + startPos);
 		player.setPosition(startPos);
 	}
@@ -155,7 +169,6 @@ public class GameScreen implements Screen {
 
 		miniMap = new Minimap(worldObj, 25, Gdx.graphics.getHeight() - 150 - 25, 150, 150,
 				hudBatch,stage);
-		setPlayerStartPosition(player);
 		worldObj.addEntity(player);
 		placeColleges();
 		exampleEnemy
@@ -174,6 +187,9 @@ public class GameScreen implements Screen {
 
 	public void SetPlayerCollege(String collegeName){
 		player.collegeName = collegeName;
+		setPlayerStartPosition(player);
+		Colleges.setFriendlyCollege(collegeName);
+
 	}
 
 
@@ -460,19 +476,27 @@ public class GameScreen implements Screen {
 
 	/** Renders all visible entities */
 	private void renderEntities() {
+		Color originalFontColor = collegeFont.getColor();
 		worldObj.getEntities().forEach(e -> {
 			// batch.draw(e.getTexture(), e.getPosition().x, e.getPosition().y,
 			// e.getHitbox().width, e.getHitbox().height);
 
 			//We draw the college name above it
 			if(e instanceof College){
-				String cName = ((College) e).getName() + " College";
+				String cName = ((College) e).getName();
 
 				//Get the width of the text after we draw it
 				GlyphLayout gLayout = new GlyphLayout();
 				gLayout.setText(collegeFont,cName);
 				float w = gLayout.width;
-				collegeFont.draw(batch,cName,e.getX()-w/2,e.getY()-10);
+
+				if(((College) e).isFriendly){
+					collegeFont.setColor(Color.BLUE);
+				}else{
+					collegeFont.setColor(Color.WHITE);
+				}
+
+				collegeFont.draw(batch,cName,e.getX(),e.getY()-10);
 			}
 			// Draw each entity with its own texture and apply rotation
 			batch.draw(e.getTexture(), e.getX(), e.getY(), e.getWidth() / 2, e.getHeight() / 2,
@@ -487,6 +511,7 @@ public class GameScreen implements Screen {
 				}
 			}
 		});
+		collegeFont.setColor(originalFontColor);
 	}
 
 	/**

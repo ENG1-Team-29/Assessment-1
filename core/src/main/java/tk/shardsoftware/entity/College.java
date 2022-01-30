@@ -17,6 +17,7 @@ import tk.shardsoftware.util.ResourceUtil;
 public class College extends Entity implements IRepairable, ICannonCarrier {
 
 	public EntityShip player;
+	public boolean isFriendly = false;
 	public String collegeName;
 	public String collegeTextureName = "textures/entity/college.png";
 	public Sound hitSound = ResourceUtil.getSound("audio/entity/college-hit.mp3");
@@ -39,6 +40,12 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 	}
 
 	public boolean fireCannons(){
+		//If friendly then don't attack the player.
+		//TODO: Make friendly colleges attack enemy ships
+		if(isFriendly){
+			return false;
+		}
+
 		// Do not fire if still reloading
 		if (timeUntilFire > 0) return false;
 		//Do not fire if too far away from the player

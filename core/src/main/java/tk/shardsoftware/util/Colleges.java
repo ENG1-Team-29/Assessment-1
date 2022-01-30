@@ -52,6 +52,20 @@ public class Colleges {
 	}
 
 	/**
+	 * Sets one college friendly to the player, and all others to unfriendly.
+	 * @param name Name of the college the player chose
+	 */
+	public static void setFriendlyCollege(String name){
+		for(College c: collegeList){
+			if(c.getName() == name){
+				c.isFriendly = true;
+			}else{
+				c.isFriendly = false;
+			}
+		}
+	}
+
+	/**
 	 * Static method that generates numColleges College, provided that a valid
 	 * position exists
 	 * 

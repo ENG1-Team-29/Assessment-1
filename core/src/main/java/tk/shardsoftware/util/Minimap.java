@@ -12,6 +12,7 @@ import tk.shardsoftware.entity.College;
 import tk.shardsoftware.entity.Entity;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
@@ -159,6 +160,8 @@ public class Minimap implements Disposable {
 	public void DrawEntities(SpriteBatch batch, int startX, int startY,int playerTileX, int playerTileY, float x, float y,float width, float height){
 		List<Entity> entities = this.worldObj.getEntities();
 		Iterator<Entity> iter = entities.iterator();
+		//keep track of original font colour
+		Color oldColour = miniMapFont.getColor();
 		while (iter.hasNext()) {
 			Entity e = iter.next();
 			if(e instanceof EntityAIShip){
@@ -181,12 +184,18 @@ public class Minimap implements Disposable {
 					float w = gLayout.width;
 
 
-
+					if(((College) e).isFriendly){
+						miniMapFont.setColor(Color.BLUE);
+					}else{
+						miniMapFont.setColor(Color.WHITE);
+					}
 					miniMapFont.draw(batch,cName,x+tileX-startX-w/2,y+tileY-startY);
 					batch.draw(collegeIcon,x+tileX-startX,y+tileY-startY,5,5);
 				}
 			}
 		}
+		//reset font colour
+		miniMapFont.setColor(oldColour);
 		//Draw player
 		batch.draw(playerIcon,x+playerTileX-startX,y+playerTileY-startY,5,5);
 

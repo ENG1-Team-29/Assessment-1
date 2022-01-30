@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -113,7 +114,12 @@ public class ChooseCollegeDisplay extends Minimap {
             College c = iterColleges.next();
             String cName = c.getName();
             Vector2 collegePos = getCollegePosition(c);
-            font.draw(batch,cName,collegePos.x,collegePos.y);
+
+            GlyphLayout layout = new GlyphLayout(font, cName);
+             float fontX = (float)(collegePos.x - layout.width*0.4);
+             float fontY = (float)(collegePos.y - layout.width*0.15);
+
+            font.draw(batch,layout,fontX,fontY);
         }
 
     }
