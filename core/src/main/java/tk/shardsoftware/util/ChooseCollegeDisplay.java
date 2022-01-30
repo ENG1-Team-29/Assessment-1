@@ -67,8 +67,8 @@ public class ChooseCollegeDisplay extends Minimap {
         int tileY = (int)collegePos.y/this.worldObj.worldMap.tile_size;
 
         //Convert the tile to a pixel on the image (on the original image it was 1-1, so we multiply by multipliers to get the position on the new image)
-        int pixelX = (int)(tileX * widthMulti);
-        int pixelY = (int)(tileY * heightMulti);
+        float pixelX = tileX * widthMulti;
+        float pixelY = tileY * heightMulti;
         return new Vector2(pixelX,pixelY);
     }
 
@@ -90,6 +90,8 @@ public class ChooseCollegeDisplay extends Minimap {
             Vector2 collegePos = getCollegePosition(c);
             String cName = c.getName();
             Button button = new ImageButton(buttonBackground);
+            float buttonWidth = button.getWidth();
+            float buttonHeight = button.getHeight();
             stage.addActor(button);
             button.setPosition(collegePos.x,collegePos.y);
             button.addListener(new ClickListener() {
@@ -108,7 +110,7 @@ public class ChooseCollegeDisplay extends Minimap {
         Iterator<Button> iterButtons = buttons.iterator();
         while(iterButtons.hasNext()) {
             Button b = iterButtons.next();
-            b.draw(batch,1);
+            b.draw(batch,1f);
         }
         Iterator<College> iterColleges = collegeList.iterator();
         while(iterColleges.hasNext()){
@@ -117,8 +119,8 @@ public class ChooseCollegeDisplay extends Minimap {
             Vector2 collegePos = getCollegePosition(c);
 
             GlyphLayout layout = new GlyphLayout(font, cName);
-             float fontX = (float)(collegePos.x - layout.width*0.4);
-             float fontY = (float)(collegePos.y - layout.width*0.15);
+            float fontX = (float)(collegePos.x - layout.width*0.4);
+            float fontY = (float)(collegePos.y - layout.width*0.15);
 
             font.draw(batch,layout,fontX,fontY);
         }

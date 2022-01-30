@@ -116,14 +116,16 @@ public class GameScreen implements Screen {
 		Function<Vector2, Boolean> startPosConds = vector2 -> {
 			TileType tile = worldObj.worldMap.getTile((int)vector2.x,(int)vector2.y);
 
+			//Check the tile is in water
 			if(tile != TileType.WATER_DEEP && tile != TileType.WATER_SHALLOW){
 				return false;
 			}
 
+			//Check the position is neither too far or too close to the college
 			int tileX = (int)vector2.x * tileSize;
 			int tileY = (int)vector2.y * tileSize;
 			float distFromCollege = cPos.dst(tileX,tileY);
-			if(distFromCollege > 150){
+			if(distFromCollege > 250 || distFromCollege < 25){
 				return false;
 			}
 			return true;
@@ -543,14 +545,14 @@ public class GameScreen implements Screen {
 			pg.openNewLossScreen();
 		}
 		
-		if(worldObj.getRemainingColleges() <= 0) {
+		if(worldObj.getRemainingColleges() <= 1) {
 			stopMusic();
 			pg.openNewWinScreen();
 		}
 
 		worldObj.update(delta);
 		
-		remainingCollegeTxtLayout.setText(font, "Remaining Colleges: " + worldObj.getRemainingColleges());
+		remainingCollegeTxtLayout.setText(font, "Remaining Colleges: " + (worldObj.getRemainingColleges()-1));
 
 		lerpCamera(player.getCenterPoint(), 0.04f, delta);
 
