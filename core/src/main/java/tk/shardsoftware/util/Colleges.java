@@ -11,6 +11,7 @@ import tk.shardsoftware.TileType;
 import tk.shardsoftware.World;
 import tk.shardsoftware.WorldMap;
 import tk.shardsoftware.entity.College;
+import tk.shardsoftware.entity.EntityShip;
 
 /**
  * @author James Burnell
@@ -59,7 +60,7 @@ public class Colleges {
 	 * @param collegeMinDist Minimum distance between each college (magnitude of the
 	 *                       distance vector between the two)
 	 */
-	public static void generateColleges(World worldObj, int numColleges, float collegeMinDist) {
+	public static void generateColleges(World worldObj, int numColleges, float collegeMinDist, EntityShip player) {
 		availableCollegeNames = new ArrayList<>(
 				Arrays.asList("James", "Constantine", "Alcuin", "Anne Lister", "David Kato",
 						"Derwent", "Goodricke", "Halifax", "Langwith", "Vanbrugh", "Wentworth"));
@@ -109,7 +110,7 @@ public class Colleges {
 				String name = getRandomCollegeName();
 				College c = new College(worldObj, name, collegePos.x * worldObj.worldMap.tile_size,
 						collegePos.y * worldObj.worldMap.tile_size, map.tile_size * 6,
-						map.tile_size * 6);
+						map.tile_size * 6, player);
 				collegeList.add(c);
 			}
 		}

@@ -156,7 +156,7 @@ public class World {
 	/**
 	 * Called when a college is destroyed
 	 * 
-	 * @param The college that was destroyed
+	 * @param college The college that was destroyed
 	 */
 	public void onCollegeDestroyed(College college) {
 		destroyedColleges++;

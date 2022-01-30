@@ -167,11 +167,14 @@ public class GameScreen implements Screen {
 		soundIdBoatMovement = boatWaterMovement.loop(0);
 		ambientOcean.loop(PirateGame.gameVolume);
 
-		// Increase the points by 1 every second
+		// Increase the points by 1 every second and check whether college cannons should fire
 		Timer.schedule(new Task() {
 			public void run() {
 				pointTxtLayout.setText(font, "Points: " + (++points));
 				plunderTxtLayout.setText(font, "Plunder: " + plunder);
+				for(College c : Colleges.collegeList) {
+					c.fireCannons();
+				}
 			}
 		}, 1, 1);
 
@@ -265,7 +268,7 @@ public class GameScreen implements Screen {
 	 * Calls College.generateColleges(), generating the colleges on the map, and adds them to the entity handler.
 	 */
 	public void placeColleges(){
-		Colleges.generateColleges(worldObj,5,50);
+		Colleges.generateColleges(worldObj,5,50, player);
 		for(College c : Colleges.collegeList){
 			worldObj.addEntity(c);
 		}
