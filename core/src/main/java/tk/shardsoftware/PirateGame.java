@@ -11,7 +11,7 @@ import tk.shardsoftware.util.ResourceUtil;
 public class PirateGame extends Game {
 
 	/** The universal game volume */
-	public static float gameVolume = 0.5f;
+	public static float gameVolume = 0.2f;
 
 	public AssetManager assets;
 
