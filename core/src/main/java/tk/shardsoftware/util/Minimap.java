@@ -102,9 +102,6 @@ public class Minimap implements Disposable {
 		bigMiniMapButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				drawBigmap = !drawBigmap;
-				System.out.println(drawBigmap);
-
-
 				closeMapButton.setVisible(drawBigmap);
 			}
 		});

@@ -3,6 +3,9 @@ package tk.shardsoftware.entity;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.function.Function;
+
+import tk.shardsoftware.TileType;
 import tk.shardsoftware.World;
 import tk.shardsoftware.util.ResourceUtil;
 
@@ -27,6 +30,10 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 	public float timeUntilFire = 0f;
 	public float reloadTime = 3f;
 	public float fireDistance = 350f;
+
+	public float shipSpawnWaitTime = 3f;
+	public float timeUntilNextShipSpawn = 0f;
+
 	/**
 	 * Reduces the health of the College by 'dmgAmount'. See IDamageable
 	 * 
@@ -37,6 +44,39 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 		if (this.health <= 0) {
 			this.remove = true; // flag for removal by entity handler
 		}
+	}
+
+
+	public boolean spawnShip() {
+
+		//don't spawn if on cooldown or if a friendly college
+		if (timeUntilNextShipSpawn > 0 || isFriendly) return false;
+
+		int tileSize = worldObj.worldMap.tile_size;
+		Function<Vector2, Boolean> shipPosConds = vector2 -> {
+
+			TileType tile = worldObj.worldMap.getTile((int)vector2.x,(int)vector2.y);
+			//Check the tile is in water
+			if(tile != TileType.WATER_DEEP && tile != TileType.WATER_SHALLOW){
+				return false;
+			}
+			//Check the position is neither too far or too close to the college
+			int tileX = (int)vector2.x * tileSize;
+			int tileY = (int)vector2.y * tileSize;
+			float distFromCollege = this.getPosition().dst(tileX,tileY);
+			if(distFromCollege > 275 || distFromCollege < 50){
+				return false;
+			}
+			return true;
+		};
+		Vector2 startPos = worldObj.worldMap.SearchMap(shipPosConds);
+		startPos = new Vector2(startPos.x * tileSize, startPos.y*tileSize);
+		if(startPos == null){
+			return false;
+		}
+		EntityAIShip ship = new EntityAIShip(worldObj,player);
+		worldObj.addEntity(ship);
+		return true;
 	}
 
 	public boolean fireCannons(){
@@ -129,6 +169,8 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 
 	public void update(float delta){
 		timeUntilFire -= delta;
+		timeUntilNextShipSpawn -= delta;
+		timeUntilNextShipSpawn = timeUntilNextShipSpawn <= 0 ? 0 : timeUntilNextShipSpawn;
 		timeUntilFire = timeUntilFire <= 0 ? 0 : timeUntilFire;
 	}
 

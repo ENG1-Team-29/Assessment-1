@@ -125,7 +125,7 @@ public class GameScreen implements Screen {
 			int tileX = (int)vector2.x * tileSize;
 			int tileY = (int)vector2.y * tileSize;
 			float distFromCollege = cPos.dst(tileX,tileY);
-			if(distFromCollege > 250 || distFromCollege < 25){
+			if(distFromCollege > 275 || distFromCollege < 50){
 				return false;
 			}
 			return true;
@@ -192,7 +192,6 @@ public class GameScreen implements Screen {
 		player.collegeName = collegeName;
 		setPlayerStartPosition(player);
 		Colleges.setFriendlyCollege(collegeName);
-
 	}
 
 

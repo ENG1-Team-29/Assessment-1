@@ -56,8 +56,10 @@ public class Colleges {
 	 * @param name Name of the college the player chose
 	 */
 	public static void setFriendlyCollege(String name){
+		System.out.println(name);
 		for(College c: collegeList){
 			if(c.getName() == name){
+				System.out.println("yes");
 				c.isFriendly = true;
 			}else{
 				c.isFriendly = false;
