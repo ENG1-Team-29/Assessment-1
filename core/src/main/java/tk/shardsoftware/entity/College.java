@@ -31,7 +31,7 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 	public float reloadTime = 3f;
 	public float fireDistance = 350f;
 
-	public float shipSpawnWaitTime = 3f;
+	public float shipSpawnWaitTime = 60f;
 	public float timeUntilNextShipSpawn = 0f;
 
 	/**
@@ -49,9 +49,9 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 
 	public boolean spawnShip() {
 
+		System.out.println(timeUntilNextShipSpawn);
 		//don't spawn if on cooldown or if a friendly college
 		if (timeUntilNextShipSpawn > 0 || isFriendly) return false;
-
 		int tileSize = worldObj.worldMap.tile_size;
 		Function<Vector2, Boolean> shipPosConds = vector2 -> {
 
@@ -74,7 +74,9 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 		if(startPos == null){
 			return false;
 		}
+		timeUntilNextShipSpawn += shipSpawnWaitTime;
 		EntityAIShip ship = new EntityAIShip(worldObj,player);
+		ship.setPosition(startPos);
 		worldObj.addEntity(ship);
 		return true;
 	}

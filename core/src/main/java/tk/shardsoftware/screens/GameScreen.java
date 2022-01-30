@@ -121,11 +121,11 @@ public class GameScreen implements Screen {
 				return false;
 			}
 
-			//Check the position is neither too far or too close to the college
+			//Check the tile is neither too far or too close to the college
 			int tileX = (int)vector2.x * tileSize;
 			int tileY = (int)vector2.y * tileSize;
 			float distFromCollege = cPos.dst(tileX,tileY);
-			if(distFromCollege > 275 || distFromCollege < 50){
+			if(distFromCollege > 275 || distFromCollege < 100){
 				return false;
 			}
 			return true;
@@ -207,6 +207,7 @@ public class GameScreen implements Screen {
 				plunderTxtLayout.setText(font, "Plunder: " + plunder);
 				for(College c : Colleges.collegeList) {
 					c.fireCannons();
+					c.spawnShip();
 				}
 			}
 		}, 1, 1);
@@ -620,7 +621,7 @@ public class GameScreen implements Screen {
 				displayCollegeDestroyTxt = false;
 			}
 		}, 10);
-		plunder = plunder + 100;
+		plunder += 100;
 	}
 
 	@Override
