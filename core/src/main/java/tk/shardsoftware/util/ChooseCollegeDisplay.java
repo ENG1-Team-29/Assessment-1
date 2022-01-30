@@ -42,6 +42,7 @@ public class ChooseCollegeDisplay extends Minimap {
     List<College> collegeList;
     private Texture collegeTexture = ResourceUtil.getTexture("textures/ui/college-map-icon.png");
     List<Button> buttons;
+    private Texture textTexture = ResourceUtil.getTexture("textures/ui/college-choice-text.png");
 
 
     public void RemoveActors(){
@@ -80,7 +81,7 @@ public class ChooseCollegeDisplay extends Minimap {
 
         //create buttons
         Drawable buttonBackground = new TextureRegionDrawable(
-                new TextureRegion(ResourceUtil.getTexture("textures/ui/college-map-icon.png")));
+                new TextureRegion(collegeTexture));
 
         Iterator<College> iter = collegeList.iterator();
         while(iter.hasNext()) {
@@ -129,6 +130,8 @@ public class ChooseCollegeDisplay extends Minimap {
                 width, height, 0,
                 0, wholeMap.getWidth(), wholeMap.getHeight(), false, true);
         drawColleges(batch);
+        //Draw text at the top of the screen
+        batch.draw(textTexture,width/2-(float)(width*0.15),height-(float)(height*0.1),width/3,height/8);
     }
 
 

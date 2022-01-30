@@ -59,9 +59,7 @@ public class ResourceUtil {
 		addTexture("textures/ui/college-map-icon.png");
 		addTexture("textures/ui/loss-screen-background.png");
 		addTexture("textures/ui/victory-screen-background.png");
-		addTexture("textures/ui/college-choose-background.png");
-		addTexture("textures/ui/college-choose-button-unselected.png");
-		addTexture("textures/ui/college-choose-button-selected.png");
+		addTexture("textures/ui/college-choice-text.png");
 
 		/* Sound */
 		addSound("audio/entity/boat-water-movement.wav");
