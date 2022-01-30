@@ -64,14 +64,12 @@ com_crashlytics_export_strings.xml
 /build/
 /android/build/
 /core/build/
-/desktop/build/
 /html/build/
 /ios/build/
 
 /nbbuild/
 /android/nbbuild/
 /core/nbbuild/
-/desktop/nbbuild/
 /html/nbbuild/
 /ios/nbbuild/
 
