@@ -67,8 +67,12 @@ public class EntityCannonball extends Entity {
 	 * @return boolean
 	 */
 	public boolean checkCanDamage(IDamageable obj){
-		//if parent is a college, then
+		//if parent is a college, then make sure it can't damage other colleges
 		if(parentObj instanceof College && (obj instanceof College || (obj instanceof EntityAIShip))){
+			return false;
+		}
+		//if parent is the player, make sure they can't damage a friendly college.
+		if(parentObj instanceof EntityShip && ((EntityShip) parentObj).isPlayer && obj instanceof College && ((College) obj).isFriendly == true){
 			return false;
 		}
 		return true;

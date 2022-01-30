@@ -165,6 +165,7 @@ public class GameScreen implements Screen {
 		worldObj = new World();
 		worldObj.setGameScreen(this);
 		player = new EntityShip(worldObj);
+		player.isPlayer = true;
 		EntityAIShip exampleEnemy = new EntityAIShip(worldObj, player,750,75);
 
 		miniMap = new Minimap(worldObj, 25, Gdx.graphics.getHeight() - 150 - 25, 150, 150,
