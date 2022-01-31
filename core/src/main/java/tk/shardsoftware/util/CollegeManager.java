@@ -17,7 +17,7 @@ import tk.shardsoftware.entity.EntityShip;
  * @author James Burnell
  * @author Hector Woods
  */
-public class Colleges {
+public abstract class CollegeManager {
 
 	public static ArrayList<College> collegeList = new ArrayList<College>();
 	public static ArrayList<String> availableCollegeNames;

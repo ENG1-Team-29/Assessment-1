@@ -12,7 +12,7 @@ import tk.shardsoftware.entity.Entity;
 import tk.shardsoftware.entity.EntityCannonball;
 import tk.shardsoftware.entity.IDamageable;
 import tk.shardsoftware.screens.GameScreen;
-import tk.shardsoftware.util.Colleges;
+import tk.shardsoftware.util.CollegeManager;
 
 /** @author James Burnell */
 public class World {
@@ -165,7 +165,7 @@ public class World {
 
 	/** @return The number of colleges remaining in the world */
 	public int getRemainingColleges() {
-		return Colleges.collegeList.size() - destroyedColleges;
+		return CollegeManager.collegeList.size() - destroyedColleges;
 	}
 
 }

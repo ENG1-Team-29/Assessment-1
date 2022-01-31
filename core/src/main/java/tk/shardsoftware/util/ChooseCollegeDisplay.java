@@ -39,13 +39,13 @@ import tk.shardsoftware.screens.GameScreen;
 import tk.shardsoftware.util.ResourceUtil;
 
 public class ChooseCollegeDisplay extends Minimap {
-    List<College> collegeList;
+    private List<College> collegeList;
     private Texture collegeTexture = ResourceUtil.getTexture("textures/ui/college-map-icon.png");
-    List<Button> buttons;
+    private List<Button> buttons;
     private Texture textTexture = ResourceUtil.getTexture("textures/ui/college-choice-text.png");
 
 
-    public void RemoveActors(){
+    private void removeActors(){
         Iterator<Button> iterButtons = buttons.iterator();
         while(iterButtons.hasNext()) {
             Button b = iterButtons.next();
@@ -97,7 +97,7 @@ public class ChooseCollegeDisplay extends Minimap {
             button.addListener(new ClickListener() {
                 public void clicked(InputEvent event, float x, float y) {
                     gS.SetPlayerCollege(cName);
-                    RemoveActors();
+                    removeActors();
                 }
             });
             buttons.add(button);

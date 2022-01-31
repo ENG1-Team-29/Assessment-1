@@ -22,7 +22,7 @@ public abstract class Bar {
      * @param backgroundColor The background colour
      * @param foreGroundColor The colour of the bar
      */
-    public static void DrawBar(SpriteBatch batch, ShapeRenderer shapeRenderer, Vector2 start, Vector2 end, float p, Color backgroundColor, Color foreGroundColor){
+    public static void drawBar(SpriteBatch batch, ShapeRenderer shapeRenderer, Vector2 start, Vector2 end, float p, Color backgroundColor, Color foreGroundColor){
         shapeRenderer.setColor(backgroundColor);
         shapeRenderer.rectLine(start, end, 3);
         start.x += 1;
@@ -39,8 +39,8 @@ public abstract class Bar {
      * @param end The end of the bar. Vector2.
      * @param p The proportion of the bar to fill
      */
-    public static void DrawBar(SpriteBatch batch, ShapeRenderer shapeRenderer, Vector2 start, Vector2 end, float p){
-        DrawBar(batch,shapeRenderer,start,end,p,Color.BLACK, Color.GREEN);
+    public static void drawBar(SpriteBatch batch, ShapeRenderer shapeRenderer, Vector2 start, Vector2 end, float p){
+        drawBar(batch,shapeRenderer,start,end,p,Color.BLACK, Color.GREEN);
     }
     /**
      * Draw a bar, with the whole bar being filled.
@@ -49,8 +49,8 @@ public abstract class Bar {
      * @param start The start of the bar. Vector2.
      * @param end The end of the bar. Vector2.
      */
-    public static void DrawBar(SpriteBatch batch, ShapeRenderer shapeRenderer, Vector2 start, Vector2 end){
-        DrawBar(batch,shapeRenderer,start,end,0,Color.BLACK, Color.GREEN);
+    public static void drawBar(SpriteBatch batch, ShapeRenderer shapeRenderer, Vector2 start, Vector2 end){
+        drawBar(batch,shapeRenderer,start,end,0,Color.BLACK, Color.GREEN);
     }
 
     /**
@@ -60,7 +60,7 @@ public abstract class Bar {
      * @param start The start of the bar. Vector2.
      * @param end The end of the bar. Vector2.
      */
-    public static void DrawBar(SpriteBatch batch, ShapeRenderer shapeRenderer, Vector2 start, Vector2 end,Color backgroundColor, Color foreGroundColor){
-        DrawBar(batch,shapeRenderer,start,end,0,backgroundColor, foreGroundColor);
+    public static void drawBar(SpriteBatch batch, ShapeRenderer shapeRenderer, Vector2 start, Vector2 end,Color backgroundColor, Color foreGroundColor){
+        drawBar(batch,shapeRenderer,start,end,0,backgroundColor, foreGroundColor);
     }
 }

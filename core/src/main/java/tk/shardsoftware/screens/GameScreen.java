@@ -45,7 +45,7 @@ import tk.shardsoftware.entity.EntityShip;
 import tk.shardsoftware.entity.IDamageable;
 import tk.shardsoftware.util.Bar;
 import tk.shardsoftware.util.ChooseCollegeDisplay;
-import tk.shardsoftware.util.Colleges;
+import tk.shardsoftware.util.CollegeManager;
 import tk.shardsoftware.util.DebugUtil;
 import tk.shardsoftware.util.Minimap;
 import tk.shardsoftware.util.ResourceUtil;
@@ -119,7 +119,7 @@ public class GameScreen implements Screen {
 	 * @param player The player's ship (an instance of EntityShip)
 	 */
 	public void setPlayerStartPosition(EntityShip player) {
-		College playerCollege = Colleges.getCollegeWithName(player.getCollegeName());
+		College playerCollege = CollegeManager.getCollegeWithName(player.getCollegeName());
 		if(playerCollege == null){
 			return;
 		}
@@ -201,7 +201,7 @@ public class GameScreen implements Screen {
 
 		boatWaterMovement = ResourceUtil.getSound("audio/entity/boat-water-movement.wav");
 		ambientOcean = ResourceUtil.getSound("audio/ambient/ocean.wav");
-		cDisplay = new ChooseCollegeDisplay(worldObj,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),batch,stage, Colleges.collegeList, this);
+		cDisplay = new ChooseCollegeDisplay(worldObj,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),batch,stage, CollegeManager.collegeList, this);
 
 	}
 
@@ -212,7 +212,7 @@ public class GameScreen implements Screen {
 	public void SetPlayerCollege(String collegeName){
 		player.setCollegeName(collegeName);
 		setPlayerStartPosition(player);
-		Colleges.setFriendlyCollege(collegeName);
+		CollegeManager.setFriendlyCollege(collegeName);
 	}
 
 
@@ -227,7 +227,7 @@ public class GameScreen implements Screen {
 			public void run() {
 				pointTxtLayout.setText(font, "Points: " + (++points));
 				plunderTxtLayout.setText(font, "Plunder: " + plunder);
-				for(College c : Colleges.collegeList) {
+				for(College c : CollegeManager.collegeList) {
 					c.fireCannons();
 					c.spawnShip();
 				}
@@ -246,7 +246,7 @@ public class GameScreen implements Screen {
 		worldObj.worldMap.buildWorld(MathUtils.random.nextLong()); //generate a new map with a random seed
 		placeColleges();
 		miniMap.prepareMap();
-		cDisplay = new ChooseCollegeDisplay(worldObj,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),batch,stage, Colleges.collegeList,this);
+		cDisplay = new ChooseCollegeDisplay(worldObj,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),batch,stage, CollegeManager.collegeList,this);
 		cDisplay.prepareMap();
 		setPlayerStartPosition(player);
 		points = 0;
@@ -312,8 +312,8 @@ public class GameScreen implements Screen {
 	 * Calls College.generateColleges(), generating the colleges on the map, and adds them to the entity handler.
 	 */
 	public void placeColleges(){
-		Colleges.generateColleges(worldObj,5,50, player);
-		for(College c : Colleges.collegeList){
+		CollegeManager.generateColleges(worldObj,5,50, player);
+		for(College c : CollegeManager.collegeList){
 			worldObj.addEntity(c);
 		}
 	}
@@ -410,7 +410,7 @@ public class GameScreen implements Screen {
 				Vector2 start = new Vector2(player.getX(), player.getY() - 5);
 				Vector2 end = new Vector2(player.getX() + player.getWidth(),
 						player.getY() - 5);
-				Bar.DrawBar(batch,shapeRenderer,start,end,p);
+				Bar.drawBar(batch,shapeRenderer,start,end,p);
 				batch.end();
 			}
 		});
@@ -506,7 +506,7 @@ public class GameScreen implements Screen {
 				float health = eDamageable.getHealth();
 				float maxHealth = eDamageable.getMaxHealth();
 				if(health < maxHealth){
-					Bar.DrawBar(batch,shapeRenderer,new Vector2(e.getX(),e.getY()+e.getHeight()),
+					Bar.drawBar(batch,shapeRenderer,new Vector2(e.getX(),e.getY()+e.getHeight()),
 							new Vector2(e.getX()+e.getWidth(),e.getY()+e.getHeight()), 1-(health/maxHealth), Color.BLACK, Color.RED);
 				}
 			}
