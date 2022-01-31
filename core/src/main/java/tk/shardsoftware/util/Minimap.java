@@ -42,7 +42,7 @@ import tk.shardsoftware.entity.EntityAIShip;
 public class Minimap implements Disposable {
 
 	public World worldObj;
-	public Texture miniMapBorder;
+	private Texture miniMapBorder;
 	public Texture wholeMap;
 	private Texture playerIcon;
 	private Texture npcIcon;
@@ -50,23 +50,23 @@ public class Minimap implements Disposable {
 
 	/** Minimap button **/
 	public Stage stage;
-	public Drawable closeDrawable;
-	public Drawable expandDrawable;
-	public Drawable minimiseDrawable;
-	public ImageButton bigMiniMapButton;
-	public ImageButton closeMapButton;
+	private Drawable closeDrawable;
+	private Drawable expandDrawable;
+	private Drawable minimiseDrawable;
+	private ImageButton bigMiniMapButton;
+	private ImageButton closeMapButton;
 
-	public float x;
-	public float y;
+	private float x;
+	private float y;
 	public int width;
 	public int height;
 
 	private float fullSizeX;
 	private float fullSizeY;
 
-	public boolean drawBigmap = false;
+	private boolean drawBigmap = false;
 
-	public static final int BORDER_WIDTH = 4;
+	private static final int BORDER_WIDTH = 4;
 
 	public Minimap(World world, float x, float y, int width, int height, SpriteBatch batch, Stage stage) {
 		this.worldObj = world;
@@ -157,7 +157,7 @@ public class Minimap implements Disposable {
 	}
 
 
-	public void DrawEntities(SpriteBatch batch, int startX, int startY,int playerTileX, int playerTileY, float x, float y,float width, float height){
+	private void drawEntities(SpriteBatch batch, int startX, int startY,int playerTileX, int playerTileY, float x, float y,float width, float height){
 		List<Entity> entities = this.worldObj.getEntities();
 		Iterator<Entity> iter = entities.iterator();
 		//keep track of original font colour
@@ -201,7 +201,7 @@ public class Minimap implements Disposable {
 
 	}
 
-	public void drawEntireMap(SpriteBatch batch, Vector2 playerPos) {
+	private void drawEntireMap(SpriteBatch batch, Vector2 playerPos) {
 		// Draw minimap border
 		batch.draw(miniMapBorder, fullSizeX, fullSizeY, wholeMap.getWidth(), wholeMap.getHeight());
 		// Draw entire map
@@ -212,7 +212,7 @@ public class Minimap implements Disposable {
 				0, wholeMap.getWidth(), wholeMap.getHeight(), false, true);
 		int playerTileX = (int) playerPos.x / worldObj.worldMap.tile_size;
 		int playerTileY = (int) playerPos.y / worldObj.worldMap.tile_size;
-		DrawEntities(batch,0,0,playerTileX,playerTileY, fullSizeX, fullSizeY, worldObj.worldMap.width, worldObj.worldMap.height);
+		drawEntities(batch,0,0,playerTileX,playerTileY, fullSizeX, fullSizeY, worldObj.worldMap.width, worldObj.worldMap.height);
 	}
 
 	public void drawMap(SpriteBatch batch, Vector2 playerPos) {
@@ -246,7 +246,7 @@ public class Minimap implements Disposable {
 		// Draw a portion of the texture
 		batch.draw(wholeMap, x + BORDER_WIDTH, y + BORDER_WIDTH, 0, 0, width - BORDER_WIDTH * 2,
 				height - BORDER_WIDTH * 2, 1, 1, 0, startX, startY, width, height, false, true);
-		DrawEntities(batch,startX,startY,playerTileX,playerTileY,x,y, width, height);
+		drawEntities(batch,startX,startY,playerTileX,playerTileY,x,y, width, height);
 	}
 
 	@Override

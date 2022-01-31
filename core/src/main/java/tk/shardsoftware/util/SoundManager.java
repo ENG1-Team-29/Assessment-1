@@ -12,7 +12,7 @@ import tk.shardsoftware.screens.GameScreen;
  * Manages playing sounds/music, adjusting volume, muting e.t.c
  * @author Hector Woods
  */
-public class SoundManager {
+public abstract class SoundManager {
 
     /** The universal game volume */
     public static float gameVolume = 1f;
