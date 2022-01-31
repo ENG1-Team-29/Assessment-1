@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import tk.shardsoftware.PirateGame;
 import tk.shardsoftware.util.ResourceUtil;
+import tk.shardsoftware.util.SoundManager;
 
 
 /**
@@ -55,7 +56,7 @@ public class VictoryScreen implements Screen {
 	@Override
 	public void show() {
 		System.out.println("The player has won, showing the victory screen...");
-		victoryMusic.play();
+		SoundManager.playSound(victoryMusic);
 	}
 
 	@Override

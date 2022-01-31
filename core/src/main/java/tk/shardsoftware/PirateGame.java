@@ -10,10 +10,10 @@ import tk.shardsoftware.util.ResourceUtil;
 
 public class PirateGame extends Game {
 
-	/** The universal game volume */
-	public static float gameVolume = 0.2f;
+
 
 	public AssetManager assets;
+	static GameScreen currentGameScreen;
 
 	@Override
 	public void create() {
@@ -26,16 +26,18 @@ public class PirateGame extends Game {
 		openNewGameScreen();
 	}
 
-	public static void muteVolume() {
-		gameVolume = 0;
-	}
 
-	public static void setVolume(float volume) {
-		gameVolume = volume;
-	}
+
+
+
+
+
+
+
 
 	public void openNewGameScreen() {
-		this.setScreen(new GameScreen(assets, this));
+		this.currentGameScreen = new GameScreen(assets,this);
+		this.setScreen(currentGameScreen);
 	}
 
 	public void openNewLossScreen(){

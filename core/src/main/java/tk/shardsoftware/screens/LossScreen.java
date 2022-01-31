@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import tk.shardsoftware.PirateGame;
 import tk.shardsoftware.util.ResourceUtil;
+import tk.shardsoftware.util.SoundManager;
 
 
 /**
@@ -56,7 +57,7 @@ public class LossScreen implements Screen {
 	@Override
 	public void show() {
 		System.out.println("The player has lost, showing the loss screen...");
-		lossMusic.play();
+		SoundManager.playSound(lossMusic);
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import tk.shardsoftware.World;
+import tk.shardsoftware.util.SoundManager;
 
 /** @author James Burnell */
 public class EntityCannonball extends Entity {
@@ -51,7 +52,6 @@ public class EntityCannonball extends Entity {
 	@Override
 	public void update(float delta) {
 		// Cannonballs spin through the air
-		// System.out.println(positionVec);
 		this.setDirection(direction + delta * 60 * 15);
 		super.update(delta);
 	}
@@ -88,7 +88,7 @@ public class EntityCannonball extends Entity {
 		obj.damage(
 				MathUtils.random(parentObj.getCannonDamage() - 2, parentObj.getCannonDamage() + 2));
 		if(obj instanceof College){
-			((College) obj).hitSound.play();
+			SoundManager.playSound(((College) obj).hitSound);
 		}
 		this.remove = true;
 	}

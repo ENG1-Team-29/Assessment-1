@@ -18,18 +18,27 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
+import org.w3c.dom.Text;
 
 import tk.shardsoftware.PirateGame;
 import tk.shardsoftware.TileType;
@@ -44,7 +53,7 @@ import tk.shardsoftware.util.Colleges;
 import tk.shardsoftware.util.DebugUtil;
 import tk.shardsoftware.util.Minimap;
 import tk.shardsoftware.util.ResourceUtil;
-
+import tk.shardsoftware.util.SoundManager;
 
 
 /**
@@ -67,7 +76,7 @@ public class GameScreen implements Screen {
 	public ChooseCollegeDisplay cDisplay;
 	public Stage stage;
 	private int DEFAULT_CAMERA_ZOOM = 1;
-	Music[] songs = {Gdx.audio.newMusic(Gdx.files.internal("audio/music/the-pyre.mp3")), Gdx.audio.newMusic(Gdx.files.internal("audio/music/folk-round.mp3"))};
+
 	int currentSongIndex = 0;
 	private InstructionOverlay instOverlay;
 
@@ -93,6 +102,15 @@ public class GameScreen implements Screen {
 	/** Whether or not the college destroyed text should be rendered */
 	private boolean displayCollegeDestroyTxt = true;
 
+	/** Textures for toggle sound button */
+	Drawable soundEnabled = new TextureRegionDrawable(
+				new TextureRegion(ResourceUtil.getTexture("textures/ui/sound-enabled.png")));
+	Drawable soundDisabled = new TextureRegionDrawable(
+			new TextureRegion(ResourceUtil.getTexture("textures/ui/sound-disabled.png")));
+
+
+	/** Toggle sound button */
+	ImageButton soundButton;
 
 	public void addPlunder(int p){
 		plunder = plunder + p;
@@ -163,7 +181,15 @@ public class GameScreen implements Screen {
 		collegeDestroyTxtLayout = new GlyphLayout();
 		instOverlay = new InstructionOverlay(hudBatch);
 		instOverlay.shouldDisplay = false;
-
+		soundButton = new ImageButton(soundEnabled,soundDisabled,soundDisabled);
+		soundButton.setSize(Gdx.graphics.getWidth()/5, Gdx.graphics.getHeight()/5);
+		soundButton.setPosition((float)(Gdx.graphics.getWidth()*0.85),0);
+		soundButton.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				SoundManager.toggleMute();
+			}
+		});
+		stage.addActor(soundButton);
 		worldObj = new World();
 		worldObj.setGameScreen(this);
 		player = new EntityShip(worldObj);
@@ -195,10 +221,11 @@ public class GameScreen implements Screen {
 	}
 
 
+
 	@Override
 	public void show() {
 		soundIdBoatMovement = boatWaterMovement.loop(0);
-		ambientOcean.loop(PirateGame.gameVolume);
+		ambientOcean.loop(SoundManager.gameVolume);
 
 		// Increase the points by 1 every second and check whether college cannons should fire
 		Timer.schedule(new Task() {
@@ -211,22 +238,7 @@ public class GameScreen implements Screen {
 				}
 			}
 		}, 1, 1);
-
-		//Set completion listener for each song so that it plays the next song in Songs[]
-		for (int i = 0; i < songs.length; i++) {
-			songs[i].setOnCompletionListener(new Music.OnCompletionListener() {
-				@Override
-				public void onCompletion(Music music) {
-					currentSongIndex = (currentSongIndex + 1) % songs.length;
-					System.out.println("Song Finished. Now playing song " + currentSongIndex);
-					songs[currentSongIndex].play();
-				}
-			});
-		}
-		//Choose a random song in the list and play it
-		currentSongIndex = new Random().nextInt(songs.length);
-		System.out.println("Playing song " + currentSongIndex);
-		songs[currentSongIndex].play();
+		SoundManager.playRandomMusic();
 	}
 
 	/**
@@ -244,6 +256,7 @@ public class GameScreen implements Screen {
 		setPlayerStartPosition(player);
 		points = 0;
 		worldObj.destroyedColleges = 0;
+		SoundManager.isMuted = false;
 	}
 
 
@@ -362,13 +375,7 @@ public class GameScreen implements Screen {
 
 	}
 
-	public void stopMusic(){
-		for(int i = 0; i < songs.length; i++){
-			if(songs[i].isPlaying()){
-				songs[i].stop();
-			}
-		}
-	}
+
 
 	/**
 	 * Renders the game.
@@ -426,7 +433,6 @@ public class GameScreen implements Screen {
 		hudBatch.begin();
 		miniMap.drawMap(hudBatch, player.getPosition()); // <1% draw time, no point measuring
 		if (DEBUG_MODE) DebugUtil.saveProcessTime("Debug HUD Draw Time", () -> {
-
 			renderDebug(generateDebugStrings());
 			debugFont.draw(hudBatch, "@", 1280 / 2 - 5, 720 / 2 + 5);
 
@@ -441,7 +447,9 @@ public class GameScreen implements Screen {
 					Gdx.graphics.getHeight()-60);
 
 			font.draw(hudBatch, remainingCollegeTxtLayout, Gdx.graphics.getWidth() - remainingCollegeTxtLayout.width - 20, Gdx.graphics.getHeight()-100);
-			
+
+
+
 			if(displayCollegeDestroyTxt) font.draw(hudBatch, collegeDestroyTxtLayout, 
 					(Gdx.graphics.getWidth() - collegeDestroyTxtLayout.width)/2, 
 					(Gdx.graphics.getHeight() - collegeDestroyTxtLayout.height)/2);
@@ -541,12 +549,12 @@ public class GameScreen implements Screen {
 	private void logic(float delta) {
 		//Check if the player has lost the game, and if so open a loss screen
 		if(player.getHealth() <= 0){
-			stopMusic();
+			SoundManager.stopMusic();
 			pg.openNewLossScreen();
 		}
 		
 		if(worldObj.getRemainingColleges() <= 1) {
-			stopMusic();
+			SoundManager.stopMusic();
 			pg.openNewWinScreen();
 		}
 
@@ -559,9 +567,9 @@ public class GameScreen implements Screen {
 		/* Sound Calculations */
 
 		// if the game is muted, skip processing
-		if (PirateGame.gameVolume == 0) return;
+		if (SoundManager.gameVolume == 0) return;
 		float vol = (player.getVelocity().len2() / (player.getMaxSpeed() * player.getMaxSpeed()));
-		boatWaterMovement.setVolume(soundIdBoatMovement, vol * PirateGame.gameVolume * 0.8f);
+		boatWaterMovement.setVolume(soundIdBoatMovement, vol * SoundManager.gameVolume * 0.8f);
 	}
 
 	/**
@@ -640,7 +648,6 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		System.out.println("gfsfdh");
 		batch.dispose();
 		hudBatch.dispose();
 		shapeRenderer.dispose();

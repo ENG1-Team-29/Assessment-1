@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import tk.shardsoftware.World;
 import tk.shardsoftware.util.ResourceUtil;
+import tk.shardsoftware.util.SoundManager;
 
 /**
  * @author James Burnell
@@ -65,8 +66,6 @@ public class EntityShip extends Entity implements ICannonCarrier, IRepairable {
 		if (angle >= 270 && goalAngle <= 90) goalAngle += 360;
 		if (angle > 180 && goalAngle < 90) goalAngle += 360;
 
-		// System.out.println(Gdx.graphics.getDeltaTime() + " | "
-		// + (1f / Gdx.graphics.getDeltaTime()));
 
 		if (angle != goalAngle) {
 			// delta * 2deg/s
@@ -92,7 +91,7 @@ public class EntityShip extends Entity implements ICannonCarrier, IRepairable {
 		// Reload
 		timeUntilFire += reloadTime;
 		// Play sfx
-		cannonSfx.play();
+		SoundManager.playSound(cannonSfx,8);
 		return true;
 	}
 

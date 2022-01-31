@@ -8,6 +8,7 @@ import java.util.function.Function;
 import tk.shardsoftware.TileType;
 import tk.shardsoftware.World;
 import tk.shardsoftware.util.ResourceUtil;
+import tk.shardsoftware.util.SoundManager;
 
 /**
  * Represents the physical location of a college on a map. College is
@@ -49,7 +50,6 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 
 	public boolean spawnShip() {
 
-		System.out.println(timeUntilNextShipSpawn);
 		//don't spawn if on cooldown or if a friendly college
 		if (timeUntilNextShipSpawn > 0 || isFriendly) return false;
 		int tileSize = worldObj.worldMap.tile_size;
@@ -101,8 +101,7 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 		// Reload
 		timeUntilFire += reloadTime;
 		// Play sfx
-		cannonSfx.play();
-
+		SoundManager.playSound(cannonSfx,8);
 
 		for(int i = -2; i < 2; i++){
 			for(int j = -2; j < 2; j++){

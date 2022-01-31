@@ -60,6 +60,8 @@ public class ResourceUtil {
 		addTexture("textures/ui/loss-screen-background.png");
 		addTexture("textures/ui/victory-screen-background.png");
 		addTexture("textures/ui/college-choice-text.png");
+		addTexture("textures/ui/sound-disabled.png");
+		addTexture("textures/ui/sound-enabled.png");
 
 		/* Sound */
 		addSound("audio/entity/boat-water-movement.wav");
