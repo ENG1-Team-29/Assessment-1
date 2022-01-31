@@ -64,7 +64,7 @@ public class Minimap implements Disposable {
 	private float fullSizeX;
 	private float fullSizeY;
 
-	private boolean drawBigmap = false;
+	private static boolean drawBigmap = false;
 
 	private static final int BORDER_WIDTH = 4;
 
@@ -105,6 +105,9 @@ public class Minimap implements Disposable {
 				closeMapButton.setVisible(drawBigmap);
 			}
 		});
+
+
+
 		closeMapButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				drawBigmap = false;
