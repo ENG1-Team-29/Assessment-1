@@ -216,7 +216,6 @@ public class Minimap implements Disposable {
 	}
 
 	public void drawMap(SpriteBatch batch, Vector2 playerPos) {
-
 		if (drawBigmap) {
 			drawEntireMap(batch, playerPos);
 		}

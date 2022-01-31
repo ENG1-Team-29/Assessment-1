@@ -119,7 +119,7 @@ public class GameScreen implements Screen {
 	 * @param player The player's ship (an instance of EntityShip)
 	 */
 	public void setPlayerStartPosition(EntityShip player) {
-		College playerCollege = Colleges.getCollegeWithName(player.collegeName);
+		College playerCollege = Colleges.getCollegeWithName(player.getCollegeName());
 		if(playerCollege == null){
 			return;
 		}
@@ -210,7 +210,7 @@ public class GameScreen implements Screen {
 	 */
 
 	public void SetPlayerCollege(String collegeName){
-		player.collegeName = collegeName;
+		player.setCollegeName(collegeName);
 		setPlayerStartPosition(player);
 		Colleges.setFriendlyCollege(collegeName);
 	}
@@ -375,10 +375,7 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void render(float delta) {
-		if(Gdx.input.isKeyJustPressed(Input.Keys.L)){
-			player.collegeName = "Derwent";
-		}
-		if(player.collegeName == null){
+		if(player.getCollegeName() == null){
 			hudBatch.begin();
 			cDisplay.drawChooseCollegeDisplay(hudBatch);
 			hudBatch.end();
@@ -614,7 +611,7 @@ public class GameScreen implements Screen {
 	/** Called when a college is destroyed 
 	 * @param college the destroyed college */
 	public void onCollegeDestroyed(College college) {
-		collegeDestroyTxtLayout.setText(font, "Victory Over "+college.collegeName+" College!");
+		collegeDestroyTxtLayout.setText(font, "Victory Over "+college.getName()+" College!");
 		displayCollegeDestroyTxt = true;
 		Timer.schedule(new Task() {
 			public void run() {

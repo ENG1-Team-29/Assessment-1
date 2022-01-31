@@ -22,7 +22,7 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 
 	public EntityShip player;
 	public boolean isFriendly = false;
-	public String collegeName;
+	protected String collegeName;
 	public String collegeTextureName = "textures/entity/college.png";
 	public Sound hitSound = ResourceUtil.getSound("audio/entity/college-hit.mp3");
 	public Sound cannonSfx = ResourceUtil.getSound("audio/entity/cannon.mp3");

@@ -17,7 +17,7 @@ public class EntityShip extends Entity implements ICannonCarrier, IRepairable {
 	public float reloadTime = 1f;
 	/** How much time left until cannons can be fired */
 	public float timeUntilFire = 0f;
-	public String collegeName;
+	protected String collegeName;
 	private float maxHealth = 100f;
 	public boolean isPlayer = false;
 
@@ -30,6 +30,14 @@ public class EntityShip extends Entity implements ICannonCarrier, IRepairable {
 		this.setTexture("textures/entity/playership.png");
 		this.setMaxSpeed(100);
 		this.setHitboxScale(0.39f);
+	}
+
+	public String getCollegeName(){
+		return this.collegeName;
+	}
+
+	public void setCollegeName(String name){
+		this.collegeName = name;
 	}
 
 	public void update(float delta) {
