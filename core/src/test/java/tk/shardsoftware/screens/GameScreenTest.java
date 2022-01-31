@@ -31,28 +31,28 @@ public class GameScreenTest {
 
 	@Test
 	public void testRotNoInput() {
-		assertEquals(-999, GameScreen.calcGoalAngle());
+		assertEquals(-999, GameScreen.calcPlayerGoalAngle());
 	}
 
 	@Test
 	public void testRotSingleInputsHorz() {
 		rpi.keyPress(A);
-		assertEquals(180, GameScreen.calcGoalAngle());
+		assertEquals(180, GameScreen.calcPlayerGoalAngle());
 		rpi.releaseKey(A);
 
 		rpi.keyPress(D);
-		assertEquals(0, GameScreen.calcGoalAngle());
+		assertEquals(0, GameScreen.calcPlayerGoalAngle());
 		rpi.releaseKey(D);
 	}
 
 	@Test
 	public void testRotSingleInputsVert() {
 		rpi.keyPress(W);
-		assertEquals(90, GameScreen.calcGoalAngle());
+		assertEquals(90, GameScreen.calcPlayerGoalAngle());
 		rpi.releaseKey(W);
 
 		rpi.keyPress(S);
-		assertEquals(270, GameScreen.calcGoalAngle());
+		assertEquals(270, GameScreen.calcPlayerGoalAngle());
 		rpi.releaseKey(S);
 	}
 
@@ -60,10 +60,10 @@ public class GameScreenTest {
 	public void testRotUpDiagonals() {
 		rpi.keyPress(W);
 		rpi.keyPress(D);
-		assertEquals(45, GameScreen.calcGoalAngle());
+		assertEquals(45, GameScreen.calcPlayerGoalAngle());
 		rpi.releaseKey(D);
 		rpi.keyPress(A);
-		assertEquals(135, GameScreen.calcGoalAngle());
+		assertEquals(135, GameScreen.calcPlayerGoalAngle());
 		rpi.releaseKey(A);
 		rpi.releaseKey(W);
 	}
@@ -72,11 +72,11 @@ public class GameScreenTest {
 	public void testRotDownDiagonals() {
 		rpi.keyPress(S);
 		rpi.keyPress(A);
-		assertEquals(225, GameScreen.calcGoalAngle());
+		assertEquals(225, GameScreen.calcPlayerGoalAngle());
 		rpi.releaseKey(A);
 
 		rpi.keyPress(D);
-		assertEquals(315, GameScreen.calcGoalAngle());
+		assertEquals(315, GameScreen.calcPlayerGoalAngle());
 		rpi.releaseKey(D);
 		rpi.releaseKey(S);
 	}
@@ -85,14 +85,14 @@ public class GameScreenTest {
 	public void testRotHorzCancel() {
 		rpi.keyPress(A);
 		rpi.keyPress(D);
-		assertEquals(-333, GameScreen.calcGoalAngle());
+		assertEquals(-333, GameScreen.calcPlayerGoalAngle());
 	}
 
 	@Test
 	public void testRotVertCancel() {
 		rpi.keyPress(W);
 		rpi.keyPress(S);
-		assertEquals(-333, GameScreen.calcGoalAngle());
+		assertEquals(-333, GameScreen.calcPlayerGoalAngle());
 	}
 
 	@Test
@@ -100,7 +100,7 @@ public class GameScreenTest {
 		rpi.keyPress(W);
 		rpi.keyPress(A);
 		rpi.keyPress(D);
-		assertEquals(90, GameScreen.calcGoalAngle());
+		assertEquals(90, GameScreen.calcPlayerGoalAngle());
 	}
 
 	@Test
@@ -108,7 +108,7 @@ public class GameScreenTest {
 		rpi.keyPress(S);
 		rpi.keyPress(A);
 		rpi.keyPress(D);
-		assertEquals(270, GameScreen.calcGoalAngle());
+		assertEquals(270, GameScreen.calcPlayerGoalAngle());
 	}
 
 	@Test
@@ -116,7 +116,7 @@ public class GameScreenTest {
 		rpi.keyPress(W);
 		rpi.keyPress(S);
 		rpi.keyPress(A);
-		assertEquals(180, GameScreen.calcGoalAngle());
+		assertEquals(180, GameScreen.calcPlayerGoalAngle());
 	}
 
 	@Test
@@ -124,7 +124,7 @@ public class GameScreenTest {
 		rpi.keyPress(W);
 		rpi.keyPress(S);
 		rpi.keyPress(D);
-		assertEquals(0, GameScreen.calcGoalAngle());
+		assertEquals(0, GameScreen.calcPlayerGoalAngle());
 	}
 
 }

@@ -52,6 +52,10 @@ public class VictoryScreen implements Screen {
 		batch = new SpriteBatch();
 	}
 
+	private void closeScreen(){
+		victoryMusic.stop();
+		pirateGameObj.openNewGameScreen();
+	}
 
 	@Override
 	public void show() {
@@ -63,8 +67,7 @@ public class VictoryScreen implements Screen {
 	public void render(float delta) {
 		//Restart the game when a key is pressed
 		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
-			victoryMusic.stop();
-			pirateGameObj.openNewGameScreen();
+			closeScreen();
 		}
 
 		batch.begin();

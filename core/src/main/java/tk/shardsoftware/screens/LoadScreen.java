@@ -75,7 +75,7 @@ public class LoadScreen implements Screen {
 		});
 	}
 
-	int count = 0;
+
 
 	@Override
 	public void render(float delta) {

@@ -13,7 +13,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
  * 
  * @author James Burnell
  */
-public class ResourceUtil {
+public abstract class ResourceUtil {
 
 	// prevent instantiation
 	private ResourceUtil() {

@@ -65,10 +65,10 @@ public class GameScreen implements Screen {
 	/** Ambient ocean sounds */
 	public Sound ambientOcean;
 	private long soundIdBoatMovement;
-	final private PirateGame pg;
-	final private SpriteBatch batch, hudBatch;
-	final private ShapeRenderer shapeRenderer;
-	final private OrthographicCamera camera;
+	private PirateGame pg;
+	private SpriteBatch batch, hudBatch;
+	private ShapeRenderer shapeRenderer;
+	private OrthographicCamera camera;
 	public ChooseCollegeDisplay cDisplay;
 	public Stage stage;
 	final private int DEFAULT_CAMERA_ZOOM = 1;
@@ -82,9 +82,9 @@ public class GameScreen implements Screen {
 	private EntityShip player;
 
 	/** The number of points the player has scored */
-	public int points = 0;
+	private int points = 0;
 	/** The amount of plunder the player has stolen */
-	public int plunder = 0;
+	private int plunder = 0;
 
 	/** The text to display the points */
 	public GlyphLayout pointTxtLayout;
@@ -98,14 +98,14 @@ public class GameScreen implements Screen {
 	private boolean displayCollegeDestroyTxt = true;
 
 	/** Textures for toggle sound button */
-	Drawable soundEnabled = new TextureRegionDrawable(
+	private Drawable soundEnabledTexture = new TextureRegionDrawable(
 				new TextureRegion(ResourceUtil.getTexture("textures/ui/sound-enabled.png")));
-	Drawable soundDisabled = new TextureRegionDrawable(
+	private Drawable soundDisabledTexture = new TextureRegionDrawable(
 			new TextureRegion(ResourceUtil.getTexture("textures/ui/sound-disabled.png")));
 
 
 	/** Toggle sound button */
-	ImageButton soundButton;
+	private ImageButton soundButton;
 
 	public void addPlunder(int p){
 		plunder = plunder + p;
@@ -116,9 +116,8 @@ public class GameScreen implements Screen {
 	 * 	 * Search the world map for a region that contains only water to spawn the
 	 * 	 * player in. Once this has been found, it will set the player position to this
 	 * 	 * location.
-	 * @param player The player's ship (an instance of EntityShip)
 	 */
-	public void setPlayerStartPosition(EntityShip player) {
+	public void setPlayerStartPosition() {
 		College playerCollege = CollegeManager.getCollegeWithName(player.getCollegeName());
 		if(playerCollege == null){
 			return;
@@ -176,7 +175,7 @@ public class GameScreen implements Screen {
 		collegeDestroyTxtLayout = new GlyphLayout();
 		instOverlay = new InstructionOverlay(hudBatch);
 		instOverlay.shouldDisplay = false;
-		soundButton = new ImageButton(soundEnabled,soundDisabled,soundDisabled);
+		soundButton = new ImageButton(soundEnabledTexture,soundDisabledTexture,soundDisabledTexture);
 		soundButton.setSize(Gdx.graphics.getWidth()/5, Gdx.graphics.getHeight()/5);
 		soundButton.setPosition((float)(Gdx.graphics.getWidth()*0.85),0);
 		soundButton.addListener(new ClickListener() {
@@ -209,9 +208,9 @@ public class GameScreen implements Screen {
 	 * Starts a timer that increments points, starts playing music and ambient noise.
 	 */
 
-	public void SetPlayerCollege(String collegeName){
+	public void setPlayerCollege(String collegeName){
 		player.setCollegeName(collegeName);
-		setPlayerStartPosition(player);
+		setPlayerStartPosition();
 		CollegeManager.setFriendlyCollege(collegeName);
 	}
 
@@ -248,7 +247,7 @@ public class GameScreen implements Screen {
 		miniMap.prepareMap();
 		cDisplay = new ChooseCollegeDisplay(worldObj,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),batch,stage, CollegeManager.collegeList,this);
 		cDisplay.prepareMap();
-		setPlayerStartPosition(player);
+		setPlayerStartPosition();
 		points = 0;
 		worldObj.destroyedColleges = 0;
 		SoundManager.isMuted = false;
@@ -266,7 +265,7 @@ public class GameScreen implements Screen {
 	 *         -333 if the input cancels out,<br>
 	 *         the angle the player should rotate towards otherwise.
 	 */
-	public static int calcGoalAngle() {
+	public static int calcPlayerGoalAngle() {
 		int goalAngle = -999;
 		boolean up = Gdx.input.isKeyPressed(Input.Keys.W);
 		boolean down = Gdx.input.isKeyPressed(Input.Keys.S);
@@ -323,7 +322,7 @@ public class GameScreen implements Screen {
 	 * @param delta time since the last frame
 	 */
 	public void controls(float delta) {
-		goalAngle = calcGoalAngle();
+		goalAngle = calcPlayerGoalAngle();
 
 		// goalAngle = -999 : No user input
 		// goalAngle = -333 : Player should not turn, but should accelerate
@@ -422,7 +421,7 @@ public class GameScreen implements Screen {
 		hudBatch.begin();
 		miniMap.drawMap(hudBatch, player.getPosition()); // <1% draw time, no point measuring
 		if (DEBUG_MODE) DebugUtil.saveProcessTime("Debug HUD Draw Time", () -> {
-			renderDebug(generateDebugStrings());
+			renderDebug(DebugUtil.generateDebugStrings(player,worldObj,goalAngle));
 			debugFont.draw(hudBatch, "@", 1280 / 2 - 5, 720 / 2 + 5);
 
 		});
@@ -514,22 +513,7 @@ public class GameScreen implements Screen {
 		collegeFont.setColor(originalFontColor);
 	}
 
-	/**
-	 * Generates the debug hud's displayed text
-	 * @return list of strings to be drawn on the debug hud
-	 */
-	private List<String> generateDebugStrings() {
-		ArrayList<String> lines = new ArrayList<String>();
-		lines.add(String.format("Current angle: %5.1f", player.getDirection()));
-		lines.add(String.format("Goal angle: %6.1f", goalAngle));
-		lines.add(String.format("Speed %4.1fp/s", player.getVelocity().len()));
-		lines.add("FPS: " + Gdx.graphics.getFramesPerSecond());
-		lines.add(String.format("Entities %3d", worldObj.getEntities().size()));
-		lines.add("");// blank line
-		lines.addAll(DebugUtil.processingTimePercentages());
 
-		return lines;
-	}
 
 	/**
 	 * Any logical processing that needs to occur in the game

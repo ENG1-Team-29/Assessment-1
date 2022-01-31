@@ -96,7 +96,7 @@ public class ChooseCollegeDisplay extends Minimap {
             button.setPosition(collegePos.x,collegePos.y);
             button.addListener(new ClickListener() {
                 public void clicked(InputEvent event, float x, float y) {
-                    gS.SetPlayerCollege(cName);
+                    gS.setPlayerCollege(cName);
                     removeActors();
                 }
             });

@@ -1,10 +1,13 @@
 package tk.shardsoftware.util;
 
+import com.badlogic.gdx.Gdx;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import tk.shardsoftware.World;
+import tk.shardsoftware.entity.EntityShip;
 
 /**
  * @author James Burnell
@@ -73,7 +76,25 @@ public abstract class DebugUtil {
 		long time = measureProcessTime(r);
 		processingTimes.put(name, time);
 	}
-	
+
+	/**
+	 * Generates the debug hud's displayed text
+	 * @return list of strings to be drawn on the debug hud
+	 */
+	public static List<String> generateDebugStrings(EntityShip player, World worldObj, float goalAngle) {
+		ArrayList<String> lines = new ArrayList<String>();
+		lines.add(String.format("Current angle: %5.1f", player.getDirection()));
+		lines.add(String.format("Goal angle: %6.1f", goalAngle));
+		lines.add(String.format("Speed %4.1fp/s", player.getVelocity().len()));
+		lines.add("FPS: " + Gdx.graphics.getFramesPerSecond());
+		lines.add(String.format("Entities %3d", worldObj.getEntities().size()));
+		lines.add("");// blank line
+		lines.addAll(DebugUtil.processingTimePercentages());
+
+		return lines;
+	}
+
+
 	/**
 	 * Causes d damage to all entities in the game. intended for debug only.
 	 * @param worldObj the world object that contains the entities

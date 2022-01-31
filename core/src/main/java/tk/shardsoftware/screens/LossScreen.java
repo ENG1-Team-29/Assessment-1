@@ -24,7 +24,7 @@ public class LossScreen implements Screen {
 	 */
 	private AssetManager assets;
 	private SpriteBatch batch;
-	Sound lossMusic = ResourceUtil.getSound("audio/music/sonatina-in-c-minor.mp3");
+	private Sound lossMusic = ResourceUtil.getSound("audio/music/sonatina-in-c-minor.mp3");
 
 	/** Width of the display */
 	private int width;
@@ -35,10 +35,10 @@ public class LossScreen implements Screen {
 	private PirateGame pirateGameObj;
 
 	/** Texture for the background */
-	Texture background = ResourceUtil.getTexture("textures/ui/loss-screen-background.png");
+	private Texture background = ResourceUtil.getTexture("textures/ui/loss-screen-background.png");
 
 	/** Font to use */
-	BitmapFont font = ResourceUtil.font;
+	private BitmapFont font = ResourceUtil.font;
 
 	/**
 	 * Constructor for LossScreen
@@ -60,12 +60,17 @@ public class LossScreen implements Screen {
 		SoundManager.playSound(lossMusic);
 	}
 
+
+	private void closeScreen(){
+		lossMusic.stop();
+		pirateGameObj.openNewGameScreen();
+	}
+
 	@Override
 	public void render(float delta) {
 		//Restart the game when a key is pressed
 		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
-			lossMusic.stop();
-			pirateGameObj.openNewGameScreen();
+			closeScreen();
 		}
 
 		batch.begin();
