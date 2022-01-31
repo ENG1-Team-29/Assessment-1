@@ -6,6 +6,8 @@
 hs_err_pid*
 /core/doc/
 /desktop/doc/
+/desktop/build/
+
 
 ## Robovm
 /ios/robovm-build/
