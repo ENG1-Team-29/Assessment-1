@@ -101,7 +101,7 @@ public class WorldMap {
 	 * @return Returns either a valid Vector2 representing a position that passed the search conditions (i.e searchCond returns true), or null if no such position exists.
 	 */
 
-	public Vector2 SearchMap(Function<Vector2, Boolean> searchCond) {
+	public Vector2 searchMap(Function<Vector2, Boolean> searchCond) {
 		//Generate a 2D array containing every location on the map, then shuffle it so that our start position is randomised.
 		//If this is not done then the lower left corner of the map is heavily favoured by this function.
 		Vector2[][] randomisedMap = new Vector2[width][height];

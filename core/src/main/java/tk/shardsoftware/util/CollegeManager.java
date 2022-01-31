@@ -119,7 +119,7 @@ public abstract class CollegeManager {
 			return true;
 		};
 		for (int i = 0; i < numColleges; i++) {
-			Vector2 collegePos = worldObj.worldMap.SearchMap(collegePositionConds);
+			Vector2 collegePos = worldObj.worldMap.searchMap(collegePositionConds);
 			if (collegePos != null) {
 				String name = getRandomCollegeName();
 				College c = new College(worldObj, name, collegePos.x * worldObj.worldMap.tile_size,

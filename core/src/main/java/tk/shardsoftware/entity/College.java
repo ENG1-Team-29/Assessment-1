@@ -69,7 +69,7 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 			}
 			return true;
 		};
-		Vector2 startPos = worldObj.worldMap.SearchMap(shipPosConds);
+		Vector2 startPos = worldObj.worldMap.searchMap(shipPosConds);
 		startPos = new Vector2(startPos.x * tileSize, startPos.y*tileSize);
 		if(startPos == null){
 			return false;

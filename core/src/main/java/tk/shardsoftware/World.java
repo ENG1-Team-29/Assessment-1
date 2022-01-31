@@ -41,7 +41,7 @@ public class World {
 	public WorldMap worldMap;
 
 	/** The {@link GameScreen} object that the world can use to call functions */
-	private GameScreen game;
+	protected GameScreen game;
 
 	public World() {
 		entities = new ArrayList<Entity>();
@@ -61,6 +61,9 @@ public class World {
 	public void setGameScreen(GameScreen gs) {
 		this.game = gs;
 	}
+
+	/**Get the {@link GameScreen} object for the World */
+	public GameScreen getGameScreen(){return this.game; }
 
 	/**
 	 * The logical game function called on each game tick

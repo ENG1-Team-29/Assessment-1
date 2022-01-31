@@ -146,7 +146,7 @@ public class GameScreen implements Screen {
 
 
 
-		Vector2 startPos = worldObj.worldMap.SearchMap(startPosConds);
+		Vector2 startPos = worldObj.worldMap.searchMap(startPosConds);
 
 		startPos = new Vector2(startPos.x*tileSize, startPos.y*tileSize);
 

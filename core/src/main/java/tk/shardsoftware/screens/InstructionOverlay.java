@@ -13,41 +13,41 @@ import tk.shardsoftware.util.ResourceUtil;
 public class InstructionOverlay implements Disposable {
 
 	private SpriteBatch batch;
-	private ShapeRenderer shapeRend;
+	private ShapeRenderer shapeRenderer;
 
 	public boolean shouldDisplay = true;
 
 	public InstructionOverlay(SpriteBatch batch) {
 		this.batch = batch;
-		this.shapeRend = new ShapeRenderer();
+		this.shapeRenderer = new ShapeRenderer();
 	}
 
 	public void render() {
 		Gdx.gl.glEnable(GL30.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
 		batch.begin();
-		shapeRend.begin(ShapeType.Filled);
+		shapeRenderer.begin(ShapeType.Filled);
 
-		shapeRend.setColor(0.1f, 0.1f, 0.1f, 0.5f);
-		shapeRend.rect(0, 0, 1280, 720);
+		shapeRenderer.setColor(0.1f, 0.1f, 0.1f, 0.5f);
+		shapeRenderer.rect(0, 0, 1280, 720);
 
-		shapeRend.setColor(Color.TAN);
-		shapeRend.circle(50 + 90, Gdx.graphics.getHeight() - 50, 35); // top
-		shapeRend.circle(50, Gdx.graphics.getHeight() - 50 - 90, 35); // left
-		shapeRend.circle(50 + 90 + 90, Gdx.graphics.getHeight() - 50 - 90, 35); // right
-		shapeRend.circle(50 + 90, Gdx.graphics.getHeight() - 50 - 90 - 90, 35); // bottom
+		shapeRenderer.setColor(Color.TAN);
+		shapeRenderer.circle(50 + 90, Gdx.graphics.getHeight() - 50, 35); // top
+		shapeRenderer.circle(50, Gdx.graphics.getHeight() - 50 - 90, 35); // left
+		shapeRenderer.circle(50 + 90 + 90, Gdx.graphics.getHeight() - 50 - 90, 35); // right
+		shapeRenderer.circle(50 + 90, Gdx.graphics.getHeight() - 50 - 90 - 90, 35); // bottom
 
-		shapeRend.circle(50, Gdx.graphics.getHeight() - 420, 35); // fire
+		shapeRenderer.circle(50, Gdx.graphics.getHeight() - 420, 35); // fire
 
-		shapeRend.circle(50, Gdx.graphics.getHeight() - 420 - 90, 35); // map
+		shapeRenderer.circle(50, Gdx.graphics.getHeight() - 420 - 90, 35); // map
 
-		shapeRend.setColor(Color.BLACK);
-		shapeRend.rectLine(50 + 50, Gdx.graphics.getHeight() - 50 - 90, 50 + 40 + 90,
+		shapeRenderer.setColor(Color.BLACK);
+		shapeRenderer.rectLine(50 + 50, Gdx.graphics.getHeight() - 50 - 90, 50 + 40 + 90,
 				Gdx.graphics.getHeight() - 50 - 90, 3);
-		shapeRend.rectLine(50 + 90, Gdx.graphics.getHeight() - 50 - 50, 50 + 90,
+		shapeRenderer.rectLine(50 + 90, Gdx.graphics.getHeight() - 50 - 50, 50 + 90,
 				Gdx.graphics.getHeight() - 50 - 90 - 40, 3);
 
-		shapeRend.end();
+		shapeRenderer.end();
 		batch.end();
 
 		batch.begin();
@@ -70,7 +70,7 @@ public class InstructionOverlay implements Disposable {
 
 	@Override
 	public void dispose() {
-		shapeRend.dispose();
+		shapeRenderer.dispose();
 	}
 
 }
