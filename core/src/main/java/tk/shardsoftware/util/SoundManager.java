@@ -70,7 +70,6 @@ public class SoundManager {
 
 
     public static void toggleMute(){
-        System.out.println("fuck my life");
         isMuted = !isMuted;
         if(isMuted){
             muteVolume();

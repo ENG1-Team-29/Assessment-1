@@ -7,18 +7,15 @@ import static tk.shardsoftware.util.ResourceUtil.font;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.function.Function;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -38,7 +35,6 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import org.w3c.dom.Text;
 
 import tk.shardsoftware.PirateGame;
 import tk.shardsoftware.TileType;
@@ -69,15 +65,14 @@ public class GameScreen implements Screen {
 	/** Ambient ocean sounds */
 	public Sound ambientOcean;
 	private long soundIdBoatMovement;
-	private PirateGame pg;
-	private SpriteBatch batch, hudBatch;
-	private ShapeRenderer shapeRenderer;
-	private OrthographicCamera camera;
+	final private PirateGame pg;
+	final private SpriteBatch batch, hudBatch;
+	final private ShapeRenderer shapeRenderer;
+	final private OrthographicCamera camera;
 	public ChooseCollegeDisplay cDisplay;
 	public Stage stage;
-	private int DEFAULT_CAMERA_ZOOM = 1;
+	final private int DEFAULT_CAMERA_ZOOM = 1;
 
-	int currentSongIndex = 0;
 	private InstructionOverlay instOverlay;
 
 	private World worldObj;
@@ -369,9 +364,6 @@ public class GameScreen implements Screen {
 
 
 		}
-		// player.setPosition(0, 0);
-		// System.out.println(player.getVelocity());
-		// System.out.println(player.getDirection());
 
 	}
 
