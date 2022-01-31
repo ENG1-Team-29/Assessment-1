@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Vector2;
  * @author Hector Woods
  * @author James Burnell
  */
-public class Bar {
+public abstract class Bar {
     /**
      * Draw a bar, specifying the background and foreground colours and the proportion of the bar to fill.
      * @param batch The SpriteBatch to draw with
