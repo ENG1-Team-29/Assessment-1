@@ -35,13 +35,13 @@ public class PerlinNoiseGenerator {
 	 */
 	public float scale;
 
-	public int[] permutationTable;
+	private int[] permutationTable;
 
 
 	/**
 	 * One of four gradients as described in "Improving perlin noise"
 	 */
-	public Vector2 getGradient(int permutation) {
+	private Vector2 getGradient(int permutation) {
 		int a = permutation % 4;
 		if(a==0){
 			return new Vector2(-1, -1);
@@ -59,7 +59,7 @@ public class PerlinNoiseGenerator {
 	 * Generates an array of integers 1-255, twice. In generateNoiseValue we hash the values of x and y to get one of the values in this array,
 	 * then in getGradient we do x mod 4 to get one of four different gradients.
 	 */
-	public void setUpPermutationTable(long seed){
+	private void setUpPermutationTable(long seed){
 		int[] p = new int[512];
 		//Populate array with 0-255, we do this twice to prevent overflows from our hash functions.
 		for(int i = 0; i < 512; i++){
@@ -79,12 +79,12 @@ public class PerlinNoiseGenerator {
 	}
 
 	//Linear interpolation between a1 and a2 by proportion of t, e.g for lerp(t= 0.3, a1=0, a2=10) == (1/3)
-	public float lerp(float t, float a1, float a2) {
+	private float lerp(float t, float a1, float a2) {
 		return a1 + t * (a2 - a1);
 	}
 
 	//Polynomial function 6t^5 - 15t^4 + 10t^3, used to ease our interpolation
-	public float ease(float t) {
+	private float ease(float t) {
 		return ((6 * t - 15) * t + 10) * t * t * t;
 	}
 
@@ -95,7 +95,7 @@ public class PerlinNoiseGenerator {
 	 * @param y
 	 * @return
 	 */
-	public float generateNoiseValue(float x, float y) {
+	private float generateNoiseValue(float x, float y) {
 		// Gradient Vector points
 		int X = (int) Math.floor(x); // round down
 		int Y = (int) Math.floor(y);

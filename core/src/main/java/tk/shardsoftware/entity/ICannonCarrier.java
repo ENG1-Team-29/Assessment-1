@@ -10,7 +10,6 @@ public interface ICannonCarrier {
 
 	/**
 	 * Fires all cannons.
-	 * 
 	 * @return {@code true} if spawned cannonballs, {@code false} if still reloading
 	 */
 	public boolean fireCannons();

@@ -20,10 +20,10 @@ import tk.shardsoftware.util.SoundManager;
  */
 public class College extends Entity implements IRepairable, ICannonCarrier {
 
-	public EntityShip player;
+	private EntityShip player;
 	public boolean isFriendly = false;
 	protected String collegeName;
-	public String collegeTextureName = "textures/entity/college.png";
+	public String collegeTexturePath = "textures/entity/college.png";
 	public Sound hitSound = ResourceUtil.getSound("audio/entity/college-hit.mp3");
 	public Sound cannonSfx = ResourceUtil.getSound("audio/entity/cannon.mp3");
 	public float maxHealth = 100;
@@ -195,7 +195,7 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 	 */
 	public College(World worldObj, String collegeName, float x, float y, int w, int h, EntityShip player) {
 		super(worldObj, x, y, w, h);
-		this.setTexture(collegeTextureName);
+		this.setTexture(collegeTexturePath);
 		this.collegeName = collegeName;
 		this.player = player;
 	}

@@ -12,9 +12,9 @@ import tk.shardsoftware.World;
  */
 public class EntityAIShip extends EntityShip {
 	public AIState aiState;
-	EntityShip player;
-	int chaseDistance = 500; //the range at which the ship will start chasing the player
-	int minDistance = 50; //min distance the entity maintains from the player
+	private EntityShip player;
+	private int chaseDistance = 500; //the range at which the ship will start chasing the player
+	private int minDistance = 50; //min distance the entity maintains from the player
 
 	/**
 	 * Constructor for EntityAIShip.
@@ -47,7 +47,7 @@ public class EntityAIShip extends EntityShip {
 	 * Makes the ship follow the player.
 	 * @param delta time since last frame
 	 */
-	public void FollowPlayer(float delta) {
+	public void followPlayer(float delta) {
 		float goalAngle = -999;
 		Vector2 playerPos = player.getPosition();
 		// playerPos = new Vector2(playerPos.x,playerPos.y+50);
@@ -76,7 +76,7 @@ public class EntityAIShip extends EntityShip {
 			aiState = AIState.FOLLOW_PLAYER;
 		}
 		if (aiState == AIState.FOLLOW_PLAYER) {
-			FollowPlayer(delta);
+			followPlayer(delta);
 		}
 
 	}

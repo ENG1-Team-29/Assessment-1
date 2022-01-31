@@ -94,8 +94,8 @@ public class EntityShip extends Entity implements ICannonCarrier, IRepairable {
 	public boolean fireCannons() {
 		// Do not fire if still reloading
 		if (timeUntilFire > 0) return false;
-		fireCannon(true);
-		fireCannon(false);
+		fireCannonball(true);
+		fireCannonball(false);
 		// Reload
 		timeUntilFire += reloadTime;
 		// Play sfx
@@ -103,10 +103,10 @@ public class EntityShip extends Entity implements ICannonCarrier, IRepairable {
 		return true;
 	}
 
-	private void fireCannon(boolean rightSide) {
+	private void fireCannonball(boolean rightOrLeft) {
 		Vector2 center = getCenterPoint();
 
-		Vector2 dirVec = new Vector2(1, 1).setAngleDeg(direction + (rightSide ? -90 : 90))
+		Vector2 dirVec = new Vector2(1, 1).setAngleDeg(direction + (rightOrLeft ? -90 : 90))
 				.setLength(hitbox.width / 2f);
 
 		float xPos = center.x + dirVec.x;
