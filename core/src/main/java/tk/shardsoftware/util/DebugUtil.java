@@ -9,7 +9,7 @@ import tk.shardsoftware.World;
 /**
  * @author James Burnell
  */
-public class DebugUtil {
+public abstract class DebugUtil {
 
 	/** Controls additional logging and on-screen data */
 	public static final boolean DEBUG_MODE = true;
