@@ -95,8 +95,13 @@ public class GameScreen implements Screen {
 	public GlyphLayout remainingCollegeTxtLayout;
 	/** The text to display victory over a college */
 	public GlyphLayout collegeDestroyTxtLayout;
+	/** The text to display the remaining time */
+	public GlyphLayout timerTxtLayout;
 	/** Whether or not the college destroyed text should be rendered */
 	private boolean displayCollegeDestroyTxt = true;
+
+	/** How many seconds are left in the game. */
+	public int gameTime = 5 * 60;
 
 	/** Textures for toggle sound button */
 	private Drawable soundEnabledTexture = new TextureRegionDrawable(
@@ -163,18 +168,28 @@ public class GameScreen implements Screen {
 	 * @param pg the {@link PirateGame} object
 	 */
 	public GameScreen(PirateGame pg) {
-		batch = new SpriteBatch();
 		this.pg = pg;
 
+		// TODO: Implement ambient sounds
+		boatWaterMovement = ResourceUtil.getSound("audio/entity/boat-water-movement.wav");
+		ambientOcean = ResourceUtil.getSound("audio/ambient/ocean.wav");
+
+		/* Render tools */
+		batch = new SpriteBatch();
 		hudBatch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
 		camera = new OrthographicCamera(360 * 16f / 9f, 360);
 		stage = new Stage(new ScreenViewport(), batch);
 		camera.zoom = DEFAULT_CAMERA_ZOOM;
+
+		/* Glyph Layouts */
 		pointTxtLayout = new GlyphLayout();
 		plunderTxtLayout = new GlyphLayout();
 		remainingCollegeTxtLayout = new GlyphLayout();
 		collegeDestroyTxtLayout = new GlyphLayout();
+		timerTxtLayout = new GlyphLayout();
+
+		/* Overlay */
 		instOverlay = new InstructionOverlay(hudBatch);
 		instOverlay.shouldDisplay = !DebugUtil.DEBUG_MODE;
 		soundButton = new ImageButton(soundEnabledTexture, soundDisabledTexture,
@@ -187,22 +202,23 @@ public class GameScreen implements Screen {
 			}
 		});
 		stage.addActor(soundButton);
+
+		/** World Objects */
 		worldObj = new World();
 		worldObj.setGameScreen(this);
 		player = new EntityShip(worldObj);
 		player.isPlayer = true;
 		EntityAIShip exampleEnemy = new EntityAIShip(worldObj, player, 750, 75);
 
-		miniMap = new Minimap(worldObj, 25, Gdx.graphics.getHeight() - 150 - 25, 150, 150, hudBatch,
-				stage);
 		worldObj.addEntity(player);
 		placeColleges();
 		exampleEnemy
 				.setPosition(new Vector2(player.getPosition().x - 20, player.getPosition().y - 20));
 		worldObj.addEntity(exampleEnemy);
 
-		boatWaterMovement = ResourceUtil.getSound("audio/entity/boat-water-movement.wav");
-		ambientOcean = ResourceUtil.getSound("audio/ambient/ocean.wav");
+		/* World Displays */
+		miniMap = new Minimap(worldObj, 25, Gdx.graphics.getHeight() - 150 - 25, 150, 150, hudBatch,
+				stage);
 		cDisplay = new ChooseCollegeDisplay(worldObj, 0, 0, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight(), batch, stage, CollegeManager.collegeList, this);
 
@@ -232,6 +248,11 @@ public class GameScreen implements Screen {
 				// If the instructions are being displayed, don't process
 				if (instOverlay.shouldDisplay) return;
 
+				if (--gameTime < 30) {
+					font.setColor(Color.MAROON);
+				}
+				timerTxtLayout.setText(font, "Time Left: " + gameTime);
+				font.setColor(Color.WHITE);
 				pointTxtLayout.setText(font, "Points: " + (++points));
 				plunderTxtLayout.setText(font, "Plunder: " + plunder);
 				for (College c : CollegeManager.collegeList) {
@@ -452,6 +473,9 @@ public class GameScreen implements Screen {
 					Gdx.graphics.getWidth() - remainingCollegeTxtLayout.width - 20,
 					Gdx.graphics.getHeight() - 100);
 
+			font.draw(hudBatch, timerTxtLayout, Gdx.graphics.getWidth() - timerTxtLayout.width - 20,
+					Gdx.graphics.getHeight() - 140);
+
 			if (displayCollegeDestroyTxt) font.draw(hudBatch, collegeDestroyTxtLayout,
 					(Gdx.graphics.getWidth() - collegeDestroyTxtLayout.width) / 2,
 					(Gdx.graphics.getHeight() - collegeDestroyTxtLayout.height) / 2);
@@ -539,7 +563,7 @@ public class GameScreen implements Screen {
 	 */
 	private void logic(float delta) {
 		// Check if the player has lost the game, and if so open a loss screen
-		if (player.getHealth() <= 0) {
+		if (player.getHealth() <= 0 || gameTime <= 0) {
 			SoundManager.stopMusic();
 			pg.openNewLossScreen();
 		}
@@ -603,7 +627,10 @@ public class GameScreen implements Screen {
 		// If an AI ship was destroyed, add plunder
 		if (e instanceof EntityAIShip) {
 			EntityAIShip eAi = (EntityAIShip) e;
-			if (eAi.getHealth() <= 0) addPlunder(50);
+			if (eAi.getHealth() <= 0) {
+				points += 50;
+				addPlunder(50);
+			}
 		}
 	}
 
@@ -637,6 +664,7 @@ public class GameScreen implements Screen {
 			}
 		}, 10);
 		plunder += 100;
+		points += 100;
 	}
 
 	@Override
