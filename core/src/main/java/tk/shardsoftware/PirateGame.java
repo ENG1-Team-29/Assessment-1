@@ -4,10 +4,13 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 
 import tk.shardsoftware.screens.GameScreen;
+import tk.shardsoftware.screens.LoadScreen;
 import tk.shardsoftware.screens.LossScreen;
 import tk.shardsoftware.screens.MenuScreen;
 import tk.shardsoftware.screens.VictoryScreen;
 import tk.shardsoftware.util.ResourceUtil;
+
+import static tk.shardsoftware.util.DebugUtil.DEBUG_MODE;
 
 public class PirateGame extends Game {
 
@@ -17,14 +20,17 @@ public class PirateGame extends Game {
 	public void create() {
 		assets = new AssetManager();
 		ResourceUtil.init(assets);
-		// this.setScreen(new LoadScreen(assets, this));
-
-		/* -=TESTING ONLY=- Assets should be loaded within the loading screen */
-		assets.finishLoading(); // XXX: Remove before exporting
-		// openNewGameScreen();
-		// openNewVictoryScreen();
-		// openNewLossScreen();
-		openNewMenuScreen();
+		// Bypass the loading screen if in debug mode
+		if (DEBUG_MODE) {
+			/* -=TESTING ONLY=- Assets should be loaded within the loading screen */
+			assets.finishLoading();
+			openNewGameScreen();
+			// openNewVictoryScreen();
+			// openNewLossScreen();
+			// openNewMenuScreen();
+		} else {
+			this.setScreen(new LoadScreen(assets, this));
+		}
 	}
 
 	public void openNewGameScreen() {
