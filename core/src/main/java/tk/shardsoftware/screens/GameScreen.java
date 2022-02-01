@@ -172,7 +172,7 @@ public class GameScreen implements Screen {
 		remainingCollegeTxtLayout = new GlyphLayout();
 		collegeDestroyTxtLayout = new GlyphLayout();
 		instOverlay = new InstructionOverlay(hudBatch);
-		instOverlay.shouldDisplay = false;
+		instOverlay.shouldDisplay = !DebugUtil.DEBUG_MODE;
 		soundButton = new ImageButton(soundEnabledTexture, soundDisabledTexture,
 				soundDisabledTexture);
 		soundButton.setSize(Gdx.graphics.getWidth() / 5, Gdx.graphics.getHeight() / 5);
@@ -225,6 +225,9 @@ public class GameScreen implements Screen {
 		// should fire
 		Timer.schedule(new Task() {
 			public void run() {
+				// If the instructions are being displayed, don't process
+				if (instOverlay.shouldDisplay) return;
+
 				pointTxtLayout.setText(font, "Points: " + (++points));
 				plunderTxtLayout.setText(font, "Plunder: " + plunder);
 				for (College c : CollegeManager.collegeList) {
@@ -329,6 +332,12 @@ public class GameScreen implements Screen {
 	 * @param delta time since the last frame
 	 */
 	public void controls(float delta) {
+		if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+			instOverlay.shouldDisplay = !instOverlay.shouldDisplay;
+		}
+		// Skip if instructions are on screen
+		if (instOverlay.shouldDisplay) return;
+
 		goalAngle = calcPlayerGoalAngle();
 
 		// goalAngle = -999 : No user input
@@ -343,9 +352,6 @@ public class GameScreen implements Screen {
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
 			miniMap.onToggleKeyJustPressed();
-		}
-		if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-			instOverlay.shouldDisplay = !instOverlay.shouldDisplay;
 		}
 
 		if (DEBUG_MODE) {
@@ -386,7 +392,8 @@ public class GameScreen implements Screen {
 
 		DebugUtil.saveProcessTime("Logic Time", () -> {
 			controls(delta);
-			logic(delta);
+			if (!instOverlay.shouldDisplay) logic(delta);
+			lerpCamera(player.getCenterPoint(), 0.04f, delta);
 		});
 
 		ScreenUtils.clear(0, 0, 0, 1); // clears the buffer
@@ -426,7 +433,8 @@ public class GameScreen implements Screen {
 			debugFont.draw(hudBatch, "@", 1280 / 2 - 5, 720 / 2 + 5);
 
 		});
-		DebugUtil.saveProcessTime("HUD Draw Time", () -> {
+
+		if (!instOverlay.shouldDisplay) DebugUtil.saveProcessTime("HUD Draw Time", () -> {
 			// TODO: Change to allow for different screen sizes
 
 			font.draw(hudBatch, pointTxtLayout, Gdx.graphics.getWidth() - pointTxtLayout.width - 20,
@@ -542,8 +550,6 @@ public class GameScreen implements Screen {
 		remainingCollegeTxtLayout.setText(font,
 				"Remaining Colleges: " + (worldObj.getRemainingColleges() - 1));
 
-		lerpCamera(player.getCenterPoint(), 0.04f, delta);
-
 		/* Sound Calculations */
 
 		// if the game is muted, skip processing
@@ -605,11 +611,11 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void resize(int width, int height) {
-		camera.setToOrtho(false, width / 2, height / 2);
+		camera.setToOrtho(false, 360 * 16f / 9f, 360);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		// TODO: Add hud scaling
-		// hudBatch.setProjectionMatrix();
+		// hudBatch.setProjectionMatrix(camera.combined);
 		shapeRenderer.setProjectionMatrix(camera.combined);
 	}
 
