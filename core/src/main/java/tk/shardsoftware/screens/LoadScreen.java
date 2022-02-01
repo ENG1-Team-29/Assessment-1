@@ -92,7 +92,7 @@ public class LoadScreen implements Screen {
 					logo.setAlpha(logoAlpha -= (delta / LOGO_FADE_TIME));
 				} else {
 					// Enter different state once faded
-					pirateGameObj.openNewGameScreen();
+					pirateGameObj.openNewMenuScreen();
 				}
 			}
 			logo.draw(batch);

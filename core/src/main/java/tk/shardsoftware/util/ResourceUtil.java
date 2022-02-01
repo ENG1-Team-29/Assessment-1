@@ -62,6 +62,7 @@ public abstract class ResourceUtil {
 		addTexture("textures/ui/college-map-icon.png");
 		addTexture("textures/ui/loss-screen-background.png");
 		addTexture("textures/ui/victory-screen-background.png");
+		addTexture("textures/ui/menu-screen-background.png");
 		addTexture("textures/ui/college-choice-text.png");
 		addTexture("textures/ui/sound-disabled.png");
 		addTexture("textures/ui/sound-enabled.png");
