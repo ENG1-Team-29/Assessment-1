@@ -21,6 +21,7 @@ import tk.shardsoftware.util.PerlinNoiseGenerator;
  */
 public class WorldMap {
 
+	public long mapSeed;
 	/** The width and height of each tile */
 	public int tile_size;
 	/** The width of the map in tiles */
@@ -31,6 +32,9 @@ public class WorldMap {
 	public HashMap<Vector2, TileType> tileMap = new HashMap<Vector2, TileType>();
 
 	public PerlinNoiseGenerator perlin;
+
+	/** The local random object */
+	private Random rand = new Random();
 
 	/**
 	 * Constructor for WorldMap.
@@ -53,13 +57,13 @@ public class WorldMap {
 	 * @param seed A long used for the seed of the heightmap. Using the same seed
 	 *        will always generate the same heightmap.
 	 */
-	public void buildWorld(long seed) {
-		Gdx.app.log("WorldMap", "Seed=" + seed);
+	public void buildWorld() {
+		Gdx.app.log("WorldMap", "Seed=" + mapSeed);
 		// clear map to allow for regeneration
 		tileMap.clear();
 		// choosing these values is more of an art than a science, see
 		// PerlinNoiseGenerator for more info
-		this.perlin = new PerlinNoiseGenerator(2f, 100, 12, 1, 1.3f, 0.66f, width, height, seed);
+		this.perlin = new PerlinNoiseGenerator(2f, 100, 12, 1, 1.3f, 0.66f, width, height, mapSeed);
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				Vector2 key = new Vector2(i, j);
@@ -119,11 +123,11 @@ public class WorldMap {
 				randomisedMap[i][j] = new Vector2(i, j);
 			}
 		}
-		Random r = new Random();
+
 		for (int i = 0; i < this.width; i++) {
 			for (int j = 0; j < this.height; j++) {
-				int randI = r.nextInt(width);
-				int randJ = r.nextInt(height);
+				int randI = rand.nextInt(width);
+				int randJ = rand.nextInt(height);
 				// swap values to shuffle
 				Vector2 temp = randomisedMap[randI][randJ];
 				randomisedMap[randI][randJ] = randomisedMap[i][j];
@@ -271,6 +275,11 @@ public class WorldMap {
 		}
 
 		return false;
+	}
+
+	public void setSeed(long seed) {
+		this.mapSeed = seed;
+		rand.setSeed(mapSeed);
 	}
 
 }

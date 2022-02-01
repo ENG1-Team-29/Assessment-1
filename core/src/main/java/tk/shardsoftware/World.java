@@ -17,9 +17,6 @@ import tk.shardsoftware.util.CollegeManager;
 /** @author James Burnell */
 public class World {
 
-	// Set this to false for faster debugging
-	public static final boolean BUILD_MAP = true;
-
 	public static final int WORLD_WIDTH = 500;
 	public static final int WORLD_HEIGHT = 300;
 	public static final int WORLD_TILE_SIZE = 10;
@@ -49,12 +46,9 @@ public class World {
 		cannonballs = new ArrayList<EntityCannonball>();
 
 		this.worldMap = new WorldMap(WORLD_TILE_SIZE, WORLD_WIDTH, WORLD_HEIGHT);
-		if (BUILD_MAP) {
-			System.out.println("Building World");
-			worldMap.buildWorld(MathUtils.random.nextLong());
-		} else {
-
-		}
+		worldMap.setSeed(MathUtils.random.nextLong());
+		System.out.println("Building World");
+		worldMap.buildWorld();
 	}
 
 	/**

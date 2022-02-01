@@ -244,8 +244,10 @@ public class GameScreen implements Screen {
 		worldObj.clearEntities();
 		player = new EntityShip(worldObj);
 		worldObj.addEntity(player);
-		worldObj.worldMap.buildWorld(MathUtils.random.nextLong()); // generate a new map with a
-																	// random seed
+		// generate a new map with a random seed
+		worldObj.worldMap.setSeed(MathUtils.random.nextLong());
+		worldObj.worldMap.buildWorld();
+
 		placeColleges();
 		miniMap.prepareMap();
 		cDisplay = new ChooseCollegeDisplay(worldObj, 0, 0, Gdx.graphics.getWidth(),
