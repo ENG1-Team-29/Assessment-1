@@ -53,9 +53,6 @@ public class WorldMap {
 	/**
 	 * Generates a heightmap based on the seed, then samples this heightmap to
 	 * choose either water, sand or grass tiles.
-	 * 
-	 * @param seed A long used for the seed of the heightmap. Using the same seed
-	 *        will always generate the same heightmap.
 	 */
 	public void buildWorld() {
 		Gdx.app.log("WorldMap", "Seed=" + mapSeed);
