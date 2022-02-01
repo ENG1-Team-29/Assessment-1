@@ -3,6 +3,7 @@ package tk.shardsoftware.screens;
 import java.io.FileNotFoundException;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -47,6 +48,8 @@ public class LoadScreen implements Screen {
 	private static final float LOGO_FADE_TIME = 2f;
 	/** Whether or not the logo is fading */
 	private boolean fade = false;
+	/** Whether the intro video has been skipped or not */
+	private boolean skipped = false;
 	/**
 	 * The opacity of the logo. This is necessary because the sprite alpha channel
 	 * is not precise enough.
@@ -90,8 +93,13 @@ public class LoadScreen implements Screen {
 		ScreenUtils.clear(0, 0, 0, 255);
 		vPlayer.update();
 
+		if (Gdx.input.isKeyJustPressed(Keys.SPACE) && vPlayer.getCurrentTimestamp() > 1500) {
+			skipped = true;
+			fade = true;
+		}
+
 		batch.begin();
-		if (vPlayer.isPlaying()) {
+		if (vPlayer.isPlaying() && !skipped) {
 			batch.draw(vPlayer.getTexture(), 0, 0, Gdx.graphics.getWidth(),
 					Gdx.graphics.getHeight());
 		} else {
