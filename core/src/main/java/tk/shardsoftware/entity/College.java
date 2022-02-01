@@ -148,7 +148,7 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 
 	@Override
 	public float getCannonDamage() {
-		return 10;
+		return 5;
 	}
 
 	/**
