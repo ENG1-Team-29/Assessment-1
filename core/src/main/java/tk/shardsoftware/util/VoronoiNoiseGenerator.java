@@ -5,11 +5,14 @@ import java.util.Random;
 
 import com.badlogic.gdx.math.Vector2;
 
-/** @author Hector Woods
- * We didn't end up using this because it looked bad, but this is another method for generating noise
- * (based on voronoi diagrams: https://en.wikipedia.org/wiki/Voronoi_diagram)
- * */
-
+/**
+ * We didn't end up using this because it looked bad, but this is another method
+ * for generating noise (based on voronoi diagrams:
+ * https://en.wikipedia.org/wiki/Voronoi_diagram)
+ * 
+ * @author Hector Woods
+ */
+@Deprecated
 public class VoronoiNoiseGenerator {
 
 	public int numPoints;

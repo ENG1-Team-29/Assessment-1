@@ -19,6 +19,10 @@ import tk.shardsoftware.entity.EntityShip;
  */
 public abstract class CollegeManager {
 
+	// Prevent instantiation
+	private CollegeManager() {
+	}
+
 	public static ArrayList<College> collegeList = new ArrayList<College>();
 	public static ArrayList<String> availableCollegeNames;
 
@@ -40,7 +44,7 @@ public abstract class CollegeManager {
 	 * Gets a college of the specified name.
 	 * 
 	 * @param name Name of the college
-	 * @return college with the specified name if it exists, otherwise null.
+	 * @return college with the specified name if it exists, otherwise {@code null}
 	 */
 	public static College getCollegeWithName(String name) {
 		for (College c : collegeList) {
@@ -53,13 +57,15 @@ public abstract class CollegeManager {
 
 	/**
 	 * Sets one college friendly to the player, and all others to unfriendly.
+	 * 
 	 * @param name Name of the college the player chose
 	 */
-	public static void setFriendlyCollege(String name){
-		for(College c: collegeList){
-			if(c.getName() == name){
+	public static void setFriendlyCollege(String name) {
+		for (College c : collegeList) {
+			if (c.getName() == name) {
 				c.isFriendly = true;
-			}else{
+			} else {
+				/* Only one college is friendly so all others are set to not friendly */
 				c.isFriendly = false;
 			}
 		}
@@ -69,12 +75,13 @@ public abstract class CollegeManager {
 	 * Static method that generates numColleges College, provided that a valid
 	 * position exists
 	 * 
-	 * @param worldObj       A valid worldObj that the colleges will be located in
-	 * @param numColleges    The number of colleges in the world
+	 * @param worldObj A valid worldObj that the colleges will be located in
+	 * @param numColleges The number of colleges in the world
 	 * @param collegeMinDist Minimum distance between each college (magnitude of the
-	 *                       distance vector between the two)
+	 *        distance vector between the two)
 	 */
-	public static void generateColleges(World worldObj, int numColleges, float collegeMinDist, EntityShip player) {
+	public static void generateColleges(World worldObj, int numColleges, float collegeMinDist,
+			EntityShip player) {
 		availableCollegeNames = new ArrayList<>(
 				Arrays.asList("James", "Constantine", "Alcuin", "Anne Lister", "David Kato",
 						"Derwent", "Goodricke", "Halifax", "Langwith", "Vanbrugh", "Wentworth"));

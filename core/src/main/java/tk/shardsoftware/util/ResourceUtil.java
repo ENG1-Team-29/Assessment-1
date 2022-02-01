@@ -108,8 +108,10 @@ public abstract class ResourceUtil {
 	}
 
 	/**
+	 * @param img the location of the image file to load
 	 * @return {@code true} if added texture, {@code false} if texture was already
 	 *         in cache
+	 * @see AssetManager#load(String, Texture)
 	 */
 	private static boolean addTexture(String img) {
 		if (assetManager.contains(img)) return false;
@@ -122,8 +124,10 @@ public abstract class ResourceUtil {
 	}
 
 	/**
+	 * @param sound the location of the sound file to load
 	 * @return {@code true} if added sound, {@code false} if sound was already in
 	 *         cache
+	 * @see AssetManager#load(String, Sound)
 	 */
 	private static boolean addSound(String sound) {
 		if (assetManager.contains(sound)) return false;
@@ -137,6 +141,8 @@ public abstract class ResourceUtil {
 
 	/**
 	 * Generates the null texture which will be used if a texture cannot be found
+	 * 
+	 * @return A 2x2 checkerboard texture
 	 */
 	public static Texture generateNullTexture() {
 		Pixmap p = new Pixmap(2, 2, Pixmap.Format.RGB888);
@@ -177,8 +183,6 @@ public abstract class ResourceUtil {
 		return assetManager.contains(soundName) ? assetManager.get(soundName) : nullSound;
 	}
 
-
-
 	/**
 	 * Get a tile texture according to its filename. Points to the
 	 * {@code textures/tiles/} folder.
@@ -193,6 +197,7 @@ public abstract class ResourceUtil {
 	/**
 	 * Get an entity texture according to its filename. Points to the
 	 * {@code textures/entity/} folder.
+	 * 
 	 * @param entityName The filename of the entity texture
 	 * @return The pre-cached Texture object
 	 */

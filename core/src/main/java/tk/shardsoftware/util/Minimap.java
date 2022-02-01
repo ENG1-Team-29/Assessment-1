@@ -1,15 +1,11 @@
 package tk.shardsoftware.util;
 
-
 import static tk.shardsoftware.util.ResourceUtil.miniMapFont;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.HashMap;
 import java.util.Map;
-
-import tk.shardsoftware.entity.College;
-import tk.shardsoftware.entity.Entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -27,10 +23,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import tk.shardsoftware.TileType;
 import tk.shardsoftware.World;
+import tk.shardsoftware.entity.College;
+import tk.shardsoftware.entity.Entity;
 import tk.shardsoftware.entity.EntityAIShip;
 
 /**
@@ -41,7 +38,7 @@ import tk.shardsoftware.entity.EntityAIShip;
  */
 public class Minimap implements Disposable {
 
-	public World worldObj;
+	protected World worldObj;
 	private Texture miniMapBorder;
 	public Texture wholeMap;
 	private Texture playerIcon;
@@ -68,7 +65,17 @@ public class Minimap implements Disposable {
 
 	private static final int BORDER_WIDTH = 4;
 
-	public Minimap(World world, float x, float y, int width, int height, SpriteBatch batch, Stage stage) {
+	/**
+	 * @param world the World object of the game
+	 * @param x the x position to draw the minimap
+	 * @param y the y position to draw the minimap
+	 * @param width the width of the minimap
+	 * @param height the height of the minimap
+	 * @param batch the SpriteBatch used to draw the map
+	 * @param stage the stage to control the minimap
+	 */
+	public Minimap(World world, float x, float y, int width, int height, SpriteBatch batch,
+			Stage stage) {
 		this.worldObj = world;
 		miniMapBorder = ResourceUtil.getTexture("textures/ui/minimap-border.png");
 		playerIcon = ResourceUtil.getTexture("textures/ui/player-map-icon.png");
@@ -106,8 +113,6 @@ public class Minimap implements Disposable {
 			}
 		});
 
-
-
 		closeMapButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				drawBigmap = false;
@@ -140,15 +145,18 @@ public class Minimap implements Disposable {
 		wholeMap = new Texture(screen);
 		screen.dispose();
 
-
-
 		this.fullSizeX = Gdx.graphics.getWidth() / 2 - wholeMap.getWidth() / 2;
 		this.fullSizeY = Gdx.graphics.getHeight() / 2 - wholeMap.getHeight() / 2;
 		if (closeMapButton != null) closeMapButton.setPosition(fullSizeX + wholeMap.getWidth(),
 				fullSizeY + wholeMap.getHeight());
 	}
 
-	/** Generate a map of tile types and their corner pixel color */
+	/**
+	 * Generate a map of tile types and their corner pixel color
+	 * 
+	 * @return A map of tile types and their corresponding colors (RGBA8888)
+	 * @see Pixmap.Format#RGBA8888
+	 */
 	private Map<TileType, Integer> getTileColors() {
 		HashMap<TileType, Integer> result = new HashMap<TileType, Integer>();
 		for (TileType t : TileType.values()) {
@@ -159,48 +167,49 @@ public class Minimap implements Disposable {
 		return result;
 	}
 
-
-	private void drawEntities(SpriteBatch batch, int startX, int startY,int playerTileX, int playerTileY, float x, float y,float width, float height){
+	private void drawEntities(SpriteBatch batch, int startX, int startY, int playerTileX,
+			int playerTileY, float x, float y, float width, float height) {
 		List<Entity> entities = this.worldObj.getEntities();
 		Iterator<Entity> iter = entities.iterator();
-		//keep track of original font colour
+		// keep track of original font colour
 		Color oldColour = miniMapFont.getColor();
 		while (iter.hasNext()) {
 			Entity e = iter.next();
-			if(e instanceof EntityAIShip){
+			if (e instanceof EntityAIShip) {
 				Vector2 pos = e.getPosition();
-				int tileX = (int)pos.x/worldObj.worldMap.tile_size;
-				int tileY = (int)pos.y/worldObj.worldMap.tile_size;
-				if(tileX > startX && tileY > startY && tileX-startX < width && tileY-startY < height){ //if within range of the map
-					batch.draw(npcIcon,x+tileX-startX,y+tileY-startY,5,5);
+				int tileX = (int) pos.x / worldObj.worldMap.tile_size;
+				int tileY = (int) pos.y / worldObj.worldMap.tile_size;
+				if (tileX > startX && tileY > startY && tileX - startX < width
+						&& tileY - startY < height) { // if within range of the map
+					batch.draw(npcIcon, x + tileX - startX, y + tileY - startY, 5, 5);
 				}
-			}else if(e instanceof College){
+			} else if (e instanceof College) {
 				Vector2 pos = e.getPosition();
-				int tileX = (int)pos.x/worldObj.worldMap.tile_size;
-				int tileY = (int)pos.y/worldObj.worldMap.tile_size;
-				if(tileX > startX && tileY > startY && tileX-startX < width && tileY-startY < height){ //if within range of the map
+				int tileX = (int) pos.x / worldObj.worldMap.tile_size;
+				int tileY = (int) pos.y / worldObj.worldMap.tile_size;
+				if (tileX > startX && tileY > startY && tileX - startX < width
+						&& tileY - startY < height) { // if within range of the map
 					String cName = ((College) e).getName();
 
-					//Get the width of the text after we draw it
+					// Get the width of the text after we draw it
 					GlyphLayout gLayout = new GlyphLayout();
-					gLayout.setText(miniMapFont,cName);
+					gLayout.setText(miniMapFont, cName);
 					float w = gLayout.width;
 
-
-					if(((College) e).isFriendly){
+					if (((College) e).isFriendly) {
 						miniMapFont.setColor(Color.BLUE);
-					}else{
+					} else {
 						miniMapFont.setColor(Color.WHITE);
 					}
-					miniMapFont.draw(batch,cName,x+tileX-startX-w/2,y+tileY-startY);
-					batch.draw(collegeIcon,x+tileX-startX,y+tileY-startY,5,5);
+					miniMapFont.draw(batch, cName, x + tileX - startX - w / 2, y + tileY - startY);
+					batch.draw(collegeIcon, x + tileX - startX, y + tileY - startY, 5, 5);
 				}
 			}
 		}
-		//reset font colour
+		// reset font colour
 		miniMapFont.setColor(oldColour);
-		//Draw player
-		batch.draw(playerIcon,x+playerTileX-startX,y+playerTileY-startY,5,5);
+		// Draw player
+		batch.draw(playerIcon, x + playerTileX - startX, y + playerTileY - startY, 5, 5);
 
 	}
 
@@ -215,7 +224,8 @@ public class Minimap implements Disposable {
 				0, wholeMap.getWidth(), wholeMap.getHeight(), false, true);
 		int playerTileX = (int) playerPos.x / worldObj.worldMap.tile_size;
 		int playerTileY = (int) playerPos.y / worldObj.worldMap.tile_size;
-		drawEntities(batch,0,0,playerTileX,playerTileY, fullSizeX, fullSizeY, worldObj.worldMap.width, worldObj.worldMap.height);
+		drawEntities(batch, 0, 0, playerTileX, playerTileY, fullSizeX, fullSizeY,
+				worldObj.worldMap.width, worldObj.worldMap.height);
 	}
 
 	public void drawMap(SpriteBatch batch, Vector2 playerPos) {
@@ -249,7 +259,7 @@ public class Minimap implements Disposable {
 		// Draw a portion of the texture
 		batch.draw(wholeMap, x + BORDER_WIDTH, y + BORDER_WIDTH, 0, 0, width - BORDER_WIDTH * 2,
 				height - BORDER_WIDTH * 2, 1, 1, 0, startX, startY, width, height, false, true);
-		drawEntities(batch,startX,startY,playerTileX,playerTileY,x,y, width, height);
+		drawEntities(batch, startX, startY, playerTileX, playerTileY, x, y, width, height);
 	}
 
 	@Override
@@ -258,6 +268,7 @@ public class Minimap implements Disposable {
 		miniMapBorder.dispose();
 	}
 
+	/** Called when the minimap toggle key was just pressed */
 	public void onToggleKeyJustPressed() {
 		drawBigmap = !drawBigmap;
 		if (bigMiniMapButton.isChecked()) { // Toggle the button

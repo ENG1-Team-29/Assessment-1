@@ -10,9 +10,15 @@ import tk.shardsoftware.World;
 import tk.shardsoftware.entity.EntityShip;
 
 /**
+ * A collection of tools to help in the debugging process.
+ * 
  * @author James Burnell
  */
-public abstract class DebugUtil {
+public class DebugUtil {
+
+	// Prevent instantiation
+	private DebugUtil() {
+	}
 
 	/** Controls additional logging and on-screen data */
 	public static final boolean DEBUG_MODE = true;
@@ -24,8 +30,8 @@ public abstract class DebugUtil {
 	private static List<String> cachedResult;
 
 	/**
-	 * Calculate the percentage time for each entry in {@link #processingTimes}
-	 * and return each in a separate string, all contained in a list.
+	 * Calculate the percentage time for each entry in {@link #processingTimes} and
+	 * return each in a separate string, all contained in a list.
 	 */
 	public static List<String> processingTimePercentages() {
 		if (System.currentTimeMillis() - displayTime < 1000) {
@@ -40,8 +46,8 @@ public abstract class DebugUtil {
 		for (HashMap.Entry<String, Long> entry : processingTimes.entrySet()) {
 			String key = entry.getKey();
 			Long val = entry.getValue();
-			result.add(String.format("%s: %5.2fms (%2.0f%%)", key,
-					val / 1000000f, (val / (float) total) * 100));
+			result.add(String.format("%s: %5.2fms (%2.0f%%)", key, val / 1000000f,
+					(val / (float) total) * 100));
 		}
 
 		cachedResult = result;
@@ -52,8 +58,7 @@ public abstract class DebugUtil {
 	/**
 	 * Measure how long a code section takes to process.
 	 * 
-	 * @param r
-	 *            the code to run and measure
+	 * @param r the code to run and measure
 	 * @return The time taken to execute the code in nanoseconds
 	 */
 	public static long measureProcessTime(Runnable r) {
@@ -66,10 +71,8 @@ public abstract class DebugUtil {
 	 * Measures how long it takes to run the code then saves it to the cache for
 	 * comparison & display.
 	 * 
-	 * @param name
-	 *            the displayed name of the code being measured
-	 * @param r
-	 *            the code to run and measure
+	 * @param name the displayed name of the code being measured
+	 * @param r the code to run and measure
 	 * @see #measureProcessTime(Runnable)
 	 */
 	public static void saveProcessTime(String name, Runnable r) {
@@ -79,9 +82,11 @@ public abstract class DebugUtil {
 
 	/**
 	 * Generates the debug hud's displayed text
+	 * 
 	 * @return list of strings to be drawn on the debug hud
 	 */
-	public static List<String> generateDebugStrings(EntityShip player, World worldObj, float goalAngle) {
+	public static List<String> generateDebugStrings(EntityShip player, World worldObj,
+			float goalAngle) {
 		ArrayList<String> lines = new ArrayList<String>();
 		lines.add(String.format("Current angle: %5.1f", player.getDirection()));
 		lines.add(String.format("Goal angle: %6.1f", goalAngle));
@@ -94,13 +99,13 @@ public abstract class DebugUtil {
 		return lines;
 	}
 
-
 	/**
 	 * Causes d damage to all entities in the game. intended for debug only.
+	 * 
 	 * @param worldObj the world object that contains the entities
 	 * @param d the amount of damage
 	 */
-	public static void damageAllEntities(World worldObj, float d){
+	public static void damageAllEntities(World worldObj, float d) {
 		worldObj.getAllDamageable().forEach(e -> e.damage(d));
 	}
 
