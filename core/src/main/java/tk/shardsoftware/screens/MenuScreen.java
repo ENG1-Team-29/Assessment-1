@@ -37,6 +37,8 @@ public class MenuScreen implements Screen {
 	/** Texture for the background */
 	private Texture background = ResourceUtil.getTexture("textures/ui/menu-screen-background.png");
 
+	private Texture shardLogo;
+
 	/**
 	 * Constructor for LossScreen
 	 * 
@@ -49,6 +51,7 @@ public class MenuScreen implements Screen {
 		batch = new SpriteBatch();
 		text = new GlyphLayout();
 		text.setText(font, "Press the space key to start your adventure");
+		shardLogo = new Texture("textures/logo/shardlogo.png");
 	}
 
 	@Override
@@ -72,6 +75,9 @@ public class MenuScreen implements Screen {
 		batch.begin();
 		batch.draw(background, 0, 0, width, height);
 		font.draw(batch, text, (width - text.width) / 2, (height - text.height) / 2);
+
+		batch.draw(shardLogo, 5, 5, 640 / 3, 267 / 3);
+
 		batch.end();
 	}
 
@@ -98,6 +104,7 @@ public class MenuScreen implements Screen {
 	@Override
 	public void dispose() {
 		batch.dispose();
+		shardLogo.dispose();
 	}
 
 }
