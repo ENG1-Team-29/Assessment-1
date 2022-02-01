@@ -12,9 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 
-import tk.shardsoftware.TileType;
 import tk.shardsoftware.util.PerlinNoiseGenerator;
 
 /**
@@ -36,7 +34,9 @@ public class WorldMap {
 
 	/**
 	 * Constructor for WorldMap.
-	 * @param world_tile_size The dimensions of each tile (in pixels) tile width = world_tile_size = tile height
+	 * 
+	 * @param world_tile_size The dimensions of each tile (in pixels) tile width =
+	 *        world_tile_size = tile height
 	 * @param world_width The number of tiles on each row
 	 * @param world_height The number of tiles on each column
 	 */
@@ -47,8 +47,11 @@ public class WorldMap {
 	}
 
 	/**
-	 * Generates a heightmap based on the seed, then samples this heightmap to choose either water, sand or grass tiles.
-	 * @param seed A long used for the seed of the heightmap. Using the same seed will always generate the same heightmap.
+	 * Generates a heightmap based on the seed, then samples this heightmap to
+	 * choose either water, sand or grass tiles.
+	 * 
+	 * @param seed A long used for the seed of the heightmap. Using the same seed
+	 *        will always generate the same heightmap.
 	 */
 	public void buildWorld(long seed) {
 		Gdx.app.log("WorldMap", "Seed=" + seed);
@@ -83,6 +86,7 @@ public class WorldMap {
 
 	/**
 	 * Draw the tile located at point P=(x,y). See getTile().
+	 * 
 	 * @param x The x position of the tile
 	 * @param y The y position of the tile
 	 * @param batch The SpriteBatch that the tile is to be drawn by
@@ -97,17 +101,22 @@ public class WorldMap {
 	 * Accepts any Function which accepts a Vector2 as input and returns a boolean.
 	 * See GameScreen.SetPlayerStartPosition() for an example of its use
 	 *
-	 * @param searchCond A function that takes a vector2 as input and returns either true or false based on whether that position is valid
-	 * @return Returns either a valid Vector2 representing a position that passed the search conditions (i.e searchCond returns true), or null if no such position exists.
+	 * @param searchCond A function that takes a vector2 as input and returns either
+	 *        true or false based on whether that position is valid
+	 * @return Returns either a valid Vector2 representing a position that passed
+	 *         the search conditions (i.e searchCond returns true), or null if no
+	 *         such position exists.
 	 */
 
 	public Vector2 searchMap(Function<Vector2, Boolean> searchCond) {
-		//Generate a 2D array containing every location on the map, then shuffle it so that our start position is randomised.
-		//If this is not done then the lower left corner of the map is heavily favoured by this function.
+		// Generate a 2D array containing every location on the map, then shuffle it so
+		// that our start position is randomised.
+		// If this is not done then the lower left corner of the map is heavily favoured
+		// by this function.
 		Vector2[][] randomisedMap = new Vector2[width][height];
 		for (int i = 0; i < this.width; i++) {
 			for (int j = 0; j < this.height; j++) {
-				randomisedMap[i][j] = new Vector2(i,j);
+				randomisedMap[i][j] = new Vector2(i, j);
 			}
 		}
 		Random r = new Random();
@@ -115,13 +124,12 @@ public class WorldMap {
 			for (int j = 0; j < this.height; j++) {
 				int randI = r.nextInt(width);
 				int randJ = r.nextInt(height);
-				//swap values to shuffle
+				// swap values to shuffle
 				Vector2 temp = randomisedMap[randI][randJ];
 				randomisedMap[randI][randJ] = randomisedMap[i][j];
 				randomisedMap[i][j] = temp;
 			}
 		}
-
 
 		for (int i = 0; i < this.width; i++) {
 			for (int j = 0; j < this.height; j++) {
@@ -143,7 +151,9 @@ public class WorldMap {
 	// TODO: Render once to off-screen buffer then render buffer to screen
 	/**
 	 * Draws all tiles in range of the camera.
-	 * @param cam The camera. Contains information about the viewport width and height as well as the position of the camera in the world.
+	 * 
+	 * @param cam The camera. Contains information about the viewport width and
+	 *        height as well as the position of the camera in the world.
 	 * @param batch The SpriteBatch that will draw the tiles.
 	 */
 	public void drawTilesInRange(Camera cam, SpriteBatch batch) {
@@ -166,8 +176,11 @@ public class WorldMap {
 	/**
 	 * Get the tile type of the tile positioned at (x,y). If there is no tile
 	 * defined at this point, it will return {@link TileType#WATER_DEEP}.
+	 * 
 	 * @param x The x position of the tile
 	 * @param y The y position of the tile
+	 * @return The tile type at the position, or {@link TileType#WATER_DEEP} if
+	 *         there is none
 	 */
 	public TileType getTile(int x, int y) {
 		return tileMap.getOrDefault(new Vector2(x, y), TileType.WATER_DEEP);
@@ -176,8 +189,9 @@ public class WorldMap {
 	/**
 	 * Returns a collection of tiles that are within the bounds of the rectangle
 	 * 
-	 * @param rect
+	 * @param rect the search area
 	 * @param filterOnlySolid Filter only the tiles that would cause collision
+	 * @return The collection of tiles and their types within the area
 	 * 
 	 * @author James Burnell
 	 */
@@ -215,6 +229,10 @@ public class WorldMap {
 	 * within a given area. Given the nature of streams and filters, the efficiency
 	 * is poor.
 	 * 
+	 * @param rect the search area
+	 * @return {@code true} if there is at least one solid tile, {@code false}
+	 *         otherwise
+	 * 
 	 * @author James Burnell
 	 * @see #isSolidTileWithinArea(Rectangle)
 	 */
@@ -234,6 +252,9 @@ public class WorldMap {
 	/**
 	 * Returns whether or not there is at least one solid tile within a given area
 	 * 
+	 * @param rect the search area
+	 * @return {@code true} if there is at least one solid tile, {@code false}
+	 *         otherwise
 	 * @author James Burnell
 	 */
 	public boolean isSolidTileWithinArea(Rectangle rect) {

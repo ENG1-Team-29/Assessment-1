@@ -79,6 +79,7 @@ public abstract class CollegeManager {
 	 * @param numColleges The number of colleges in the world
 	 * @param collegeMinDist Minimum distance between each college (magnitude of the
 	 *        distance vector between the two)
+	 * @param player the ship entity controlled by the player
 	 */
 	public static void generateColleges(World worldObj, int numColleges, float collegeMinDist,
 			EntityShip player) {

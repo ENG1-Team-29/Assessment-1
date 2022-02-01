@@ -10,8 +10,8 @@ import tk.shardsoftware.util.SoundManager;
  * Cannonballs do damage to other entities that can be damaged.
  * 
  * @author James Burnell
- * @see {@link IDamageable}
- * @see {@link ICannonCarrier}
+ * @see IDamageable
+ * @see ICannonCarrier
  */
 public class EntityCannonball extends Entity {
 

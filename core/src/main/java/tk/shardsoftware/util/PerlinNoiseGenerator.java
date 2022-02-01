@@ -42,6 +42,9 @@ public class PerlinNoiseGenerator {
 
 	/**
 	 * One of four gradients as described in "Improving perlin noise"
+	 * 
+	 * @param permutation the permutation
+	 * @return One of four diagonal directional vectors
 	 */
 	private Vector2 getGradient(int permutation) {
 		int a = permutation % 4;
@@ -92,6 +95,7 @@ public class PerlinNoiseGenerator {
 	 * @param t the ratio to interpolate by
 	 * @param a1 the first value
 	 * @param a2 the last value
+	 * @return The linearly interpolated value
 	 */
 	private float lerp(float t, float a1, float a2) {
 		return a1 + t * (a2 - a1);
@@ -108,7 +112,7 @@ public class PerlinNoiseGenerator {
 	}
 
 	/**
-	 * Compute noise value -1 < n < 1 for point P = (x,y)
+	 * Compute noise value -1 &#60; n &#60; 1 for point P = (x,y)
 	 * 
 	 * @param x the x position
 	 * @param y the y position

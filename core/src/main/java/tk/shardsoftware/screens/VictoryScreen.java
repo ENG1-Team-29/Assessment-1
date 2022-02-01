@@ -15,7 +15,7 @@ import tk.shardsoftware.util.SoundManager;
 
 /**
  * The screen that shows up when all rival colleges have been defeated
- * @Author Hector Woods
+ * @author Hector Woods
  */
 public class VictoryScreen implements Screen {
 

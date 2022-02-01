@@ -15,7 +15,7 @@ import tk.shardsoftware.util.SoundManager;
 
 /**
  * The screen that shows up when the player's health reaches 0
- * @Author Hector Woods
+ * @author Hector Woods
  */
 public class LossScreen implements Screen {
 

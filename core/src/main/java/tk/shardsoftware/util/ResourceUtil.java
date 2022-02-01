@@ -111,7 +111,7 @@ public abstract class ResourceUtil {
 	 * @param img the location of the image file to load
 	 * @return {@code true} if added texture, {@code false} if texture was already
 	 *         in cache
-	 * @see AssetManager#load(String, Texture)
+	 * @see AssetManager#load(String, Class)
 	 */
 	private static boolean addTexture(String img) {
 		if (assetManager.contains(img)) return false;
@@ -127,7 +127,7 @@ public abstract class ResourceUtil {
 	 * @param sound the location of the sound file to load
 	 * @return {@code true} if added sound, {@code false} if sound was already in
 	 *         cache
-	 * @see AssetManager#load(String, Sound)
+	 * @see AssetManager#load(String, Class)
 	 */
 	private static boolean addSound(String sound) {
 		if (assetManager.contains(sound)) return false;

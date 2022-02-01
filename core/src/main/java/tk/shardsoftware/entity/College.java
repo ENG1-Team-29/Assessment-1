@@ -188,13 +188,13 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 	}
 
 	/**
-	 * Constructor for College
-	 * 
 	 * @param worldObj A valid worldObj that the college will be located in
+	 * @param collegeName the name of the college
 	 * @param x The x-position of the entity on creation
 	 * @param y The y-position of the entity on creation
 	 * @param w The width of the entity in pixels
 	 * @param h The height of the entity in pixels
+	 * @param player the ship entity controlled by the player
 	 */
 	public College(World worldObj, String collegeName, float x, float y, int w, int h,
 			EntityShip player) {

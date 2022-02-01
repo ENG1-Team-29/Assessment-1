@@ -41,7 +41,7 @@ public class World {
 	public WorldMap worldMap;
 
 	/** The {@link GameScreen} object that the world can use to call functions */
-	protected GameScreen game;
+	private GameScreen game;
 
 	public World() {
 		entities = new ArrayList<Entity>();
@@ -56,14 +56,15 @@ public class World {
 
 		}
 	}
-	
-	/**Set the {@link GameScreen} object for the World*/
+
+	/**
+	 * Set the {@link GameScreen} object for the World
+	 * 
+	 * @param gs the GameScreen object
+	 */
 	public void setGameScreen(GameScreen gs) {
 		this.game = gs;
 	}
-
-	/**Get the {@link GameScreen} object for the World */
-	public GameScreen getGameScreen(){return this.game; }
 
 	/**
 	 * The logical game function called on each game tick
@@ -97,6 +98,8 @@ public class World {
 	/**
 	 * Progress the logical step for each entity. Also remove them from the world if
 	 * flag is set
+	 * 
+	 * @param delta the time elapsed since the last update in seconds
 	 */
 	private void updateEntities(float delta) {
 		Iterator<Entity> iter = entities.iterator();
@@ -125,6 +128,8 @@ public class World {
 	/**
 	 * The list of entities contained within the world. This should NEVER be used to
 	 * add entities to the world.
+	 * 
+	 * @return The list of entities in the world
 	 */
 	public List<Entity> getEntities() {
 		return entities;
@@ -133,11 +138,18 @@ public class World {
 	/**
 	 * The list of all damageable entities within the world. This should NEVER be
 	 * used to add entities to the world.
+	 * 
+	 * @return The list of damageable entities in the world
 	 */
 	public List<IDamageable> getAllDamageable() {
 		return damagableObjs;
 	}
 
+	/**
+	 * Adds an entity to the world.
+	 * 
+	 * @param e the entity to add
+	 */
 	public void addEntity(Entity e) {
 		entities.add(e);
 		if (e instanceof IDamageable) {
@@ -148,10 +160,12 @@ public class World {
 		}
 	}
 
+	/** @return The width of the world in pixels */
 	public static float getWidth() {
 		return WORLD_TILE_SIZE * WORLD_WIDTH;
 	}
 
+	/** @return The height of the world in pixels */
 	public static float getHeight() {
 		return WORLD_TILE_SIZE * WORLD_HEIGHT;
 	}
@@ -163,7 +177,7 @@ public class World {
 	 */
 	public void onCollegeDestroyed(College college) {
 		destroyedColleges++;
-		if(game != null) game.onCollegeDestroyed(college);
+		if (game != null) game.onCollegeDestroyed(college);
 	}
 
 	/** @return The number of colleges remaining in the world */

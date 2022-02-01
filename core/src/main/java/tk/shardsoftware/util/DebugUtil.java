@@ -32,6 +32,9 @@ public class DebugUtil {
 	/**
 	 * Calculate the percentage time for each entry in {@link #processingTimes} and
 	 * return each in a separate string, all contained in a list.
+	 * 
+	 * @return A list of strings that contain timing information about the different
+	 *         processes
 	 */
 	public static List<String> processingTimePercentages() {
 		if (System.currentTimeMillis() - displayTime < 1000) {
@@ -69,7 +72,7 @@ public class DebugUtil {
 
 	/**
 	 * Measures how long it takes to run the code then saves it to the cache for
-	 * comparison & display.
+	 * comparison &#38; display.
 	 * 
 	 * @param name the displayed name of the code being measured
 	 * @param r the code to run and measure
@@ -83,6 +86,9 @@ public class DebugUtil {
 	/**
 	 * Generates the debug hud's displayed text
 	 * 
+	 * @param player the ship object controlled by the player
+	 * @param worldObj the world of the game
+	 * @param goalAngle the direction the ship should be pointing in
 	 * @return list of strings to be drawn on the debug hud
 	 */
 	public static List<String> generateDebugStrings(EntityShip player, World worldObj,

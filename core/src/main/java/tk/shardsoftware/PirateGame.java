@@ -24,7 +24,7 @@ public class PirateGame extends Game {
 	}
 
 	public void openNewGameScreen() {
-		this.setScreen(new GameScreen(assets, this));
+		this.setScreen(new GameScreen(this));
 	}
 
 	public void openNewLossScreen() {

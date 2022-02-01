@@ -74,6 +74,8 @@ public class Bar {
 	 * @param shapeRenderer The ShapeRenderer to render rectLine with
 	 * @param start The start of the bar
 	 * @param end The end of the bar
+	 * @param backgroundColor the color of the empty bar
+	 * @param foreGroundColor the color to display on top of the empty bar
 	 */
 	public static void drawBar(SpriteBatch batch, ShapeRenderer shapeRenderer, Vector2 start,
 			Vector2 end, Color backgroundColor, Color foreGroundColor) {

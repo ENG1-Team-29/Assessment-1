@@ -11,7 +11,6 @@ import java.util.function.Function;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -62,14 +61,18 @@ public class GameScreen implements Screen {
 	/** Ambient ocean sounds */
 	public Sound ambientOcean;
 	private long soundIdBoatMovement;
+
 	private PirateGame pg;
+
 	private SpriteBatch batch, hudBatch;
 	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera camera;
+
 	public ChooseCollegeDisplay cDisplay;
 	public Stage stage;
 	final private int DEFAULT_CAMERA_ZOOM = 1;
 
+	/** The overlay to display the game instructions on screen */
 	private InstructionOverlay instOverlay;
 
 	private World worldObj;
@@ -151,9 +154,9 @@ public class GameScreen implements Screen {
 	/**
 	 * Constructor for GameScreen.
 	 * 
-	 * @param assets Unused. Instance of AssetManager.
+	 * @param pg the {@link PirateGame} object
 	 */
-	public GameScreen(AssetManager assets, PirateGame pg) {
+	public GameScreen(PirateGame pg) {
 		batch = new SpriteBatch();
 		this.pg = pg;
 
@@ -202,8 +205,9 @@ public class GameScreen implements Screen {
 	/**
 	 * Starts a timer that increments points, starts playing music and ambient
 	 * noise.
+	 * 
+	 * @param collegeName the name of the college the player belongs to
 	 */
-
 	public void setPlayerCollege(String collegeName) {
 		player.setCollegeName(collegeName);
 		setPlayerStartPosition();
@@ -549,9 +553,9 @@ public class GameScreen implements Screen {
 	 * Moves the camera smoothly to the target position
 	 * 
 	 * @param target the position the camera should move to
-	 * @param speed  the speed ratio the camera moves by.<br>
-	 *               In range [0,1], where 0 is no movement and 1 is instant
-	 *               movement
+	 * @param speed the speed ratio the camera moves by.<br>
+	 *        In range [0,1], where 0 is no movement and 1 is instant movement
+	 * @param delta the time elapsed since the last update in seconds
 	 */
 	private void lerpCamera(Vector2 target, float speed, float delta) {
 		delta *= 60; // standardize for 60fps
@@ -580,7 +584,7 @@ public class GameScreen implements Screen {
 	/**
 	 * Resize the game camera.
 	 * 
-	 * @param width  new width of the window
+	 * @param width new width of the window
 	 * @param height new height of the window
 	 */
 	@Override
