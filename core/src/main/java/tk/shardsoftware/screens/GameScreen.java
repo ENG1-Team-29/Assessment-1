@@ -583,7 +583,7 @@ public class GameScreen implements Screen {
 		// if the game is muted, skip processing
 		if (SoundManager.gameVolume == 0) return;
 		float vol = (player.getVelocity().len2() / (player.getMaxSpeed() * player.getMaxSpeed()));
-		boatWaterMovement.setVolume(soundIdBoatMovement, vol * SoundManager.gameVolume * 0.8f);
+		boatWaterMovement.setVolume(soundIdBoatMovement, vol * SoundManager.gameVolume * 0.5f);
 	}
 
 	/**
