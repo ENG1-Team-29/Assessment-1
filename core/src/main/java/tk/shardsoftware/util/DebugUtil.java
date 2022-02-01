@@ -1,10 +1,10 @@
 package tk.shardsoftware.util;
 
-import com.badlogic.gdx.Gdx;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import com.badlogic.gdx.Gdx;
 
 import tk.shardsoftware.World;
 import tk.shardsoftware.entity.EntityShip;
@@ -21,7 +21,20 @@ public class DebugUtil {
 	}
 
 	/** Controls additional logging and on-screen data */
-	public static final boolean DEBUG_MODE = true;
+	public static final boolean DEBUG_MODE = false;
+
+	/**
+	 * A list of maps determined to be playable. This is to have a reliable testing
+	 * pool of maps.
+	 */
+	public static final long[] DEBUG_MAP_LIST = { -3118584395246760715l, 2529255383301275808l,
+			6130359115894938221l, 7930068207639905836l, 3269761978655777716l, 4236093909831674207l,
+			-509058019939334172l, 9176118902378253189l, -1725988101884335641l, 1074621698543254129l,
+			-297953574914369051l, -5750812775633468735l, -1056105497059490975l,
+			7959384176659588372l, 5193999824609830996l, -2640064327703070913l,
+			-6518028724896499627l, -5881081205293033051l, -3796563537215966939l,
+			-7501673898816366006l, -8107408079478611814l, -6702694815751317625l,
+			-8743913861296944165l, 155737000087122849l, 2377344836818596457l };
 
 	/** Stores times of how long it took to process code snippets */
 	public static HashMap<String, Long> processingTimes = new HashMap<String, Long>();

@@ -1,5 +1,7 @@
 package tk.shardsoftware;
 
+import static tk.shardsoftware.util.DebugUtil.DEBUG_MAP_LIST;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -46,7 +48,8 @@ public class World {
 		cannonballs = new ArrayList<EntityCannonball>();
 
 		this.worldMap = new WorldMap(WORLD_TILE_SIZE, WORLD_WIDTH, WORLD_HEIGHT);
-		worldMap.setSeed(MathUtils.random.nextLong());
+		// worldMap.setSeed(MathUtils.random.nextLong());
+		worldMap.setSeed(DEBUG_MAP_LIST[MathUtils.random.nextInt(DEBUG_MAP_LIST.length)]);
 		System.out.println("Building World");
 		worldMap.buildWorld();
 	}
