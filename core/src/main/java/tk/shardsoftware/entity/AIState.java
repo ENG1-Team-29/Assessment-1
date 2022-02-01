@@ -3,6 +3,6 @@ package tk.shardsoftware.entity;
 
 public enum AIState {
 	
-	IDLE, FOLLOW_PLAYER
+	IDLE, FOLLOW_PLAYER, FLEE_PLAYER
 
 }

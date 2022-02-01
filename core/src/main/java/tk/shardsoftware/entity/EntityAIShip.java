@@ -16,7 +16,7 @@ public class EntityAIShip extends EntityShip {
 	/** The range at which the ship will start chasing the player */
 	private int chaseDistance = 500;
 	/** The minimum distance the entity tries to maintain from the player */
-	private int minDistance = 50;
+	private int minDistance = 100;
 
 	/**
 	 * Constructor for EntityAIShip.
@@ -41,9 +41,7 @@ public class EntityAIShip extends EntityShip {
 	 *        player
 	 */
 	public EntityAIShip(World world, EntityShip player, int chaseDistance, int minDistance) {
-		super(world);
-		this.aiState = AIState.IDLE;
-		this.player = player;
+		this(world, player);
 		this.chaseDistance = chaseDistance;
 		this.minDistance = minDistance;
 	}
@@ -60,6 +58,10 @@ public class EntityAIShip extends EntityShip {
 		Vector2 shipPos = this.getPosition();
 		Vector2 directionVector = new Vector2(playerPos.x - shipPos.x, playerPos.y - shipPos.y);
 		goalAngle = directionVector.angleDeg();// Convert to degrees and round down
+		// If the ship should flee, it will turn 180 degrees
+		if (aiState.equals(AIState.FLEE_PLAYER)) {
+			goalAngle += 90;
+		}
 		super.rotateTowardsGoal(goalAngle, delta);
 	}
 
@@ -74,19 +76,20 @@ public class EntityAIShip extends EntityShip {
 		Vector2 playerPos = player.getPosition();
 		Vector2 shipPos = this.getPosition();
 		float distToPlayer = shipPos.dst(playerPos);
-		if (distToPlayer > chaseDistance || distToPlayer < minDistance) { // If the player is too
-																			// far away, or too
-																			// close, do nothing
+		// If the player is too far away, or too close, do nothing
+		if (distToPlayer > chaseDistance) {
 			aiState = AIState.IDLE;
 			// very slowly come to a stop
 			// TODO: make the slowing independent of the speed at which the game runs
 			Vector2 currentVelocity = this.getVelocity();
 			this.setVelocity(new Vector2((float) (currentVelocity.x * 0.99),
 					(float) ((currentVelocity.y * 0.99))));
+		} else if (distToPlayer < minDistance) {
+			aiState = AIState.FLEE_PLAYER;
 		} else {
 			aiState = AIState.FOLLOW_PLAYER;
 		}
-		if (aiState == AIState.FOLLOW_PLAYER) {
+		if (aiState == AIState.FOLLOW_PLAYER || aiState == AIState.FLEE_PLAYER) {
 			followPlayer(delta);
 		}
 
