@@ -10,6 +10,8 @@ import tk.shardsoftware.World;
 import tk.shardsoftware.util.ResourceUtil;
 import tk.shardsoftware.util.SoundManager;
 
+import static tk.shardsoftware.World.WORLD_TILE_SIZE;
+
 /**
  * Represents the physical location of a college on a map. College is
  * implemented as an extension of Entity which does not move. (i.e physics are
@@ -34,6 +36,27 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 
 	public float shipSpawnWaitTime = 60f;
 	public float timeUntilNextShipSpawn = 0f;
+	/** The total number of ships the college has spawned */
+	public int shipsSpawned = 0;
+	/** The maximum number of ships the college should spawn */
+	public int maxShipsToSpawn = 1;
+
+	/** The search function for the spawn point of the ships */
+	private Function<Vector2, Boolean> shipPosConds = vector2 -> {
+		TileType tile = worldObj.worldMap.getTile((int) vector2.x, (int) vector2.y);
+		// Check the tile is in water
+		if (tile != TileType.WATER_DEEP && tile != TileType.WATER_SHALLOW) {
+			return false;
+		}
+		// Check the position is neither too far or too close to the college
+		int tileX = (int) vector2.x * WORLD_TILE_SIZE;
+		int tileY = (int) vector2.y * WORLD_TILE_SIZE;
+		float distFromCollege = this.getPosition().dst(tileX, tileY);
+		if (distFromCollege > 275 || distFromCollege < 50) {
+			return false;
+		}
+		return true;
+	};
 
 	/**
 	 * Reduces the health of the College by 'dmgAmount'. See IDamageable
@@ -53,35 +76,24 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 	 * @return {@code true} if successfully spawned ship, {@code false} otherwise
 	 */
 	public boolean spawnShip() {
+		// Do not spawn more ships than the maximum
+		if (shipsSpawned >= maxShipsToSpawn) return false;
 
 		// don't spawn if on cooldown or if a friendly college
 		if (timeUntilNextShipSpawn > 0 || isFriendly) return false;
-		int tileSize = worldObj.worldMap.tile_size;
-		Function<Vector2, Boolean> shipPosConds = vector2 -> {
 
-			TileType tile = worldObj.worldMap.getTile((int) vector2.x, (int) vector2.y);
-			// Check the tile is in water
-			if (tile != TileType.WATER_DEEP && tile != TileType.WATER_SHALLOW) {
-				return false;
-			}
-			// Check the position is neither too far or too close to the college
-			int tileX = (int) vector2.x * tileSize;
-			int tileY = (int) vector2.y * tileSize;
-			float distFromCollege = this.getPosition().dst(tileX, tileY);
-			if (distFromCollege > 275 || distFromCollege < 50) {
-				return false;
-			}
-			return true;
-		};
 		Vector2 startPos = worldObj.worldMap.searchMap(shipPosConds);
 		// If nothing was found, stop processing
 		if (startPos == null) return false;
 
-		startPos = new Vector2(startPos.x * tileSize, startPos.y * tileSize);
-		timeUntilNextShipSpawn += shipSpawnWaitTime;
+		startPos = new Vector2(startPos.x * WORLD_TILE_SIZE, startPos.y * WORLD_TILE_SIZE);
+
 		EntityAIShip ship = new EntityAIShip(worldObj, player);
 		ship.setPosition(startPos);
 		worldObj.addEntity(ship);
+
+		timeUntilNextShipSpawn += shipSpawnWaitTime;
+		shipsSpawned++;
 		return true;
 	}
 
