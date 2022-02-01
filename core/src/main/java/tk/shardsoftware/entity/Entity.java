@@ -45,10 +45,10 @@ public abstract class Entity {
 	 * Constructor for Entity.
 	 * 
 	 * @param worldObj World object that the entity will be part of
-	 * @param x        x-position of the entity
-	 * @param y        y-position of the entity
-	 * @param w        width of the entity
-	 * @param h        height of the entity
+	 * @param x x-position of the entity
+	 * @param y y-position of the entity
+	 * @param w width of the entity
+	 * @param h height of the entity
 	 */
 	protected Entity(World worldObj, float x, float y, float w, float h) {
 		this(worldObj, w, h);
@@ -59,8 +59,8 @@ public abstract class Entity {
 	 * Constructor for Entity.
 	 * 
 	 * @param worldObj World object that the entity will be part of
-	 * @param w        width of the entity
-	 * @param h        height of the entity
+	 * @param w width of the entity
+	 * @param h height of the entity
 	 */
 	protected Entity(World worldObj, float w, float h) {
 		// If texture is unset, use null
@@ -171,7 +171,7 @@ public abstract class Entity {
 
 		if (collidedFlag) {
 			// Has collided so remove velocity (ignoring momentum)
-			// TODO: Only zero out the direction of collision
+			// FIXME: Only zero out the direction of collision
 			velocityVec.setZero();
 		} else {
 			// update the position of the entity
@@ -188,7 +188,7 @@ public abstract class Entity {
 	 * @return {@code true} if collided, {@code false} otherwise
 	 */
 	public boolean testCollision(Rectangle nextHitbox) {
-		// TODO: Change to bounding-box hierarchy if performance is too low
+		// Change to bounding-box hierarchy if performance is too low
 		boolean collidedFlag = false;
 
 		if (!ignoreEntityCollision) {

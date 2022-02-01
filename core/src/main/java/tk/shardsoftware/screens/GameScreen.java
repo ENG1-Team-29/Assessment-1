@@ -123,6 +123,7 @@ public class GameScreen implements Screen {
 
 		Vector2 cPos = playerCollege.getPosition();
 		int tileSize = worldObj.worldMap.tile_size;
+		// FIXME: Player doesn't always spawn in water
 		Function<Vector2, Boolean> startPosConds = vector2 -> {
 			TileType tile = worldObj.worldMap.getTile((int) vector2.x, (int) vector2.y);
 
@@ -340,8 +341,6 @@ public class GameScreen implements Screen {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
 			miniMap.onToggleKeyJustPressed();
 		}
-
-		// TODO: Add pause screen with toggle
 		if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
 			instOverlay.shouldDisplay = !instOverlay.shouldDisplay;
 		}

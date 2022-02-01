@@ -83,6 +83,7 @@ public abstract class CollegeManager {
 	 */
 	public static void generateColleges(World worldObj, int numColleges, float collegeMinDist,
 			EntityShip player) {
+		// FIXME: Add a check to ensure all colleges are within the accessible area
 		availableCollegeNames = new ArrayList<>(
 				Arrays.asList("James", "Constantine", "Alcuin", "Anne Lister", "David Kato",
 						"Derwent", "Goodricke", "Halifax", "Langwith", "Vanbrugh", "Wentworth"));
