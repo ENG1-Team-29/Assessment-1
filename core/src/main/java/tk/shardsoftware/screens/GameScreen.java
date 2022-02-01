@@ -37,6 +37,7 @@ import tk.shardsoftware.PirateGame;
 import tk.shardsoftware.TileType;
 import tk.shardsoftware.World;
 import tk.shardsoftware.entity.College;
+import tk.shardsoftware.entity.Entity;
 import tk.shardsoftware.entity.EntityAIShip;
 import tk.shardsoftware.entity.EntityShip;
 import tk.shardsoftware.entity.IDamageable;
@@ -579,6 +580,19 @@ public class GameScreen implements Screen {
 
 		camera.position.set(camPos);
 		camera.update();
+	}
+
+	/**
+	 * Called when an entity is removed from the world
+	 * 
+	 * @param e the entity that was removed
+	 */
+	public void onEntityRemoved(Entity e) {
+		// If an AI ship was destroyed, add plunder
+		if (e instanceof EntityAIShip) {
+			EntityAIShip eAi = (EntityAIShip) e;
+			if (eAi.getHealth() <= 0) addPlunder(50);
+		}
 	}
 
 	/**

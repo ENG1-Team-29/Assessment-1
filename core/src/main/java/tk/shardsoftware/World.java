@@ -115,6 +115,7 @@ public class World {
 			if (e instanceof IDamageable) damagableObjs.remove((IDamageable) e);
 			if (e instanceof EntityCannonball) cannonballs.remove((EntityCannonball) e);
 			e.onRemove();
+			if (game != null) game.onEntityRemoved(e);
 		});
 	}
 
