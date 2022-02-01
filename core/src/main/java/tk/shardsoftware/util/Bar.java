@@ -31,6 +31,8 @@ public class Bar {
 	 */
 	public static void drawBar(SpriteBatch batch, ShapeRenderer shapeRenderer, Vector2 start,
 			Vector2 end, float p, Color backgroundColor, Color foreGroundColor) {
+		start = start.cpy();
+		end = end.cpy();
 		shapeRenderer.setColor(backgroundColor);
 		shapeRenderer.rectLine(start, end, 3);
 		start.x += 1;
