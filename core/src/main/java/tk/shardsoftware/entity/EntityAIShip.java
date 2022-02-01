@@ -28,6 +28,8 @@ public class EntityAIShip extends EntityShip {
 		super(world);
 		this.aiState = AIState.IDLE;
 		this.player = player;
+		this.maxHealth = 25;
+		this.health = maxHealth;
 	}
 
 	/**

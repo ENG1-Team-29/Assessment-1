@@ -17,13 +17,14 @@ public class EntityShip extends Entity implements ICannonCarrier, IRepairable {
 	public float reloadTime = 1f;
 	/** How much time left until cannons can be fired */
 	public float timeUntilFire = 0f;
+
+	protected float maxHealth = 100f;
+	protected float health = maxHealth;
+
 	protected String collegeName;
-	private float maxHealth = 100f;
 	public boolean isPlayer = false;
 
 	private Sound cannonSfx = ResourceUtil.getSound("audio/entity/cannon.mp3");
-
-	private float health = maxHealth;
 
 	/** @param worldObj the World object the ship belongs to */
 	public EntityShip(World worldObj) {
