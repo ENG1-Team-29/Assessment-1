@@ -3,12 +3,13 @@ package tk.shardsoftware.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.utils.Disposable;
 
-import tk.shardsoftware.util.ResourceUtil;
+import static tk.shardsoftware.util.ResourceUtil.font;
 
 public class InstructionOverlay implements Disposable {
 
@@ -17,9 +18,14 @@ public class InstructionOverlay implements Disposable {
 
 	public boolean shouldDisplay = true;
 
+	private GlyphLayout instructions;
+
 	public InstructionOverlay(SpriteBatch batch) {
 		this.batch = batch;
 		this.shapeRenderer = new ShapeRenderer();
+		instructions = new GlyphLayout();
+		instructions.setText(font,
+				"Destroy all colleges but your own to win!\n\nPress Esc to toggle this display.");
 	}
 
 	public void render() {
@@ -28,8 +34,8 @@ public class InstructionOverlay implements Disposable {
 		batch.begin();
 		shapeRenderer.begin(ShapeType.Filled);
 
-		shapeRenderer.setColor(0.1f, 0.1f, 0.1f, 0.5f);
-		shapeRenderer.rect(0, 0, 1280, 720);
+		shapeRenderer.setColor(0.1f, 0.1f, 0.1f, 0.8f);
+		shapeRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		shapeRenderer.setColor(Color.TAN);
 		shapeRenderer.circle(50 + 90, Gdx.graphics.getHeight() - 50, 35); // top
@@ -52,19 +58,23 @@ public class InstructionOverlay implements Disposable {
 		batch.end();
 
 		batch.begin();
-		ResourceUtil.font.draw(batch, "W", 50 + 78, Gdx.graphics.getHeight() - 35); // top
-		ResourceUtil.font.draw(batch, "S", 50 + 80, Gdx.graphics.getHeight() - 35 - 90 - 90); // bottom
-		ResourceUtil.font.draw(batch, "A", 40, Gdx.graphics.getHeight() - 35 - 90); // left
-		ResourceUtil.font.draw(batch, "D", 40 + 90 + 90, Gdx.graphics.getHeight() - 35 - 90); // right
+		font.draw(batch, "W", 50 + 78, Gdx.graphics.getHeight() - 35); // top
+		font.draw(batch, "S", 50 + 80, Gdx.graphics.getHeight() - 35 - 90 - 90); // bottom
+		font.draw(batch, "A", 40, Gdx.graphics.getHeight() - 35 - 90); // left
+		font.draw(batch, "D", 40 + 90 + 90, Gdx.graphics.getHeight() - 35 - 90); // right
 
-		ResourceUtil.font.draw(batch, "Space", 30, Gdx.graphics.getHeight() - 410); // fire
-		ResourceUtil.font.draw(batch, "Fire Cannons", 50 + 80, Gdx.graphics.getHeight() - 410);
+		font.draw(batch, "Space", 30, Gdx.graphics.getHeight() - 410); // fire
+		font.draw(batch, "Fire Cannons", 50 + 80, Gdx.graphics.getHeight() - 410);
 
-		ResourceUtil.font.draw(batch, "M", 40, Gdx.graphics.getHeight() - 410 - 90); // map
-		ResourceUtil.font.draw(batch, "Toggle Map", 40 + 70, Gdx.graphics.getHeight() - 410 - 90);
+		font.draw(batch, "M", 40, Gdx.graphics.getHeight() - 410 - 90); // map
+		font.draw(batch, "Toggle Map", 40 + 70, Gdx.graphics.getHeight() - 410 - 90);
 
-		ResourceUtil.font.draw(batch, "Move Controls", 40,
-				Gdx.graphics.getHeight() - 50 - 90 - 90 - 70);
+		font.draw(batch, "Move Controls", 40, Gdx.graphics.getHeight() - 50 - 90 - 90 - 70);
+
+		// Render instructions
+		font.draw(batch, instructions, Gdx.graphics.getWidth() - instructions.width - 50,
+				Gdx.graphics.getHeight() - 50);
+
 		batch.end();
 		Gdx.gl.glDisable(GL30.GL_BLEND);
 	}
