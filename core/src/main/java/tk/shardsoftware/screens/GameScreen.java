@@ -132,8 +132,8 @@ public class GameScreen implements Screen {
 		Function<Vector2, Boolean> startPosConds = vec2 -> {
 
 			// Check the player is surrounded tile is in water
-			for (int x = (int) (vec2.x - 1); x < vec2.x + 1; x++) {
-				for (int y = (int) (vec2.y - 1); y < vec2.y + 1; y++) {
+			for (int x = (int) (vec2.x - 2); x < vec2.x + 2; x++) {
+				for (int y = (int) (vec2.y - 2); y < vec2.y + 2; y++) {
 					TileType tile = worldObj.worldMap.getTile(x, y);
 					if (tile != TileType.WATER_DEEP && tile != TileType.WATER_SHALLOW) {
 						return false;
@@ -208,13 +208,13 @@ public class GameScreen implements Screen {
 		worldObj.setGameScreen(this);
 		player = new EntityShip(worldObj);
 		player.isPlayer = true;
-		EntityAIShip exampleEnemy = new EntityAIShip(worldObj, player, 750, 75);
+//		EntityAIShip exampleEnemy = new EntityAIShip(worldObj, player, 750, 75);
 
 		worldObj.addEntity(player);
 		placeColleges();
-		exampleEnemy
-				.setPosition(new Vector2(player.getPosition().x - 20, player.getPosition().y - 20));
-		worldObj.addEntity(exampleEnemy);
+//		exampleEnemy
+//				.setPosition(new Vector2(player.getPosition().x - 20, player.getPosition().y - 20));
+//		worldObj.addEntity(exampleEnemy);
 
 		/* World Displays */
 		miniMap = new Minimap(worldObj, 25, Gdx.graphics.getHeight() - 150 - 25, 150, 150, hudBatch,
