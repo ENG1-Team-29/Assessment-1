@@ -19,7 +19,7 @@ public class EntityCannonball extends Entity {
 	private ICannonCarrier parentObj;
 
 	/** The maximum distance a cannonball can travel before stopping */
-	public float maximumTravelDist = 150f;
+	public float maximumTravelDist = 200f;
 	/** The position the cannonball started at */
 	private Vector2 startingPos;
 
