@@ -86,11 +86,12 @@ public class WorldMap {
 	}
 
 	/**
-	 * Draw the tile located at point P=(x,y). See getTile().
+	 * Draw the tile located at point P=(x,y).
 	 * 
 	 * @param x The x position of the tile
 	 * @param y The y position of the tile
 	 * @param batch The SpriteBatch that the tile is to be drawn by
+	 * @see #getTile(int, int)
 	 */
 	public void drawTile(int x, int y, SpriteBatch batch) {
 		Texture texture = this.getTile(x, y).getTex();
@@ -99,8 +100,10 @@ public class WorldMap {
 
 	/**
 	 * Searches the map based on the result of a function passed as an argument.
-	 * Accepts any Function which accepts a Vector2 as input and returns a boolean.
-	 * See GameScreen.SetPlayerStartPosition() for an example of its use
+	 * Accepts any Function which accepts a Vector2 as input and returns a
+	 * boolean.<br>
+	 * See {@link tk.shardsoftware.screens.GameScreen#setPlayerStartPosition()} for
+	 * an example of its use.
 	 *
 	 * @param searchCond A function that takes a vector2 as input and returns either
 	 *        true or false based on whether that position is valid
@@ -108,7 +111,6 @@ public class WorldMap {
 	 *         the search conditions (i.e searchCond returns true), or null if no
 	 *         such position exists.
 	 */
-
 	public Vector2 searchMap(Function<Vector2, Boolean> searchCond) {
 		// Generate a 2D array containing every location on the map, then shuffle it so
 		// that our start position is randomised.
