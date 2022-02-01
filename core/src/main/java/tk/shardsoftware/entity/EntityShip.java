@@ -25,6 +25,7 @@ public class EntityShip extends Entity implements ICannonCarrier, IRepairable {
 
 	private float health = maxHealth;
 
+	/** @param worldObj the World object the ship belongs to */
 	public EntityShip(World worldObj) {
 		super(worldObj, 0, 0, 50, 50);
 		this.setTexture("textures/entity/playership.png");
@@ -32,11 +33,11 @@ public class EntityShip extends Entity implements ICannonCarrier, IRepairable {
 		this.setHitboxScale(0.39f);
 	}
 
-	public String getCollegeName(){
+	public String getCollegeName() {
 		return this.collegeName;
 	}
 
-	public void setCollegeName(String name){
+	public void setCollegeName(String name) {
 		this.collegeName = name;
 	}
 
@@ -62,6 +63,13 @@ public class EntityShip extends Entity implements ICannonCarrier, IRepairable {
 		return this;
 	}
 
+	/**
+	 * Rotates the ship towards a specific angle. Depending on the distance, it will
+	 * rotate either clockwise or counterclockwise - whichever is shorter.
+	 * 
+	 * @param goalAngle the desired angle of the ship
+	 * @param delta the time elapsed since the last update
+	 */
 	public void rotateTowardsGoal(float goalAngle, float delta) {
 		delta *= 60; // normalize to 60fps
 		float angle = getDirection();
@@ -73,7 +81,6 @@ public class EntityShip extends Entity implements ICannonCarrier, IRepairable {
 		if (angle <= 90 && goalAngle >= 270) goalAngle -= 360;
 		if (angle >= 270 && goalAngle <= 90) goalAngle += 360;
 		if (angle > 180 && goalAngle < 90) goalAngle += 360;
-
 
 		if (angle != goalAngle) {
 			// delta * 2deg/s
@@ -99,10 +106,15 @@ public class EntityShip extends Entity implements ICannonCarrier, IRepairable {
 		// Reload
 		timeUntilFire += reloadTime;
 		// Play sfx
-		SoundManager.playSound(cannonSfx,8);
+		SoundManager.playSound(cannonSfx, 8);
 		return true;
 	}
 
+	/**
+	 * Spawns a cannonball on the side of the ship
+	 * 
+	 * @param rightOrLeft {@code true} for right, {@code false} for left
+	 */
 	private void fireCannonball(boolean rightOrLeft) {
 		Vector2 center = getCenterPoint();
 
@@ -140,7 +152,7 @@ public class EntityShip extends Entity implements ICannonCarrier, IRepairable {
 	public void damage(float dmgAmount) {
 		health -= dmgAmount;
 		health = health < 0 ? 0 : health;
-		if(health <= 0) {
+		if (health <= 0) {
 			this.remove = true;
 		}
 	}

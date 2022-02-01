@@ -8,7 +8,7 @@ import tk.shardsoftware.World;
 import tk.shardsoftware.util.ResourceUtil;
 
 /**
- * To be used for any object in the world that moves
+ * To be used for any object in the world that moves or is interactable
  * 
  * @author James Burnell
  */
@@ -43,11 +43,12 @@ public abstract class Entity {
 
 	/**
 	 * Constructor for Entity.
-	 * @param worldObj World object that the entity will be part of - World
-	 * @param x x-position of the entity -int
-	 * @param y y-position of the entity - int
-	 * @param w width of the entity - int
-	 * @param h height of the entity - int
+	 * 
+	 * @param worldObj World object that the entity will be part of
+	 * @param x        x-position of the entity
+	 * @param y        y-position of the entity
+	 * @param w        width of the entity
+	 * @param h        height of the entity
 	 */
 	protected Entity(World worldObj, float x, float y, float w, float h) {
 		this(worldObj, w, h);
@@ -56,9 +57,10 @@ public abstract class Entity {
 
 	/**
 	 * Constructor for Entity.
-	 * @param worldObj World object that the entity will be part of - World
-	 * @param w width of the entity - int
-	 * @param h height of the entity - int
+	 * 
+	 * @param worldObj World object that the entity will be part of
+	 * @param w        width of the entity
+	 * @param h        height of the entity
 	 */
 	protected Entity(World worldObj, float w, float h) {
 		// If texture is unset, use null
@@ -89,15 +91,18 @@ public abstract class Entity {
 
 	/**
 	 * Get the Texture of the entity
-	 * @return a TextureRegion - the entity's texture
+	 * 
+	 * @return The entity's texture
 	 */
 	public TextureRegion getTexture() {
 		return texture;
 	}
 
 	/**
-	 * Set the scale of the entity's hitbox relative to its size (useful if the texture you are using doesn't match the hitbox)
-	 * @param hbScale float - the new scale of the hitbox
+	 * Set the scale of the entity's hitbox relative to its size (useful if the
+	 * texture you are using doesn't match the hitbox)
+	 * 
+	 * @param hbScale the new scale of the hitbox
 	 */
 	public void setHitboxScale(float hbScale) {
 		this.hitboxScale = hbScale;
@@ -106,7 +111,8 @@ public abstract class Entity {
 
 	/**
 	 * Get the scale of the entity's hitbox
-	 * @return float the scale of the entity's hitbox
+	 * 
+	 * @return The scale of the entity's hitbox
 	 */
 	public float getHitboxScale() {
 		return this.hitboxScale;
@@ -177,8 +183,9 @@ public abstract class Entity {
 
 	/**
 	 * Check if the entity's hitbox collides with another hitbox.
+	 * 
 	 * @param nextHitbox The other hitbox
-	 * @return boolean
+	 * @return {@code true} if collided, {@code false} otherwise
 	 */
 	public boolean testCollision(Rectangle nextHitbox) {
 		// TODO: Change to bounding-box hierarchy if performance is too low
@@ -229,7 +236,8 @@ public abstract class Entity {
 
 	/**
 	 * Get the direction of the entity
-	 * @return float- the direction of the entity
+	 * 
+	 * @return The direction of the entity
 	 */
 	public float getDirection() {
 		return direction;
@@ -282,6 +290,7 @@ public abstract class Entity {
 		return hitbox;
 	}
 
+	/** Synchronizes the hitbox with the position of the entity */
 	public void updateHitbox() {
 		hitbox.setWidth(width * hitboxScale);
 		hitbox.setHeight(height * hitboxScale);

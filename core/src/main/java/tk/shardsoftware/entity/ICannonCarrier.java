@@ -4,12 +4,15 @@
 package tk.shardsoftware.entity;
 
 /**
+ * Defines what an object with cannons should be able to do
+ * 
  * @author James Burnell
  */
 public interface ICannonCarrier {
 
 	/**
 	 * Fires all cannons.
+	 * 
 	 * @return {@code true} if spawned cannonballs, {@code false} if still reloading
 	 */
 	public boolean fireCannons();

@@ -1,9 +1,9 @@
 package tk.shardsoftware.entity;
 
+import java.util.function.Function;
+
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
-
-import java.util.function.Function;
 
 import tk.shardsoftware.TileType;
 import tk.shardsoftware.World;
@@ -47,66 +47,70 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 		}
 	}
 
-
+	/**
+	 * Spawns a new ship close to the college.
+	 * 
+	 * @return {@code true} if successfully spawned ship, {@code false} otherwise
+	 */
 	public boolean spawnShip() {
 
-		//don't spawn if on cooldown or if a friendly college
+		// don't spawn if on cooldown or if a friendly college
 		if (timeUntilNextShipSpawn > 0 || isFriendly) return false;
 		int tileSize = worldObj.worldMap.tile_size;
 		Function<Vector2, Boolean> shipPosConds = vector2 -> {
 
-			TileType tile = worldObj.worldMap.getTile((int)vector2.x,(int)vector2.y);
-			//Check the tile is in water
-			if(tile != TileType.WATER_DEEP && tile != TileType.WATER_SHALLOW){
+			TileType tile = worldObj.worldMap.getTile((int) vector2.x, (int) vector2.y);
+			// Check the tile is in water
+			if (tile != TileType.WATER_DEEP && tile != TileType.WATER_SHALLOW) {
 				return false;
 			}
-			//Check the position is neither too far or too close to the college
-			int tileX = (int)vector2.x * tileSize;
-			int tileY = (int)vector2.y * tileSize;
-			float distFromCollege = this.getPosition().dst(tileX,tileY);
-			if(distFromCollege > 275 || distFromCollege < 50){
+			// Check the position is neither too far or too close to the college
+			int tileX = (int) vector2.x * tileSize;
+			int tileY = (int) vector2.y * tileSize;
+			float distFromCollege = this.getPosition().dst(tileX, tileY);
+			if (distFromCollege > 275 || distFromCollege < 50) {
 				return false;
 			}
 			return true;
 		};
 		Vector2 startPos = worldObj.worldMap.searchMap(shipPosConds);
-		startPos = new Vector2(startPos.x * tileSize, startPos.y*tileSize);
-		if(startPos == null){
-			return false;
-		}
+		// If nothing was found, stop processing
+		if (startPos == null) return false;
+
+		startPos = new Vector2(startPos.x * tileSize, startPos.y * tileSize);
 		timeUntilNextShipSpawn += shipSpawnWaitTime;
-		EntityAIShip ship = new EntityAIShip(worldObj,player);
+		EntityAIShip ship = new EntityAIShip(worldObj, player);
 		ship.setPosition(startPos);
 		worldObj.addEntity(ship);
 		return true;
 	}
 
-	public boolean fireCannons(){
-		//If friendly then don't attack the player.
-		//TODO: Make friendly colleges attack enemy ships
-		if(isFriendly){
+	public boolean fireCannons() {
+		// If friendly then don't attack the player.
+		// TODO: Make friendly colleges attack enemy ships
+		if (isFriendly) {
 			return false;
 		}
 
 		// Do not fire if still reloading
 		if (timeUntilFire > 0) return false;
-		//Do not fire if too far away from the player
+		// Do not fire if too far away from the player
 		Vector2 center = getCenterPoint();
 		Vector2 playerPos = player.getPosition();
 		float distFromPlayer = center.dst(playerPos);
-		if(distFromPlayer > fireDistance){
+		if (distFromPlayer > fireDistance) {
 			return false;
 		}
 
 		// Reload
 		timeUntilFire += reloadTime;
 		// Play sfx
-		SoundManager.playSound(cannonSfx,8);
+		SoundManager.playSound(cannonSfx, 8);
 
-		for(int i = -2; i < 2; i++){
-			for(int j = -2; j < 2; j++){
-				if(!(i==0 &&j==0)){ //if i and j ==0 then the cannonball doesn't move
-					Vector2 dirVec = new Vector2(i,j);
+		for (int i = -2; i < 2; i++) {
+			for (int j = -2; j < 2; j++) {
+				if (!(i == 0 && j == 0)) { // if i and j ==0 then the cannonball doesn't move
+					Vector2 dirVec = new Vector2(i, j);
 
 					float xPos = center.x + dirVec.x;
 					float yPos = center.y + dirVec.y;
@@ -135,13 +139,12 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 		return 10;
 	}
 
-
-
 	/**
-	 * Increases the health of the College by 'repairAmount'. See IRepairable
+	 * Increases the health of the College by 'repairAmount'.
 	 * 
 	 * @param repairAmount the amount of health for the College's health to be
-	 *                     increased by
+	 *        increased by
+	 * 
 	 */
 	public void repair(float repairAmount) {
 		this.health = this.health + repairAmount;
@@ -151,7 +154,7 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 	}
 
 	/**
-	 * Gets the current health of the College. See IDamageable
+	 * Gets the current health of the College.
 	 * 
 	 * @return current health of the College.
 	 */
@@ -160,7 +163,7 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 	}
 
 	/**
-	 * Gets the current maxHealth of the College. See IDamageable
+	 * Gets the current maxHealth of the College.
 	 * 
 	 * @return current maxHealth of the College.
 	 */
@@ -168,7 +171,7 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 		return this.maxHealth;
 	}
 
-	public void update(float delta){
+	public void update(float delta) {
 		timeUntilFire -= delta;
 		timeUntilNextShipSpawn -= delta;
 		timeUntilNextShipSpawn = timeUntilNextShipSpawn <= 0 ? 0 : timeUntilNextShipSpawn;
@@ -188,12 +191,13 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 	 * Constructor for College
 	 * 
 	 * @param worldObj A valid worldObj that the college will be located in
-	 * @param x        The x-position of the entity on creation
-	 * @param y        The y-position of the entity on creation
-	 * @param w        The width of the entity in pixels
-	 * @param h        The height of the entity in pixels
+	 * @param x The x-position of the entity on creation
+	 * @param y The y-position of the entity on creation
+	 * @param w The width of the entity in pixels
+	 * @param h The height of the entity in pixels
 	 */
-	public College(World worldObj, String collegeName, float x, float y, int w, int h, EntityShip player) {
+	public College(World worldObj, String collegeName, float x, float y, int w, int h,
+			EntityShip player) {
 		super(worldObj, x, y, w, h);
 		this.setTexture(collegeTexturePath);
 		this.collegeName = collegeName;
