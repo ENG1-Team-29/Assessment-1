@@ -47,6 +47,17 @@ public abstract class SoundManager {
 		sound.play(gameVolume * volume);
 	}
 
+	/**
+	 * Plays music with the global volume. Won't play if the game is muted.
+	 * 
+	 * @param music the music to play
+	 */
+	public static void playMusic(Music music) {
+		if (isMuted) return;
+		music.play();
+		music.setVolume(gameVolume);
+	}
+
 	/** Mutes the game volume */
 	public static void muteVolume() {
 		lastGameVolume = gameVolume;
@@ -64,14 +75,14 @@ public abstract class SoundManager {
 				public void onCompletion(Music music) {
 					currentSongIndex = (currentSongIndex + 1) % songs.length;
 					System.out.println("Song Finished. Now playing song " + currentSongIndex);
-					songs[currentSongIndex].play();
+					playMusic(songs[currentSongIndex]);
 				}
 			});
 		}
 		// Choose a random song in the list and play it
 		currentSongIndex = new Random().nextInt(songs.length);
 		Gdx.app.log("SoundManager", "Playing song " + currentSongIndex);
-		songs[currentSongIndex].play();
+		playMusic(songs[currentSongIndex]);
 	}
 
 	/** Stops all music playing */
