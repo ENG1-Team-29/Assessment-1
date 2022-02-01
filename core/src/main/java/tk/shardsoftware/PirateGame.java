@@ -10,10 +10,7 @@ import tk.shardsoftware.util.ResourceUtil;
 
 public class PirateGame extends Game {
 
-
-
 	public AssetManager assets;
-	static GameScreen currentGameScreen;
 
 	@Override
 	public void create() {
@@ -26,25 +23,15 @@ public class PirateGame extends Game {
 		openNewGameScreen();
 	}
 
-
-
-
-
-
-
-
-
-
 	public void openNewGameScreen() {
-		this.currentGameScreen = new GameScreen(assets,this);
-		this.setScreen(currentGameScreen);
+		this.setScreen(new GameScreen(assets, this));
 	}
 
-	public void openNewLossScreen(){
+	public void openNewLossScreen() {
 		this.setScreen(new LossScreen(assets, this));
 	}
 
-	public void openNewVictoryScreen(){
+	public void openNewVictoryScreen() {
 		this.setScreen(new VictoryScreen(assets, this));
 	}
 
