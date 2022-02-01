@@ -5,7 +5,6 @@ import static tk.shardsoftware.util.ResourceUtil.collegeFont;
 import static tk.shardsoftware.util.ResourceUtil.debugFont;
 import static tk.shardsoftware.util.ResourceUtil.font;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -35,7 +34,6 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-
 import tk.shardsoftware.PirateGame;
 import tk.shardsoftware.TileType;
 import tk.shardsoftware.World;
@@ -50,7 +48,6 @@ import tk.shardsoftware.util.DebugUtil;
 import tk.shardsoftware.util.Minimap;
 import tk.shardsoftware.util.ResourceUtil;
 import tk.shardsoftware.util.SoundManager;
-
 
 /**
  * Handles game controls, rendering, and logic
@@ -99,58 +96,53 @@ public class GameScreen implements Screen {
 
 	/** Textures for toggle sound button */
 	private Drawable soundEnabledTexture = new TextureRegionDrawable(
-				new TextureRegion(ResourceUtil.getTexture("textures/ui/sound-enabled.png")));
+			new TextureRegion(ResourceUtil.getTexture("textures/ui/sound-enabled.png")));
 	private Drawable soundDisabledTexture = new TextureRegionDrawable(
 			new TextureRegion(ResourceUtil.getTexture("textures/ui/sound-disabled.png")));
-
 
 	/** Toggle sound button */
 	private ImageButton soundButton;
 
-	public void addPlunder(int p){
+	public void addPlunder(int p) {
 		plunder = plunder + p;
 	}
 
-
 	/**
-	 * 	 * Search the world map for a region that contains only water to spawn the
-	 * 	 * player in. Once this has been found, it will set the player position to this
-	 * 	 * location.
+	 * Search the world map for a region that contains only water to spawn the *
+	 * player in. Once this has been found, it will set the player position to this
+	 * location.
 	 */
 	public void setPlayerStartPosition() {
 		College playerCollege = CollegeManager.getCollegeWithName(player.getCollegeName());
-		if(playerCollege == null){
+		if (playerCollege == null) {
 			return;
 		}
 
 		Vector2 cPos = playerCollege.getPosition();
 		int tileSize = worldObj.worldMap.tile_size;
 		Function<Vector2, Boolean> startPosConds = vector2 -> {
-			TileType tile = worldObj.worldMap.getTile((int)vector2.x,(int)vector2.y);
+			TileType tile = worldObj.worldMap.getTile((int) vector2.x, (int) vector2.y);
 
-			//Check the tile is in water
-			if(tile != TileType.WATER_DEEP && tile != TileType.WATER_SHALLOW){
+			// Check the tile is in water
+			if (tile != TileType.WATER_DEEP && tile != TileType.WATER_SHALLOW) {
 				return false;
 			}
 
-			//Check the tile is neither too far or too close to the college
-			int tileX = (int)vector2.x * tileSize;
-			int tileY = (int)vector2.y * tileSize;
-			float distFromCollege = cPos.dst(tileX,tileY);
-			if(distFromCollege > 275 || distFromCollege < 100){
+			// Check the tile is neither too far or too close to the college
+			int tileX = (int) vector2.x * tileSize;
+			int tileY = (int) vector2.y * tileSize;
+			float distFromCollege = cPos.dst(tileX, tileY);
+			if (distFromCollege > 275 || distFromCollege < 100) {
 				return false;
 			}
 			return true;
 		};
 
-
-
-
 		Vector2 startPos = worldObj.worldMap.searchMap(startPosConds);
 
-		startPos = new Vector2(startPos.x*tileSize, startPos.y*tileSize);
+		startPos = new Vector2(startPos.x * tileSize, startPos.y * tileSize);
 
-		//Vector2 startPos = new Vector2(cPos.x*tileSize, cPos.y*tileSize);
+		// Vector2 startPos = new Vector2(cPos.x*tileSize, cPos.y*tileSize);
 
 		System.out.println("Start Position: " + startPos);
 		player.setPosition(startPos);
@@ -158,6 +150,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Constructor for GameScreen.
+	 * 
 	 * @param assets Unused. Instance of AssetManager.
 	 */
 	public GameScreen(AssetManager assets, PirateGame pg) {
@@ -175,9 +168,10 @@ public class GameScreen implements Screen {
 		collegeDestroyTxtLayout = new GlyphLayout();
 		instOverlay = new InstructionOverlay(hudBatch);
 		instOverlay.shouldDisplay = false;
-		soundButton = new ImageButton(soundEnabledTexture,soundDisabledTexture,soundDisabledTexture);
-		soundButton.setSize(Gdx.graphics.getWidth()/5, Gdx.graphics.getHeight()/5);
-		soundButton.setPosition((float)(Gdx.graphics.getWidth()*0.85),0);
+		soundButton = new ImageButton(soundEnabledTexture, soundDisabledTexture,
+				soundDisabledTexture);
+		soundButton.setSize(Gdx.graphics.getWidth() / 5, Gdx.graphics.getHeight() / 5);
+		soundButton.setPosition((float) (Gdx.graphics.getWidth() * 0.85), 0);
 		soundButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				SoundManager.toggleMute();
@@ -188,10 +182,10 @@ public class GameScreen implements Screen {
 		worldObj.setGameScreen(this);
 		player = new EntityShip(worldObj);
 		player.isPlayer = true;
-		EntityAIShip exampleEnemy = new EntityAIShip(worldObj, player,750,75);
+		EntityAIShip exampleEnemy = new EntityAIShip(worldObj, player, 750, 75);
 
-		miniMap = new Minimap(worldObj, 25, Gdx.graphics.getHeight() - 150 - 25, 150, 150,
-				hudBatch,stage);
+		miniMap = new Minimap(worldObj, 25, Gdx.graphics.getHeight() - 150 - 25, 150, 150, hudBatch,
+				stage);
 		worldObj.addEntity(player);
 		placeColleges();
 		exampleEnemy
@@ -200,33 +194,34 @@ public class GameScreen implements Screen {
 
 		boatWaterMovement = ResourceUtil.getSound("audio/entity/boat-water-movement.wav");
 		ambientOcean = ResourceUtil.getSound("audio/ambient/ocean.wav");
-		cDisplay = new ChooseCollegeDisplay(worldObj,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),batch,stage, CollegeManager.collegeList, this);
+		cDisplay = new ChooseCollegeDisplay(worldObj, 0, 0, Gdx.graphics.getWidth(),
+				Gdx.graphics.getHeight(), batch, stage, CollegeManager.collegeList, this);
 
 	}
 
 	/**
-	 * Starts a timer that increments points, starts playing music and ambient noise.
+	 * Starts a timer that increments points, starts playing music and ambient
+	 * noise.
 	 */
 
-	public void setPlayerCollege(String collegeName){
+	public void setPlayerCollege(String collegeName) {
 		player.setCollegeName(collegeName);
 		setPlayerStartPosition();
 		CollegeManager.setFriendlyCollege(collegeName);
 	}
-
-
 
 	@Override
 	public void show() {
 		soundIdBoatMovement = boatWaterMovement.loop(0);
 		ambientOcean.loop(SoundManager.gameVolume);
 
-		// Increase the points by 1 every second and check whether college cannons should fire
+		// Increase the points by 1 every second and check whether college cannons
+		// should fire
 		Timer.schedule(new Task() {
 			public void run() {
 				pointTxtLayout.setText(font, "Points: " + (++points));
 				plunderTxtLayout.setText(font, "Plunder: " + plunder);
-				for(College c : CollegeManager.collegeList) {
+				for (College c : CollegeManager.collegeList) {
 					c.fireCannons();
 					c.spawnShip();
 				}
@@ -236,23 +231,25 @@ public class GameScreen implements Screen {
 	}
 
 	/**
-	 * Restarts the game, generating a new map with colleges, clearing entities e.t.c.
+	 * Restarts the game, generating a new map with colleges, clearing entities
+	 * e.t.c.
 	 */
-	public void Restart(){
+	public void Restart() {
 		worldObj.clearEntities();
 		player = new EntityShip(worldObj);
 		worldObj.addEntity(player);
-		worldObj.worldMap.buildWorld(MathUtils.random.nextLong()); //generate a new map with a random seed
+		worldObj.worldMap.buildWorld(MathUtils.random.nextLong()); // generate a new map with a
+																	// random seed
 		placeColleges();
 		miniMap.prepareMap();
-		cDisplay = new ChooseCollegeDisplay(worldObj,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),batch,stage, CollegeManager.collegeList,this);
+		cDisplay = new ChooseCollegeDisplay(worldObj, 0, 0, Gdx.graphics.getWidth(),
+				Gdx.graphics.getHeight(), batch, stage, CollegeManager.collegeList, this);
 		cDisplay.prepareMap();
 		setPlayerStartPosition();
 		points = 0;
 		worldObj.destroyedColleges = 0;
 		SoundManager.isMuted = false;
 	}
-
 
 	/**
 	 * Calculates the goal angle of the player ship based on user input. If no input
@@ -308,17 +305,19 @@ public class GameScreen implements Screen {
 	private int targetFPS = 60;
 
 	/**
-	 * Calls College.generateColleges(), generating the colleges on the map, and adds them to the entity handler.
+	 * Calls College.generateColleges(), generating the colleges on the map, and
+	 * adds them to the entity handler.
 	 */
-	public void placeColleges(){
-		CollegeManager.generateColleges(worldObj,5,50, player);
-		for(College c : CollegeManager.collegeList){
+	public void placeColleges() {
+		CollegeManager.generateColleges(worldObj, 5, 50, player);
+		for (College c : CollegeManager.collegeList) {
 			worldObj.addEntity(c);
 		}
 	}
 
 	/**
 	 * Handles user input
+	 * 
 	 * @param delta time since the last frame
 	 */
 	public void controls(float delta) {
@@ -331,7 +330,7 @@ public class GameScreen implements Screen {
 			player.rotateTowardsGoal(goalAngle, delta);
 		}
 
-		if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
 			player.fireCannons();
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
@@ -345,7 +344,7 @@ public class GameScreen implements Screen {
 
 		if (DEBUG_MODE) {
 			// Instantly halt the player movement
-			if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+			if (Gdx.input.isKeyPressed(Input.Keys.K)) {
 				player.getVelocity().setZero();
 			}
 			if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_ADD)) {
@@ -357,30 +356,27 @@ public class GameScreen implements Screen {
 			if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
 				Restart();
 			}
-			if (Gdx.input.isKeyJustPressed(Input.Keys.N)){
-				DebugUtil.damageAllEntities(worldObj, 5); //cause 5 damage to all entities
+			if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
+				DebugUtil.damageAllEntities(worldObj, 5); // cause 5 damage to all entities
 			}
-
 
 		}
 
 	}
 
-
-
 	/**
 	 * Renders the game.
+	 * 
 	 * @param delta time since the last frame.
 	 */
 	@Override
 	public void render(float delta) {
-		if(player.getCollegeName() == null){
+		if (player.getCollegeName() == null) {
 			hudBatch.begin();
 			cDisplay.drawChooseCollegeDisplay(hudBatch);
 			hudBatch.end();
 			return;
 		}
-
 
 		DebugUtil.saveProcessTime("Logic Time", () -> {
 			controls(delta);
@@ -405,11 +401,10 @@ public class GameScreen implements Screen {
 		DebugUtil.saveProcessTime("Reload Info Render", () -> {
 			if (player.timeUntilFire > 0) {
 				batch.begin();
-				float p = player.timeUntilFire / player.reloadTime; //time the bar should lerp by
+				float p = player.timeUntilFire / player.reloadTime; // time the bar should lerp by
 				Vector2 start = new Vector2(player.getX(), player.getY() - 5);
-				Vector2 end = new Vector2(player.getX() + player.getWidth(),
-						player.getY() - 5);
-				Bar.drawBar(batch,shapeRenderer,start,end,p);
+				Vector2 end = new Vector2(player.getX() + player.getWidth(), player.getY() - 5);
+				Bar.drawBar(batch, shapeRenderer, start, end, p);
 				batch.end();
 			}
 		});
@@ -421,7 +416,7 @@ public class GameScreen implements Screen {
 		hudBatch.begin();
 		miniMap.drawMap(hudBatch, player.getPosition()); // <1% draw time, no point measuring
 		if (DEBUG_MODE) DebugUtil.saveProcessTime("Debug HUD Draw Time", () -> {
-			renderDebug(DebugUtil.generateDebugStrings(player,worldObj,goalAngle));
+			renderDebug(DebugUtil.generateDebugStrings(player, worldObj, goalAngle));
 			debugFont.draw(hudBatch, "@", 1280 / 2 - 5, 720 / 2 + 5);
 
 		});
@@ -431,16 +426,17 @@ public class GameScreen implements Screen {
 			font.draw(hudBatch, pointTxtLayout, Gdx.graphics.getWidth() - pointTxtLayout.width - 20,
 					Gdx.graphics.getHeight() - 20);
 
-			font.draw(hudBatch,plunderTxtLayout,Gdx.graphics.getWidth()-plunderTxtLayout.width-20,
-					Gdx.graphics.getHeight()-60);
+			font.draw(hudBatch, plunderTxtLayout,
+					Gdx.graphics.getWidth() - plunderTxtLayout.width - 20,
+					Gdx.graphics.getHeight() - 60);
 
-			font.draw(hudBatch, remainingCollegeTxtLayout, Gdx.graphics.getWidth() - remainingCollegeTxtLayout.width - 20, Gdx.graphics.getHeight()-100);
+			font.draw(hudBatch, remainingCollegeTxtLayout,
+					Gdx.graphics.getWidth() - remainingCollegeTxtLayout.width - 20,
+					Gdx.graphics.getHeight() - 100);
 
-
-
-			if(displayCollegeDestroyTxt) font.draw(hudBatch, collegeDestroyTxtLayout, 
-					(Gdx.graphics.getWidth() - collegeDestroyTxtLayout.width)/2, 
-					(Gdx.graphics.getHeight() - collegeDestroyTxtLayout.height)/2);
+			if (displayCollegeDestroyTxt) font.draw(hudBatch, collegeDestroyTxtLayout,
+					(Gdx.graphics.getWidth() - collegeDestroyTxtLayout.width) / 2,
+					(Gdx.graphics.getHeight() - collegeDestroyTxtLayout.height) / 2);
 
 		});
 
@@ -465,6 +461,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Renders the debug HUD
+	 * 
 	 * @param debugList List of strings to be drawn on the debug HUD
 	 */
 	private void renderDebug(List<String> debugList) {
@@ -480,60 +477,63 @@ public class GameScreen implements Screen {
 			// batch.draw(e.getTexture(), e.getPosition().x, e.getPosition().y,
 			// e.getHitbox().width, e.getHitbox().height);
 
-			//We draw the college name above it
-			if(e instanceof College){
+			// We draw the college name above it
+			if (e instanceof College) {
 				String cName = ((College) e).getName();
 
-				//Get the width of the text after we draw it
+				// Get the width of the text after we draw it
 				GlyphLayout gLayout = new GlyphLayout();
-				gLayout.setText(collegeFont,cName);
+				gLayout.setText(collegeFont, cName);
 				float w = gLayout.width;
 
-				if(((College) e).isFriendly){
+				if (((College) e).isFriendly) {
 					collegeFont.setColor(Color.BLUE);
-				}else{
+				} else {
 					collegeFont.setColor(Color.WHITE);
 				}
 
-				collegeFont.draw(batch,cName,e.getX(),e.getY()-10);
+				collegeFont.draw(batch, cName, e.getX(), e.getY() - 10);
 			}
 			// Draw each entity with its own texture and apply rotation
 			batch.draw(e.getTexture(), e.getX(), e.getY(), e.getWidth() / 2, e.getHeight() / 2,
 					e.getWidth(), e.getHeight(), 1, 1, e.getDirection(), false);
-			if(e instanceof IDamageable){
-				IDamageable eDamageable = ((IDamageable) e); //cast to IDamageable so we can get the health value
+			if (e instanceof IDamageable) {
+				IDamageable eDamageable = ((IDamageable) e); // cast to IDamageable so we can get
+																// the health value
 				float health = eDamageable.getHealth();
 				float maxHealth = eDamageable.getMaxHealth();
-				if(health < maxHealth){
-					Bar.drawBar(batch,shapeRenderer,new Vector2(e.getX(),e.getY()+e.getHeight()),
-							new Vector2(e.getX()+e.getWidth(),e.getY()+e.getHeight()), 1-(health/maxHealth), Color.BLACK, Color.RED);
+				if (health < maxHealth) {
+					Bar.drawBar(batch, shapeRenderer,
+							new Vector2(e.getX(), e.getY() + e.getHeight()),
+							new Vector2(e.getX() + e.getWidth(), e.getY() + e.getHeight()),
+							1 - (health / maxHealth), Color.BLACK, Color.RED);
 				}
 			}
 		});
 		collegeFont.setColor(originalFontColor);
 	}
 
-
-
 	/**
 	 * Any logical processing that needs to occur in the game
+	 * 
 	 * @param delta time since the last frame
 	 */
 	private void logic(float delta) {
-		//Check if the player has lost the game, and if so open a loss screen
-		if(player.getHealth() <= 0){
+		// Check if the player has lost the game, and if so open a loss screen
+		if (player.getHealth() <= 0) {
 			SoundManager.stopMusic();
 			pg.openNewLossScreen();
 		}
-		
-		if(worldObj.getRemainingColleges() <= 1) {
+
+		if (worldObj.getRemainingColleges() <= 1) {
 			SoundManager.stopMusic();
 			pg.openNewWinScreen();
 		}
 
 		worldObj.update(delta);
-		
-		remainingCollegeTxtLayout.setText(font, "Remaining Colleges: " + (worldObj.getRemainingColleges()-1));
+
+		remainingCollegeTxtLayout.setText(font,
+				"Remaining Colleges: " + (worldObj.getRemainingColleges() - 1));
 
 		lerpCamera(player.getCenterPoint(), 0.04f, delta);
 
@@ -579,7 +579,8 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Resize the game camera.
-	 * @param width new width of the window
+	 * 
+	 * @param width  new width of the window
 	 * @param height new height of the window
 	 */
 	@Override
@@ -591,11 +592,14 @@ public class GameScreen implements Screen {
 		// hudBatch.setProjectionMatrix();
 		shapeRenderer.setProjectionMatrix(camera.combined);
 	}
-	
-	/** Called when a college is destroyed 
-	 * @param college the destroyed college */
+
+	/**
+	 * Called when a college is destroyed
+	 * 
+	 * @param college the destroyed college
+	 */
 	public void onCollegeDestroyed(College college) {
-		collegeDestroyTxtLayout.setText(font, "Victory Over "+college.getName()+" College!");
+		collegeDestroyTxtLayout.setText(font, "Victory Over " + college.getName() + " College!");
 		displayCollegeDestroyTxt = true;
 		Timer.schedule(new Task() {
 			public void run() {

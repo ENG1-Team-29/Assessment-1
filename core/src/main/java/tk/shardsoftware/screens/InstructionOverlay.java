@@ -37,7 +37,8 @@ public class InstructionOverlay implements Disposable {
 		shapeRenderer.circle(50 + 90 + 90, Gdx.graphics.getHeight() - 50 - 90, 35); // right
 		shapeRenderer.circle(50 + 90, Gdx.graphics.getHeight() - 50 - 90 - 90, 35); // bottom
 
-		shapeRenderer.circle(50, Gdx.graphics.getHeight() - 420, 35); // fire
+		// shapeRenderer.circle(50, Gdx.graphics.getHeight() - 420, 35); // fire
+		shapeRenderer.rect(15, Gdx.graphics.getHeight() - 420 - 30, 100, 50);
 
 		shapeRenderer.circle(50, Gdx.graphics.getHeight() - 420 - 90, 35); // map
 
@@ -56,8 +57,8 @@ public class InstructionOverlay implements Disposable {
 		ResourceUtil.font.draw(batch, "A", 40, Gdx.graphics.getHeight() - 35 - 90); // left
 		ResourceUtil.font.draw(batch, "D", 40 + 90 + 90, Gdx.graphics.getHeight() - 35 - 90); // right
 
-		ResourceUtil.font.draw(batch, "F", 45, Gdx.graphics.getHeight() - 410); // fire
-		ResourceUtil.font.draw(batch, "Fire Cannons", 40 + 70, Gdx.graphics.getHeight() - 410);
+		ResourceUtil.font.draw(batch, "Space", 30, Gdx.graphics.getHeight() - 410); // fire
+		ResourceUtil.font.draw(batch, "Fire Cannons", 50 + 80, Gdx.graphics.getHeight() - 410);
 
 		ResourceUtil.font.draw(batch, "M", 40, Gdx.graphics.getHeight() - 410 - 90); // map
 		ResourceUtil.font.draw(batch, "Toggle Map", 40 + 70, Gdx.graphics.getHeight() - 410 - 90);
