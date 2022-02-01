@@ -123,19 +123,22 @@ public class GameScreen implements Screen {
 		}
 
 		Vector2 cPos = playerCollege.getPosition();
-		int tileSize = worldObj.worldMap.tile_size;
 		// FIXME: Player doesn't always spawn in water
-		Function<Vector2, Boolean> startPosConds = vector2 -> {
-			TileType tile = worldObj.worldMap.getTile((int) vector2.x, (int) vector2.y);
+		Function<Vector2, Boolean> startPosConds = vec2 -> {
 
-			// Check the tile is in water
-			if (tile != TileType.WATER_DEEP && tile != TileType.WATER_SHALLOW) {
-				return false;
+			// Check the player is surrounded tile is in water
+			for (int x = (int) (vec2.x - 1); x < vec2.x + 1; x++) {
+				for (int y = (int) (vec2.y - 1); y < vec2.y + 1; y++) {
+					TileType tile = worldObj.worldMap.getTile(x, y);
+					if (tile != TileType.WATER_DEEP && tile != TileType.WATER_SHALLOW) {
+						return false;
+					}
+				}
 			}
 
 			// Check the tile is neither too far or too close to the college
-			int tileX = (int) vector2.x * tileSize;
-			int tileY = (int) vector2.y * tileSize;
+			int tileX = (int) vec2.x * World.WORLD_TILE_SIZE;
+			int tileY = (int) vec2.y * World.WORLD_TILE_SIZE;
 			float distFromCollege = cPos.dst(tileX, tileY);
 			if (distFromCollege > 275 || distFromCollege < 100) {
 				return false;
@@ -145,7 +148,8 @@ public class GameScreen implements Screen {
 
 		Vector2 startPos = worldObj.worldMap.searchMap(startPosConds);
 
-		startPos = new Vector2(startPos.x * tileSize, startPos.y * tileSize);
+		startPos = new Vector2(startPos.x * World.WORLD_TILE_SIZE,
+				startPos.y * World.WORLD_TILE_SIZE);
 
 		// Vector2 startPos = new Vector2(cPos.x*tileSize, cPos.y*tileSize);
 
