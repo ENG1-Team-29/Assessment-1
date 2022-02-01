@@ -214,6 +214,7 @@ public class College extends Entity implements IRepairable, ICannonCarrier {
 		this.setTexture(collegeTexturePath);
 		this.collegeName = collegeName;
 		this.player = player;
+		this.setHitboxScale(0.8f);
 	}
 
 	public void onRemove() {
