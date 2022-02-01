@@ -9,12 +9,15 @@ another privateer, or destroyed by a rival College), or when the player has achi
 objective.
 
 ## How to Install and Run the Project
-Java 11 is a requirement for this game to run. Later versions may work, but it is not guaranteed. <br />
-To run the game, either:
-- Launch the jar file as normal,
-- Download and run one of the launch scripts alongside the jar file (.sh for Linux / .bat for Windows),
-- To play in fullscreen, download one of the scripts ending with -fs and run alongside the jar file. <br />
-Please note that this game was designed for 1280x720 gameplay so playing in fullscreen may have bugs.
+Java 11 is a requirement for this game to run. Later versions may work, but it is not guaranteed.<br>
+_Please note that this game was designed for 1280x720 gameplay so playing in fullscreen may have bugs._
+
+### To run the game:<br>
+Download and run one of the launch scripts alongside the jar file (``.sh`` for Linux / ``.bat`` for Windows).
+
+To play in fullscreen mode, download one of the scripts ending with ``-fs`` and run alongside the jar file.
+
+
 
 ## Credits
 
@@ -24,6 +27,11 @@ Please note that this game was designed for 1280x720 gameplay so playing in full
 [Adam Leuty](https://github.com/AdamLeuty) <br />
 [Jiahao Shang](https://github.com/jiahao23) <br />
 [Ben Faulkner](https://github.com/bf758)
+
+## Links
+
+- Website: http://www.shardsoftware.tk/
+- Java Documentation: https://www.shardsoftware.tk/doc
 
 ## License
 
