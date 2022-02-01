@@ -5,9 +5,13 @@ import java.io.FileNotFoundException;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -15,6 +19,8 @@ import com.badlogic.gdx.video.VideoPlayer;
 import com.badlogic.gdx.video.VideoPlayerCreator;
 
 import tk.shardsoftware.PirateGame;
+import tk.shardsoftware.util.Bar;
+import tk.shardsoftware.util.ResourceUtil;
 
 /** @author James Burnell */
 public class LoadScreen implements Screen {
@@ -24,6 +30,7 @@ public class LoadScreen implements Screen {
 	 */
 	private AssetManager assets;
 	private SpriteBatch batch;
+	private ShapeRenderer sp;
 	/** The video player for the intro video */
 	private VideoPlayer vPlayer;
 //	/** The sound to be played during the intro */
@@ -46,9 +53,13 @@ public class LoadScreen implements Screen {
 	 */
 	private float logoAlpha = 1f;
 
+	private Vector2 progBarStart = new Vector2(25, Gdx.graphics.getHeight() - 25);
+	private Vector2 progBarEnd = new Vector2(175, Gdx.graphics.getHeight() - 25);
+
 	public LoadScreen(AssetManager assets, PirateGame pg) {
 		this.assets = assets;
 		this.pirateGameObj = pg;
+		this.sp = new ShapeRenderer();
 		logo = new Sprite(new Texture("textures/logo/shardlogo-fs.png"));
 		logo.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch = new SpriteBatch();
@@ -78,16 +89,13 @@ public class LoadScreen implements Screen {
 	public void render(float delta) {
 		ScreenUtils.clear(0, 0, 0, 255);
 		vPlayer.update();
-		if (!assets.update()) {
-			System.out.printf("Loaded %.1f%% of assets\n", assets.getProgress() * 100f);
-		}
 
 		batch.begin();
 		if (vPlayer.isPlaying()) {
 			batch.draw(vPlayer.getTexture(), 0, 0, Gdx.graphics.getWidth(),
 					Gdx.graphics.getHeight());
 		} else {
-			if (fade) {
+			if (fade && assets.isFinished()) {
 				if (logo.getColor().a > 0) {
 					logo.setAlpha(logoAlpha -= (delta / LOGO_FADE_TIME));
 				} else {
@@ -96,6 +104,22 @@ public class LoadScreen implements Screen {
 				}
 			}
 			logo.draw(batch);
+		}
+		batch.end();
+
+		/* Render loading progress bar */
+		batch.begin();
+		if (!assets.update()) {
+
+			// System.out.printf("Loaded %.1f%% of assets\n", assets.getProgress() * 100f);
+			sp.begin(ShapeType.Filled);
+			Bar.drawBar(batch, sp, progBarStart, progBarEnd, 1 - assets.getProgress(), Color.GRAY,
+					Color.GREEN);
+			sp.end();
+
+		} else {
+			ResourceUtil.debugFont.setColor(Color.DARK_GRAY);
+			ResourceUtil.debugFont.draw(batch, "loaded content", 25, Gdx.graphics.getHeight() - 25);
 		}
 		batch.end();
 
@@ -125,6 +149,7 @@ public class LoadScreen implements Screen {
 	public void dispose() {
 		batch.dispose();
 		vPlayer.dispose();
+		sp.dispose();
 		// logoSound.dispose();
 	}
 
