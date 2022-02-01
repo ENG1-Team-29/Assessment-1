@@ -488,7 +488,7 @@ public class GameScreen implements Screen {
 				// Get the width of the text after we draw it
 				GlyphLayout gLayout = new GlyphLayout();
 				gLayout.setText(collegeFont, cName);
-				float w = gLayout.width;
+//				float w = gLayout.width;
 
 				if (((College) e).isFriendly) {
 					collegeFont.setColor(Color.BLUE);
@@ -497,6 +497,7 @@ public class GameScreen implements Screen {
 				}
 
 				collegeFont.draw(batch, cName, e.getX(), e.getY() - 10);
+
 			}
 			// Draw each entity with its own texture and apply rotation
 			batch.draw(e.getTexture(), e.getX(), e.getY(), e.getWidth() / 2, e.getHeight() / 2,
