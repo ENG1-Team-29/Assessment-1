@@ -18,6 +18,11 @@ public class EntityCannonball extends Entity {
 	/** The object that created the cannonball */
 	private ICannonCarrier parentObj;
 
+	/** The maximum distance a cannonball can travel before stopping */
+	public float maximumTravelDist = 150f;
+	/** The position the cannonball started at */
+	private Vector2 startingPos;
+
 	/**
 	 * @param worldObj the World the cannonball is part of
 	 * @param x the center x position
@@ -35,6 +40,7 @@ public class EntityCannonball extends Entity {
 		this.setTexture("textures/entity/cannonball.png");
 		this.setSolid(false);
 		this.parentObj = parentObj;
+		this.startingPos = this.getPosition().cpy();
 	}
 
 	/**
@@ -61,22 +67,23 @@ public class EntityCannonball extends Entity {
 		this.setVelocity(dirVec.setLength(maximumSpeed));
 	}
 
-	/**
-	 *
-	 * @param delta the time between the previous update and this one
-	 */
 	@Override
 	public void update(float delta) {
 		// Cannonballs spin through the air
 		this.setDirection(direction + delta * 60 * 15);
 		super.update(delta);
+
+		// If the cannonball has travelled the maximum distance, remove
+		if (getDistanceTravelled2() >= maximumTravelDist * maximumTravelDist) {
+			this.remove = true;
+		}
 	}
 
 	/**
 	 * Check that the cannonball is able to damage the object
 	 * 
 	 * @param obj object to be damaged
-	 * @return boolean
+	 * @return {@code true} if cannonball can damage, {@code false} otherwise
 	 */
 	public boolean checkCanDamage(IDamageable obj) {
 		// if parent is a college, then make sure it can't damage other colleges
@@ -116,8 +123,9 @@ public class EntityCannonball extends Entity {
 	 * Checks whether an object which implements IDamageable is the same as the
 	 * object which shot this cannonball
 	 * 
-	 * @param dmgObj Object which implements IDamageable
-	 * @return boolean
+	 * @param dmgObj the object to test equivalence
+	 * @return {@code true} if parent is the specified object, {@code false}
+	 *         otherwise
 	 */
 	@SuppressWarnings("unlikely-arg-type")
 	public boolean isObjParent(IDamageable dmgObj) {
@@ -130,6 +138,32 @@ public class EntityCannonball extends Entity {
 	@Override
 	public void onTouchingBorder() {
 		this.remove = true;
+	}
+
+	/**
+	 * Get the distance travelled
+	 * 
+	 * @return The distance travelled
+	 */
+	public float getDistanceTravelled() {
+		return Vector2.len(startingPos.x - positionVec.x, startingPos.y - positionVec.y);
+	}
+
+	/**
+	 * Get the distance travelled squared
+	 * 
+	 * @return The distance travelled
+	 */
+	public float getDistanceTravelled2() {
+		return Vector2.len2(startingPos.x - positionVec.x, startingPos.y - positionVec.y);
+	}
+
+	public float getMaximumTravelDist() {
+		return maximumTravelDist;
+	}
+
+	public void setMaximumTravelDist(float maximumTravelDist) {
+		this.maximumTravelDist = maximumTravelDist;
 	}
 
 }
