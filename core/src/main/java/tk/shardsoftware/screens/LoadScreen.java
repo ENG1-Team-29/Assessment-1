@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -27,8 +26,8 @@ public class LoadScreen implements Screen {
 	private SpriteBatch batch;
 	/** The video player for the intro video */
 	private VideoPlayer vPlayer;
-	/** The sound to be played during the intro */
-	private Sound logoSound;
+//	/** The sound to be played during the intro */
+//	private Sound logoSound;
 
 	/** The PirateGame object used to switch screens */
 	private PirateGame pirateGameObj;
@@ -42,8 +41,8 @@ public class LoadScreen implements Screen {
 	/** Whether or not the logo is fading */
 	private boolean fade = false;
 	/**
-	 * The opacity of the logo. This is necessary because the sprite alpha
-	 * channel is not precise enough.
+	 * The opacity of the logo. This is necessary because the sprite alpha channel
+	 * is not precise enough.
 	 */
 	private float logoAlpha = 1f;
 
@@ -75,15 +74,12 @@ public class LoadScreen implements Screen {
 		});
 	}
 
-
-
 	@Override
 	public void render(float delta) {
 		ScreenUtils.clear(0, 0, 0, 255);
 		vPlayer.update();
 		if (!assets.update()) {
-			System.out.printf("Loaded %.1f%% of assets\n",
-					assets.getProgress() * 100f);
+			System.out.printf("Loaded %.1f%% of assets\n", assets.getProgress() * 100f);
 		}
 
 		batch.begin();
@@ -122,14 +118,14 @@ public class LoadScreen implements Screen {
 
 	@Override
 	public void hide() {
-		logoSound.stop();
+		// logoSound.stop();
 	}
 
 	@Override
 	public void dispose() {
 		batch.dispose();
 		vPlayer.dispose();
-		logoSound.dispose();
+		// logoSound.dispose();
 	}
 
 }
