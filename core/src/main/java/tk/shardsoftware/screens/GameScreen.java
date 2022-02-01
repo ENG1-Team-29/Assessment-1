@@ -494,7 +494,6 @@ public class GameScreen implements Screen {
 				}else{
 					collegeFont.setColor(Color.WHITE);
 				}
-
 				collegeFont.draw(batch,cName,e.getX(),e.getY()-10);
 			}
 			// Draw each entity with its own texture and apply rotation

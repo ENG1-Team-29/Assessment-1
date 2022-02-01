@@ -125,6 +125,7 @@ public abstract class CollegeManager {
 				College c = new College(worldObj, name, collegePos.x * worldObj.worldMap.tile_size,
 						collegePos.y * worldObj.worldMap.tile_size, map.tile_size * 6,
 						map.tile_size * 6, player);
+				c.setDirection(270);
 				collegeList.add(c);
 			}
 		}
