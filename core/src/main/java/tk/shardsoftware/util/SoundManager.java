@@ -22,8 +22,8 @@ public abstract class SoundManager {
 	public static boolean isMuted = false;
 	public static float lastGameVolume = gameVolume;
 	public static int currentSongIndex = 0;
-	static Music[] songs = { Gdx.audio.newMusic(Gdx.files.internal("audio/music/the-pyre.mp3")),
-			Gdx.audio.newMusic(Gdx.files.internal("audio/music/folk-round.mp3")) };
+	static Music[] songs = { ResourceUtil.getMusic("audio/music/the-pyre.mp3"),
+			ResourceUtil.getMusic("audio/music/folk-round.mp3") };
 
 	/**
 	 * Plays a sound with the global volume. Won't play if the game is muted.
@@ -70,7 +70,7 @@ public abstract class SoundManager {
 		}
 		// Choose a random song in the list and play it
 		currentSongIndex = new Random().nextInt(songs.length);
-		System.out.println("Playing song " + currentSongIndex);
+		Gdx.app.log("SoundManager", "Playing song " + currentSongIndex);
 		songs[currentSongIndex].play();
 	}
 

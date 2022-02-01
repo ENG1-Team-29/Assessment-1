@@ -2,6 +2,7 @@ package tk.shardsoftware.util;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -25,6 +26,8 @@ public abstract class ResourceUtil {
 	public static Texture nullTexture;
 	/** A basic sound to be used when other sounds are unavailable/missing */
 	public static Sound nullSound;
+	/** A basic music to be used when other music are unavailable/missing */
+	public static Music nullMusic;
 
 	/** The game's asset manager */
 	private static AssetManager assetManager;
@@ -70,10 +73,10 @@ public abstract class ResourceUtil {
 		addSound("audio/entity/college-hit.mp3");
 
 		/* Music */
-		addSound("audio/music/folk-round.mp3");
-		addSound("audio/music/sonatina-in-c-minor.mp3");
-		addSound("audio/music/the-pyre.mp3");
-		addSound("audio/music/tiki-bar-mixer.mp3");
+		addMusic("audio/music/folk-round.mp3");
+		addMusic("audio/music/sonatina-in-c-minor.mp3");
+		addMusic("audio/music/the-pyre.mp3");
+		addMusic("audio/music/tiki-bar-mixer.mp3");
 
 		/* Null Resources */
 		nullTexture = generateNullTexture();
@@ -124,6 +127,22 @@ public abstract class ResourceUtil {
 	}
 
 	/**
+	 * @param music the location of the music file to load
+	 * @return {@code true} if added music, {@code false} if music was already in
+	 *         cache
+	 * @see AssetManager#load(String, Class)
+	 */
+	private static boolean addMusic(String music) {
+		if (assetManager.contains(music)) return false;
+		if (!Gdx.files.internal(music).exists()) {
+			Gdx.app.error("error", "Could not locate sound file: " + music);
+			return false;
+		}
+		assetManager.load(music, Music.class);
+		return true;
+	}
+
+	/**
 	 * @param sound the location of the sound file to load
 	 * @return {@code true} if added sound, {@code false} if sound was already in
 	 *         cache
@@ -167,6 +186,20 @@ public abstract class ResourceUtil {
 			return nullTexture;
 		}
 		return assetManager.contains(texName) ? assetManager.get(texName) : nullTexture;
+	}
+
+	/**
+	 * Select music according to its filename.
+	 * 
+	 * @param musicName The filename/path of the music
+	 * @return The pre-cached Music object
+	 */
+	public static Music getMusic(String musicName) {
+		if (!assetManager.isLoaded(musicName)) {
+			Gdx.app.error("warn", String.format("sound %s is not loaded, using null", musicName));
+			return nullMusic;
+		}
+		return assetManager.contains(musicName) ? assetManager.get(musicName) : nullMusic;
 	}
 
 	/**
