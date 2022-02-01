@@ -3,26 +3,22 @@ package tk.shardsoftware.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
 import tk.shardsoftware.PirateGame;
 import tk.shardsoftware.util.ResourceUtil;
 import tk.shardsoftware.util.SoundManager;
 
-
 /**
  * The screen that shows up when the player's health reaches 0
+ * 
  * @author Hector Woods
  */
 public class LossScreen implements Screen {
 
-	/**
-	 * The main AssetManager for the game. Used to load the assets into memory
-	 */
-	private AssetManager assets;
 	private SpriteBatch batch;
 	private Sound lossMusic = ResourceUtil.getSound("audio/music/sonatina-in-c-minor.mp3");
 
@@ -42,17 +38,15 @@ public class LossScreen implements Screen {
 
 	/**
 	 * Constructor for LossScreen
-	 * @param assets AssetManager used by PirateGame
+	 * 
 	 * @param pg An instance of PirateGame
 	 */
-	public LossScreen(AssetManager assets, PirateGame pg) {
-		this.assets = assets;
+	public LossScreen(PirateGame pg) {
 		this.pirateGameObj = pg;
 		this.width = Gdx.graphics.getWidth();
 		this.height = Gdx.graphics.getHeight();
 		batch = new SpriteBatch();
 	}
-
 
 	@Override
 	public void show() {
@@ -60,25 +54,24 @@ public class LossScreen implements Screen {
 		SoundManager.playSound(lossMusic);
 	}
 
-
-	private void closeScreen(){
+	private void closeScreen() {
 		lossMusic.stop();
 		pirateGameObj.openNewGameScreen();
 	}
 
 	@Override
 	public void render(float delta) {
-		//Restart the game when a key is pressed
-		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+		// Restart the game when a key is pressed
+		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
 			closeScreen();
 		}
 
 		batch.begin();
-		batch.draw(background,0,0,width,height);
-		font.draw(batch,"You were defeated! Press the space key to restart...",(int)(width*0.25),(int)(height*0.6));
+		batch.draw(background, 0, 0, width, height);
+		font.draw(batch, "You were defeated! Press the space key to restart...",
+				(int) (width * 0.25), (int) (height * 0.6));
 		batch.end();
 	}
-
 
 	@Override
 	public void resize(int width, int height) {
