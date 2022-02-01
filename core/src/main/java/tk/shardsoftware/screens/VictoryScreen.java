@@ -3,7 +3,7 @@ package tk.shardsoftware.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -20,7 +20,7 @@ import tk.shardsoftware.util.SoundManager;
 public class VictoryScreen implements Screen {
 
 	private SpriteBatch batch;
-	Sound victoryMusic = ResourceUtil.getSound("audio/music/tiki-bar-mixer.mp3");
+	Music victoryMusic = ResourceUtil.getMusic("audio/music/tiki-bar-mixer.mp3");
 	/** Width of the display */
 	private int width;
 	/** Height of the display */
@@ -49,13 +49,13 @@ public class VictoryScreen implements Screen {
 
 	private void closeScreen() {
 		victoryMusic.stop();
-		pirateGameObj.openNewGameScreen();
+		pirateGameObj.openNewMenuScreen();
 	}
 
 	@Override
 	public void show() {
 		System.out.println("The player has won, showing the victory screen...");
-		SoundManager.playSound(victoryMusic);
+		SoundManager.playMusic(victoryMusic);
 	}
 
 	@Override

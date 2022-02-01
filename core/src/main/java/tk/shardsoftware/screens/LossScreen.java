@@ -3,7 +3,7 @@ package tk.shardsoftware.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -20,7 +20,7 @@ import tk.shardsoftware.util.SoundManager;
 public class LossScreen implements Screen {
 
 	private SpriteBatch batch;
-	private Sound lossMusic = ResourceUtil.getSound("audio/music/sonatina-in-c-minor.mp3");
+	private Music lossMusic = ResourceUtil.getMusic("audio/music/sonatina-in-c-minor.mp3");
 
 	/** Width of the display */
 	private int width;
@@ -51,12 +51,12 @@ public class LossScreen implements Screen {
 	@Override
 	public void show() {
 		System.out.println("The player has lost, showing the loss screen...");
-		SoundManager.playSound(lossMusic);
+		SoundManager.playMusic(lossMusic);
 	}
 
 	private void closeScreen() {
 		lossMusic.stop();
-		pirateGameObj.openNewGameScreen();
+		pirateGameObj.openNewMenuScreen();
 	}
 
 	@Override
