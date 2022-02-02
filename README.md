@@ -10,6 +10,7 @@ objective.
 
 ## How to Install and Run the Project
 Java 11 is a requirement for this game to run. Later versions may work, but it is not guaranteed.<br>
+
 _Please note that this game was designed for 1280x720 gameplay so playing in fullscreen may have bugs._
 
 ### To run the game:<br>
@@ -17,16 +18,14 @@ Download and run one of the launch scripts alongside the jar file (``.sh`` for L
 
 To play in fullscreen mode, download one of the scripts ending with ``-fs`` and run alongside the jar file.
 
-
-
 ## Credits
 
-[James Burnell](https://github.com/uoy-jb2501) <br />
-[Hector Woods](https://github.com/HectorJVWoods) <br />
-[Jensen Bradshaw](https://github.com/Jensen6842) <br />
-[Adam Leuty](https://github.com/AdamLeuty) <br />
-[Jiahao Shang](https://github.com/jiahao23) <br />
-[Ben Faulkner](https://github.com/bf758)
+- [James Burnell](https://github.com/uoy-jb2501)
+- [Hector Woods](https://github.com/HectorJVWoods)
+- [Jensen Bradshaw](https://github.com/Jensen6842)
+- [Adam Leuty](https://github.com/AdamLeuty)
+- [Jiahao Shang](https://github.com/jiahao23)
+- [Ben Faulkner](https://github.com/bf758)
 
 ## Links
 
