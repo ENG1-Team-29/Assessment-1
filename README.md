@@ -10,6 +10,8 @@ objective.
 
 ## Running The Game
 Please note that this game was designed for 1280x720 gameplay so playing in fullscreen may have bugs.
+
+Download [Version 1.0.0](https://github.com/uoy-jb2501/ENG1-Pirate-Game/releases/tag/1.0.0)
 ### With Pre-Bundled JRE
 These versions come with the correct Java Runtime Environment so you **shouldn't need to install Java separately**.
 #### Windows
